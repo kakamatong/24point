@@ -1,0 +1,186 @@
+/**
+ * @file InterfaceConfig.ts
+ * @description 接口配置：定义数据类型、接口和枚举
+ * @category 数据中心
+ */
+
+/**
+ * @interface LOGIN_INFO
+ * @description 用户登录信息
+ */
+export interface LOGIN_INFO {
+    username: string;
+    userid: number;
+    password: string;
+    server: string;
+    loginType: string;
+    token: string;
+    subid: number;
+}
+
+// nickname 0 : string
+// headurl 1 : string
+// sex 2 : integer
+// province 3 : string
+// city 4 : string
+// ip 5 : string
+// ext 6 : string
+
+/**
+ * @interface USER_DATA
+ * @description 用户数据
+ */
+export interface USER_DATA {
+    userid: number;
+    nickname: string;
+    headurl: string;
+    sex: number;
+    province: string;
+    city: string;
+    ip: string;
+    ext: string;
+}
+
+// 0 离线
+// 1 在线
+// 2 匹配中
+// 3 准备中
+// 4 游戏中
+// 5 观战中
+// 6 组队中
+// 7 断线
+
+/**
+ * @enum ENUM_USER_STATUS
+ * @description 用户状态枚举
+ */
+export enum ENUM_USER_STATUS {
+    OFFLINE = 0,
+    ONLINE = 1,
+    MATCHING = 2,
+    READY = 3,
+    GAMEING = 4,
+    WATCH = 5,
+    TEAMING = 6,
+    DISCONNECT = 7,
+}
+
+/**
+ * @interface USER_STATUS
+ * @description 用户状态
+ */
+export interface USER_STATUS {
+    roomid?: number;
+    gameid?: number;
+    status: ENUM_USER_STATUS;
+}
+
+/**
+ * @enum LOCAL_KEY
+ * @description 本地存储键值枚举
+ */
+export enum LOCAL_KEY {
+    LOGIN_INFO = "loginInfo",
+    MATCH_AUTO_JOIN = "matchAutoJoin",
+    AGREE_PRIVACY = "agreePrivacy",
+    PRIVATE_RULE = "privateRule",
+    AUTO_SHOW_SIGNIN = "autoShowSignIn",
+    AD_NOTICE_DATE = "adNoticeDate",
+    /** 闯关章节缓存前缀，拼接章节 index 组成完整 key */
+    CHALLENGE_CHAPTER_PREFIX = "challengeChapter_",
+}
+
+/**
+ * @enum ENUM_POP_MESSAGE_TYPE
+ * @description 弹窗消息类型枚举
+ */
+export enum ENUM_POP_MESSAGE_TYPE {
+    NUM2 = 0, // 2个按钮
+    NUM1SURE = 1, // 1个按钮 确定
+    NUM1CANCEL = 2, // 1个按钮 取消
+    NUM0 = 3, // 无按钮
+}
+
+/**
+ * @enum ENUM_CHANNEL_ID
+ * @description 渠道 ID 枚举
+ */
+export enum ENUM_CHANNEL_ID {
+    MINIGAME_WECHAT = "wechatMiniGame",
+    ACCOUNT = "account",
+}
+
+export const LOGIN_TYPE = {
+    [ENUM_CHANNEL_ID.MINIGAME_WECHAT]: "wechatMiniGame",
+    [ENUM_CHANNEL_ID.ACCOUNT]: "account",
+};
+
+/**
+ * @interface GAME_RECORD
+ * @description 游戏战绩
+ */
+export interface GAME_RECORD {
+    gameid: number;
+    win: number;
+    lose: number;
+    draw?: number;
+}
+
+/**
+ * @enum ENUM_ENV
+ * @description 环境类型枚举
+ */
+export enum ENUM_ENV {
+    DEV = "dev",
+    TEST = "test",
+    PROD = "prod",
+}
+
+/**
+ * @enum RICH_TYPE
+ * @description 财富类型枚举
+ */
+export enum RICH_TYPE {
+    NONE = 0,
+    GOLD_COIN = 1, // 金币（一级货币）
+    SILVER_COIN = 2, // 银子（二级货币）
+    COMBAT_POWER = 100, // 战力
+    UPSET = 10001, // 打乱
+    AUTO_REMOVE = 10002, // 自动移除
+}
+
+/**
+ * 广告奖励数据结构
+ */
+export interface AD_REWARD {
+    richTypes: number[];
+    richNums: number[];
+}
+
+/**
+ * 广告奖励信息结构
+ */
+export interface AD_REWARD_INFO {
+    cfgId: number;
+    maxDailyRewardCount: number;
+    currentRewardCount: number;
+    rewards: AD_REWARD[];
+    canReward: boolean;
+}
+
+/**
+ * 领取广告奖励返回结果结构
+ */
+export interface AD_RECEIVE_REWARD_RESULT {
+    cfgId: number;
+    noticeid: number;
+    reward: AD_REWARD;
+    currentRewardCount: number;
+    maxDailyRewardCount: number;
+}
+
+export const CREATE_ROOM_PLAYER_CNT = [2, 3, 4];
+
+export const DEFAULT_HEADURL = "https://qiudaoyu-miniapp.oss-cn-hangzhou.aliyuncs.com/head/ji.png";
+export const LOBBY_SHARE_PIC_URL = "https://qiudaoyu-miniapp.oss-cn-hangzhou.aliyuncs.com/share/10002/share.png";
+export const MAIN_GAME_ID = 10002;

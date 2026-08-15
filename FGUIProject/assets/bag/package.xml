@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<packageDescription id="w2uvmi35">
+  <resources>
+    <component id="rgj10" name="BagView.xml" path="/" exported="true"/>
+    <component id="rgj11" name="CompBag.xml" path="/comp/"/>
+  </resources>
+  <publish name="" genCode="true"/>
+</packageDescription>

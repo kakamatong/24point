@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component size="776,1688">
+  <controller name="ctrl_privacy" pages="0,隐私政策,1,用户协议" selected="0"/>
+  <displayList>
+    <graph id="n11_7ivz" name="n11" xy="0,0" size="776,1688" type="rect" lineSize="0" lineColor="#00000000" fillColor="#b2000000">
+      <relation target="" sidePair="width-width,height-height"/>
+    </graph>
+    <component id="n12_oott" name="n12" src="axf11l" fileName="comp/CompPopBg.xml" pkg="gj0r6g5i" xy="49,473" group="n14_oott"/>
+    <component id="n1_7ivz" name="UI_BTN_REFUSE" src="is91n" fileName="comp/CompBtnCommon.xml" pkg="gj0r6g5i" xy="122,1104" size="230,98" group="n14_oott" controller="ctrl_color,2">
+      <Button title="拒绝" icon="ui://gj0r6g5ijorf1h"/>
+    </component>
+    <component id="n2_7ivz" name="UI_BTN_AGREE" src="is91n" fileName="comp/CompBtnCommon.xml" pkg="gj0r6g5i" xy="402,1103" size="230,99" group="n14_oott" controller="ctrl_color,1">
+      <Button title="同意" icon="ui://gj0r6g5ijorf1f"/>
+    </component>
+    <text id="n3_7ivz" name="n3" xy="68,713" size="650,94" group="n14_oott" fontSize="35" color="#7e6547" vAlign="middle" text="在您使用 《连连看连线消除》 服务之前，&#xA;请仔细阅读"/>
+    <text id="n4_7ivz" name="n4" xy="68,810" size="599,94" group="n14_oott" fontSize="35" color="#7e6547" vAlign="middle" text="如您同意该指引，请点击“同意”开始&#xA;使用。"/>
+    <component id="n8_7ivz" name="UI_BTN_PRIVACY" src="is91n" fileName="comp/CompBtnCommon.xml" pkg="gj0r6g5i" xy="393,739" group="n14_oott">
+      <Button title="《隐私政策指引》" titleColor="#ff0000" titleFontSize="35"/>
+    </component>
+    <text id="n13_oott" name="UI_TXT_TITLE" xy="257,507" pivot="0.5,0.5" size="244,79" group="n14_oott" fontSize="60" color="#ffffff" align="center" vAlign="middle" strokeColor="#3d4b61" strokeSize="4" singleLine="true" text="温馨提示"/>
+    <group id="n14_oott" name="n14" xy="49,473" size="669,790" advanced="true">
+      <relation target="" sidePair="center-center,middle-middle"/>
+    </group>
+  </displayList>
+</component>

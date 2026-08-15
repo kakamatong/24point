@@ -1,0 +1,167 @@
+
+E54011.png
+size: 1653,398
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+yansj_01
+  rotate: false
+  xy: 2, 114
+  size: 279, 282
+  orig: 360, 360
+  offset: 41, 39
+  index: -1
+yansj_03
+  rotate: false
+  xy: 1450, 254
+  size: 201, 142
+  orig: 360, 360
+  offset: 67, 109
+  index: -1
+yansj_05
+  rotate: true
+  xy: 979, 166
+  size: 230, 153
+  orig: 360, 360
+  offset: 73, 102
+  index: -1
+yansj_07
+  rotate: true
+  xy: 811, 150
+  size: 246, 166
+  orig: 360, 360
+  offset: 57, 95
+  index: -1
+yansj_09
+  rotate: true
+  xy: 637, 123
+  size: 273, 172
+  orig: 360, 360
+  offset: 35, 93
+  index: -1
+yansj_11
+  rotate: true
+  xy: 461, 119
+  size: 277, 174
+  orig: 360, 360
+  offset: 30, 92
+  index: -1
+yansj_13
+  rotate: true
+  xy: 283, 119
+  size: 277, 176
+  orig: 360, 360
+  offset: 30, 91
+  index: -1
+yansj_15
+  rotate: false
+  xy: 1091, 2
+  size: 218, 162
+  orig: 360, 360
+  offset: 62, 106
+  index: -1
+yansj_17
+  rotate: true
+  xy: 1134, 178
+  size: 218, 156
+  orig: 360, 360
+  offset: 62, 112
+  index: -1
+yansj_19
+  rotate: true
+  xy: 1292, 178
+  size: 218, 156
+  orig: 360, 360
+  offset: 62, 112
+  index: -1
+yansj_21
+  rotate: true
+  xy: 931, 3
+  size: 145, 158
+  orig: 360, 360
+  offset: 110, 111
+  index: -1
+yansj_23
+  rotate: true
+  xy: 1311, 32
+  size: 144, 142
+  orig: 360, 360
+  offset: 111, 111
+  index: -1
+yansj_25
+  rotate: false
+  xy: 1455, 129
+  size: 143, 123
+  orig: 360, 360
+  offset: 113, 131
+  index: -1
+yansj_27
+  rotate: false
+  xy: 794, 26
+  size: 135, 95
+  orig: 360, 360
+  offset: 121, 131
+  index: -1
+yansj_29
+  rotate: false
+  xy: 1455, 32
+  size: 135, 95
+  orig: 360, 360
+  offset: 121, 131
+  index: -1
+yansj_31
+  rotate: true
+  xy: 2, 3
+  size: 109, 96
+  orig: 360, 360
+  offset: 120, 131
+  index: -1
+yansj_33
+  rotate: true
+  xy: 200, 5
+  size: 107, 96
+  orig: 360, 360
+  offset: 122, 131
+  index: -1
+yansj_35
+  rotate: true
+  xy: 298, 10
+  size: 107, 96
+  orig: 360, 360
+  offset: 122, 131
+  index: -1
+yansj_37
+  rotate: true
+  xy: 100, 5
+  size: 107, 98
+  orig: 360, 360
+  offset: 121, 130
+  index: -1
+yansj_39
+  rotate: true
+  xy: 396, 16
+  size: 101, 98
+  orig: 360, 360
+  offset: 121, 130
+  index: -1
+yansj_41
+  rotate: true
+  xy: 496, 16
+  size: 101, 98
+  orig: 360, 360
+  offset: 121, 130
+  index: -1
+yansj_43
+  rotate: true
+  xy: 596, 16
+  size: 101, 97
+  orig: 360, 360
+  offset: 121, 131
+  index: -1
+yansj_45
+  rotate: true
+  xy: 695, 20
+  size: 101, 97
+  orig: 360, 360
+  offset: 121, 131
+  index: -1

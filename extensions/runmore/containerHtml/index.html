@@ -1,0 +1,137 @@
+<!----http://localhost:7456/assets/resources/native/index.html?userids=test001,test002,test003,test004&pwd=wlj123456,wlj123456,wlj123456,wlj123456-->>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>多窗口容器</title>
+    <style>
+        body {
+            background-color: #000000;
+            margin: 0;
+            min-height: 100vh;
+        }
+        .window-container {
+            display: grid;
+            gap: 10px;
+            padding: 20px;
+            grid-template-columns: repeat(2, 1fr);
+            grid-auto-rows: minmax(200px, 1fr);
+            grid-auto-flow: row dense;
+            height: auto;
+            min-height: 100vh;
+        }
+        
+        @media (max-width: 1200px) {
+            .window-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        .iframe-window {
+            border: 1px solid #333;
+            background: #1a1a1a;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body onload="init()">
+    <div class="window-container">
+
+    </div>
+</body>
+<script>
+
+    var userIds = [];
+    var pwds = [];
+    function init() {
+        // 获取URL参数
+        const urlParams = new URLSearchParams(window.location.search);
+        
+        // 示例：获取特定参数
+        const ids = urlParams.get('userids').split(',');
+        const tmppwds = urlParams.get('pwd').split(',');
+        const gameId = urlParams.get('pwd');
+        // 修正后的日志输出
+        console.log('初始化参数:', {
+            userIds: ids,
+            pwds: tmppwds
+        });
+        userIds = ids;
+        pwds = tmppwds;
+        initIframes();
+        // 在此添加参数应用逻辑（如：传递给iframe）
+    }
+    // iframe加载完成回调
+    function onIframeLoaded(event) {
+        const frame = event.target;
+        
+        // 创建右键菜单
+        const menu = document.createElement('div');
+        menu.style = `position:absolute;background:#333;color:#fff;padding:8px;display:none;`;
+        
+        const reloadBtn = document.createElement('div');
+        reloadBtn.textContent = '🔄 重启';
+        reloadBtn.style = 'cursor:pointer;padding:4px;';
+        reloadBtn.onclick = () => {
+            frame.src = frame.src; // 重新加载
+            menu.style.display = 'none';
+        };
+    
+        // 右键事件处理
+        // 修改事件绑定方式
+        // 修正事件绑定逻辑
+        frame.contentDocument.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            const iframeRect = frame.getBoundingClientRect();
+            
+            menu.style.left = `${e.clientX + iframeRect.left}px`;
+            menu.style.top = `${e.clientY + iframeRect.top}px`;
+            menu.style.display = 'block';
+        });
+        
+        // 添加菜单到body防止被遮挡
+        document.body.appendChild(menu);
+        
+        // 增加防抖处理
+        let lastClick = 0;
+        frame.contentDocument.addEventListener('mousedown', (e) => {
+            if(Date.now() - lastClick < 300) return;
+            lastClick = Date.now();
+            menu.style.display = 'none';
+        });
+        
+        // 添加菜单容器样式
+        menu.style.position = 'fixed';
+        menu.style.background = '#333';
+        menu.style.borderRadius = '4px';
+        menu.style.boxShadow = '0 2px 8px rgba(0,0,0,0.3)';
+        menu.innerHTML = '';
+        menu.appendChild(reloadBtn);
+    
+        // 点击其他地方隐藏菜单
+        document.addEventListener('click', () => {
+            menu.style.display = 'none';
+        });
+    
+        frame.parentNode.appendChild(menu);
+        console.log('窗口加载完成:', frame.id);
+    }
+
+    // 初始化方法
+    function initIframes() {
+        // 删除原有iframe静态代码
+        const container = document.querySelector('.window-container');
+        container.innerHTML = '';
+
+        userIds.forEach((userId, index) => {
+            const iframe = document.createElement('iframe');
+            iframe.id = `window_${index}`;
+            iframe.src = `../../../?userid=${userId}&pwd=${pwds[index]}`;
+            iframe.className = 'iframe-window';
+            iframe.onload = onIframeLoaded;
+            container.appendChild(iframe);
+        });
+    }
+
+
+</script>
+</html>

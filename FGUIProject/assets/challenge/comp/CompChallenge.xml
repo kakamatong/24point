@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component size="776,1688">
+  <displayList>
+    <image id="n6_vcww" name="n6" src="vcwwd" fileName="imgs/mask.png" xy="14,232" size="743,1271">
+      <relation target="" sidePair="center-center,middle-middle"/>
+    </image>
+    <component id="n0_hot0" name="n0" src="hot02" fileName="comp/CompEnergy.xml" xy="192,34">
+      <relation target="" sidePair="left-left,top-top"/>
+    </component>
+    <component id="n1_hot0" name="UI_BTN_CLOSE" src="is91n" fileName="comp/CompBtnCommon.xml" pkg="gj0r6g5i" xy="41,35" size="119,75">
+      <relation target="" sidePair="left-left,top-top"/>
+      <Button icon="ui://gj0r6g5ioott1p"/>
+    </component>
+    <component id="n5_vcww" name="UI_COMP_CHAPTER" src="vcww3" fileName="comp/CompChapter.xml" xy="37,257">
+      <relation target="" sidePair="center-center,middle-middle"/>
+    </component>
+  </displayList>
+</component>

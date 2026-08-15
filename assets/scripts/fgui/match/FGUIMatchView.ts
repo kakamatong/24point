@@ -1,0 +1,106 @@
+/** This is an automatically generated class by FairyGUI. Please do not modify it. **/
+
+import { assetManager, AssetManager } from "cc";
+import * as fgui from "fairygui-cc";
+import FGUICompMatchAct from "./FGUICompMatchAct";
+
+import { PackageManager } from "@frameworks/PackageManager";
+import { Logger } from "@frameworks/utils/Utils";
+
+export default class FGUIMatchView extends fgui.GComponent {
+
+	public ctrl_btn_join:fgui.Controller;
+	public ctrl_enter:fgui.Controller;
+	public UI_BTN_JOIN:fgui.GButton;
+	public UI_BTN_CANCEL:fgui.GButton;
+	public UI_COMP_ACT:FGUICompMatchAct;
+	public UI_BTN_AUTO_CHECK:fgui.GButton;
+	public UI_GROUP_AUTO:fgui.GGroup;
+	public UI_BTN_CLOSE:fgui.GButton;
+	public static URL:string = "ui://y9gp37x6wfqx0";
+
+	public static packageName:string = "match";
+
+	public static instance:any | null = null;
+
+	public enableAnimation: boolean = false;
+
+	public static showView(params?:any, callBack?:(b:boolean)=>void):void {
+		if(FGUIMatchView.instance) {
+			console.log("allready show");
+			callBack&&callBack(false);
+			return;
+		}
+		PackageManager.instance.loadPackage("fgui", this.packageName).then(()=> {
+
+			const view = fgui.UIPackage.createObject("match", "MatchView") as FGUIMatchView;
+
+			view.makeFullScreen();
+			FGUIMatchView.instance = view;
+			fgui.GRoot.inst.addChild(view);
+			view.show && view.show(params);
+			callBack&&callBack(true);
+		}
+		).catch(error=>{Logger.error("showView error", error);callBack&&callBack(false);return;});
+	}
+
+	protected onDestroy():void {
+		super.onDestroy();
+		FGUIMatchView.instance = null;
+	}
+	public static hideView():void {
+		FGUIMatchView.instance && FGUIMatchView.instance.dispose();
+	}
+
+	show(data?:any):void{};
+
+	enterAnimation(): void {
+		fgui.GTween.to2(0, 0, 1, 1, 0.3)
+		    .setTarget(this)
+		    .setEase(fgui.EaseType.BackOut)
+		    .onUpdate((tween) => {
+		        this.setScale(tween.value.x, tween.value.y);
+		    });
+	}
+
+	hideAnimation(onComplete?: () => void): void {
+		fgui.GTween.to2(1, 1, 0, 0, 0.3)
+		    .setTarget(this)
+		    .setEase(fgui.EaseType.BackIn)
+		    .onUpdate((tween) => {
+		        this.setScale(tween.value.x, tween.value.y);
+		    })
+		    .onComplete(() => {
+		        onComplete && onComplete();
+		    });
+	}
+
+	public static createInstance():FGUIMatchView {
+		return <FGUIMatchView>(fgui.UIPackage.createObject("match", "MatchView"));
+	}
+
+	protected onConstruct():void {
+		this.ctrl_btn_join = this.getControllerAt(0);
+		this.ctrl_enter = this.getControllerAt(1);
+		this.UI_BTN_JOIN = <fgui.GButton>(this.getChildAt(3));
+		this.UI_BTN_JOIN.onClick(this.onBtnJoin, this);
+		this.UI_BTN_CANCEL = <fgui.GButton>(this.getChildAt(4));
+		this.UI_BTN_CANCEL.onClick(this.onBtnCancel, this);
+		this.UI_COMP_ACT = <FGUICompMatchAct>(this.getChildAt(5));
+		this.UI_BTN_AUTO_CHECK = <fgui.GButton>(this.getChildAt(6));
+		this.UI_BTN_AUTO_CHECK.onClick(this.onBtnAutoCheck, this);
+		this.UI_GROUP_AUTO = <fgui.GGroup>(this.getChildAt(8));
+		this.UI_BTN_CLOSE = <fgui.GButton>(this.getChildAt(9));
+		this.UI_BTN_CLOSE.onClick(this.onBtnClose, this);
+		if (this.enableAnimation) this.enterAnimation();
+	}
+	scheduleOnce(callback: () => void, delay: number):void{};
+	unscheduleAllCallbacks():void{};
+	unschedule(callback: () => void):void{};
+	schedule(callback: () => void, interval: number):void{};
+	onBtnJoin():void{};
+	onBtnCancel():void{};
+	onBtnAutoCheck():void{};
+	onBtnClose():void{};
+}
+fgui.UIObjectFactory.setExtension(FGUIMatchView.URL, FGUIMatchView);

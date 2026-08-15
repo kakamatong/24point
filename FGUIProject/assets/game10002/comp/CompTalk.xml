@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component size="67,83">
+  <displayList>
+    <image id="n9_pxa5" name="UI_BG_0" src="pxa5m" fileName="imgs/talkbg.png" xy="0,0" pivot="0,1" size="67,83" flip="hz">
+      <relation target="n12_pxa5" sidePair="rightext-right"/>
+      <relation target="" sidePair="center-center,middle-middle"/>
+    </image>
+    <text id="n12_pxa5" name="UI_TXT_0" xy="6,12" size="56,36" fontSize="26" vAlign="middle" text="你好"/>
+  </displayList>
+  <relation target="n9_pxa5" sidePair="rightext-right"/>
+</component>

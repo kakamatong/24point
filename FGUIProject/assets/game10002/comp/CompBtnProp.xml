@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component size="80,76" pivot="0.5,0.5" extention="Button">
+  <displayList>
+    <loader id="n4_tw1h" name="icon" xy="0,0" size="80,76" autoSize="true"/>
+    <image id="n6_tw1h" name="n6" src="jin6a" fileName="imgs/mask.png" pkg="gj0r6g5i" xy="-7,54" pivot="0.5,0.5" size="94,35">
+      <relation target="" sidePair="center-center,middle-middle"/>
+    </image>
+    <text id="n5_tw1h" name="title" xy="-5,51" pivot="0.5,0.5" size="88,39" fontSize="28" color="#ffffff" align="center" vAlign="middle" autoSize="shrink" singleLine="true" text="">
+      <relation target="" sidePair="center-center,middle-middle"/>
+    </text>
+    <text id="n7_tw1h" name="UI_TXT_NUMS" xy="45,0" pivot="1,0" size="35,32" fontSize="22" color="#ffffff" align="right" strokeColor="#5b7896" strokeSize="2" text="X 0"/>
+  </displayList>
+  <Button downEffect="scale" downEffectValue="0.9"/>
+  <relation target="n4_tw1h" sidePair="width-width,height-height"/>
+</component>

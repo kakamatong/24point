@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<packageDescription id="y9gp37x6">
+  <resources>
+    <component id="wfqx0" name="MatchView.xml" path="/" exported="true"/>
+    <component id="wfqx1" name="CompMatchAct.xml" path="/comp/"/>
+    <image id="oott2" name="bg1.png" path="/imgs/"/>
+    <component id="oott3" name="CompMatchCube.xml" path="/comp/"/>
+    <image id="oott4" name="bg2.png" path="/imgs/"/>
+  </resources>
+  <publish name="" genCode="true"/>
+</packageDescription>

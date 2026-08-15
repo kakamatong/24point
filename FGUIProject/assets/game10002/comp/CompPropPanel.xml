@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component size="268,120">
+  <displayList>
+    <component id="n3_rgj1" name="UI_BTN_AUTO_REMOVE" src="pz9v1b" fileName="comp/ComProp.xml" pkg="fwundh2c" xy="0,0">
+      <property target="UI_LOADER_ICON" propertyId="1" value="ui://fwundh2crgj11d"/>
+    </component>
+    <component id="n4_rgj1" name="UI_BTN_UPSET" src="pz9v1b" fileName="comp/ComProp.xml" pkg="fwundh2c" xy="148,0">
+      <property target="UI_LOADER_ICON" propertyId="1" value="ui://fwundh2crgj11e"/>
+    </component>
+  </displayList>
+</component>

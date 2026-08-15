@@ -1,0 +1,11 @@
+{
+	"name": "custom_inspector",
+	"displayName": "龙骨检查器",
+	"description": "跳过编辑器GLoader3D弹窗，直接修改xml文件，编辑器中GLoader3D显示",
+	"version": "0.0.1",
+	"author": {
+		"name": "liurui"
+	},
+	"icon": "icon.png",
+	"main": "main.js"
+}

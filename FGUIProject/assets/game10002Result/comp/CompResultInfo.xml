@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component size="600,120">
+  <controller name="ctrl_self" pages="0,,1," selected="1">
+    <remark page="0" value="不是自己"/>
+    <remark page="1" value="是自己"/>
+  </controller>
+  <controller name="ctrl_uncomp" pages="0,,1," selected="0">
+    <remark page="0" value="完成"/>
+    <remark page="1" value="未完成"/>
+  </controller>
+  <controller name="ctrl_color" pages="0,,1," selected="0">
+    <remark page="0" value="红色"/>
+    <remark page="1" value="蓝色"/>
+  </controller>
+  <displayList>
+    <component id="n3_rei5" name="UI_COMP_HEAD" src="cvev9" fileName="comp/CompHead.xml" pkg="gj0r6g5i" xy="0,0" size="120,120" aspect="true"/>
+    <image id="n4_rei5" name="n4" src="jin6a" fileName="imgs/mask.png" pkg="gj0r6g5i" xy="1,81" size="118,36" group="n6_rei5"/>
+    <text id="n5_rei5" name="UI_TXT_NICKNAME" xy="3,84" size="114,32" group="n6_rei5" fontSize="22" color="#ffffff" align="center" vAlign="middle" autoSize="ellipsis" text="迪迦奥特曼"/>
+    <group id="n6_rei5" name="n6" xy="1,81" size="118,36"/>
+    <component id="n7_rei5" name="UI_COMP_MEDAL" src="eijp1f" fileName="comp/CompMedal.xml" pkg="so20wr0w" xy="76,-3" controller="ctrl_rank,1">
+      <gearDisplay controller="ctrl_uncomp" pages="0"/>
+    </component>
+    <text id="n8_rei5" name="UI_TXT_USE_TIME" xy="140,44" size="51,42" fontSize="30" color="#ff0000" vAlign="middle" singleLine="true" text="0秒">
+      <gearColor controller="ctrl_uncomp" pages="0,1" values="#ff0000,#000000|#666666,#000000"/>
+    </text>
+    <image id="n9_rei5" name="n9" src="pz9v1e" fileName="imgs/矩形 1.png" pkg="gj0r6g5i" xy="0,-2" size="602,122" alpha="0.7">
+      <gearDisplay controller="ctrl_self" pages="1"/>
+    </image>
+    <text id="n11_jqb6" name="UI_TXT_SCORE" xy="418,44" pivot="0.5,0.5" size="38,42" fontSize="30" color="#ff0000" align="center" vAlign="middle" singleLine="true" text="10">
+      <gearColor controller="ctrl_color" pages="1" values="#0000ff,#000000" default="#ff0000,#000000"/>
+    </text>
+    <text id="n12_coh5" name="UI_TXT_MAX_COMB" xy="297,44" pivot="0.5,0.5" size="21,42" fontSize="30" color="#ff0000" align="center" vAlign="middle" singleLine="true" text="0">
+      <gearColor controller="ctrl_uncomp" pages="0,1" values="#ff0000,#000000|#666666,#000000"/>
+    </text>
+    <text id="n13_jt3f" name="UI_TXT_TOTALSCORE" xy="543,44" pivot="0.5,0.5" size="38,42" fontSize="30" color="#ff0000" align="center" vAlign="middle" singleLine="true" text="10">
+      <gearColor controller="ctrl_color" pages="1" values="#0000ff,#000000" default="#ff0000,#000000"/>
+    </text>
+  </displayList>
+</component>

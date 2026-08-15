@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<packageDescription id="so20wr0w">
+  <resources>
+    <image id="eijp11" name="奖牌1.png" path="/imgs/"/>
+    <image id="eijp1j" name="奖牌2.png" path="/imgs/"/>
+    <image id="eijp1k" name="奖牌3.png" path="/imgs/"/>
+    <image id="eijp1g" name="奖牌4.png" path="/imgs/"/>
+    <image id="eijp1h" name="奖牌5.png" path="/imgs/"/>
+    <image id="eijp1i" name="奖牌6.png" path="/imgs/"/>
+    <component id="eijp1f" name="CompMedal.xml" path="/comp/" exported="true"/>
+    <font id="jt3f1l" name="FontComb.fnt" path="/font/" exported="true"/>
+    <image id="jt3f1m" name="char_4.png" path="/font/"/>
+    <image id="jt3f1n" name="char_5.png" path="/font/"/>
+    <image id="jt3f1o" name="char_6.png" path="/font/"/>
+    <image id="jt3f1p" name="char_7.png" path="/font/"/>
+    <image id="jt3f1q" name="char_8.png" path="/font/"/>
+    <image id="jt3f1r" name="char_9.png" path="/font/"/>
+    <image id="jt3f1s" name="char_ji.png" path="/font/"/>
+    <image id="jt3f1t" name="char_lian.png" path="/font/"/>
+    <image id="jt3f1u" name="char_X.png" path="/font/"/>
+    <image id="jt3f1v" name="char_0.png" path="/font/"/>
+    <image id="jt3f1w" name="char_1.png" path="/font/"/>
+    <image id="jt3f1x" name="char_2.png" path="/font/"/>
+    <image id="jt3f1y" name="char_3.png" path="/font/"/>
+    <image id="gt9r20" name="char_de.png" path="/font/"/>
+    <image id="gt9r21" name="char_dian.png" path="/font/"/>
+    <image id="gt9r22" name="char_fen.png" path="/font/"/>
+    <image id="gt9r23" name="char_maohao.png" path="/font/"/>
+    <image id="gt9r24" name="char_shi.png" path="/font/"/>
+    <image id="gt9r25" name="char_yong.png" path="/font/"/>
+    <image id="gt9r26" name="char_miao.png" path="/font/"/>
+  </resources>
+  <publish name="" genCode="true"/>
+</packageDescription>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component size="80,80" extention="Label">
+  <displayList>
+    <loader id="n2_oott" name="icon" xy="0,0" pivot="0.5,0.5" size="80,80" url="ui://y9gp37x6oott2" autoSize="true"/>
+    <loader id="n1_oott" name="ficon" xy="15,15" pivot="0.5,0.5" size="50,50" autoSize="true"/>
+  </displayList>
+  <customProperty target="ficon" propertyId="1"/>
+</component>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component size="263,49" extention="Label">
+  <displayList>
+    <image id="n0_gnq2" name="n0" src="jin6a" fileName="imgs/mask.png" pkg="gj0r6g5i" xy="0,0" size="263,49"/>
+    <text id="n1_gnq2" name="title" xy="5,3" size="214,42" fontSize="30" color="#ffffff" align="center" vAlign="middle" text="消除后向左移动"/>
+    <image id="n2_gnq2" name="n2" src="gnq21r" fileName="imgs/wenhao.png" pkg="gj0r6g5i" xy="223,7" size="34,34" aspect="true"/>
+  </displayList>
+</component>

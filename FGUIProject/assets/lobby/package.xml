@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<packageDescription id="gv22rev3">
+  <resources>
+    <component id="sc722" name="LobbyView.xml" path="/" exported="true"/>
+    <component id="xoqi6" name="CompActLine1.xml" path="/comp/"/>
+    <component id="gtlg9" name="CompLobbyBtn.xml" path="/comp/"/>
+    <component id="cveva" name="CompTop.xml" path="/comp/"/>
+    <component id="ok17e" name="CompRich.xml" path="/comp/"/>
+    <image id="pizsf" name="signin.png" path="/imgs/"/>
+    <component id="pizsg" name="BtnLobbyMenu.xml" path="/comp/"/>
+    <component id="ln74i" name="CompLobbyMain.xml" path="/comp/"/>
+    <image id="ln74j" name="ad.png" path="/imgs/"/>
+    <image id="drdul" name="lobbybg.jpg" path="/imgs/" scale="9grid" scale9grid="2,2,4,4"/>
+    <image id="jorfm" name="lobbyButton1.png" path="/imgs/"/>
+    <image id="jorfn" name="lobbybutton2.png" path="/imgs/"/>
+    <image id="oottp" name="btnStore.png" path="/imgs/"/>
+    <image id="oottq" name="btnRank.png" path="/imgs/"/>
+    <image id="oottr" name="btnShare.png" path="/imgs/"/>
+    <image id="ootts" name="btnMail.png" path="/imgs/"/>
+    <image id="oottu" name="btnSignIn.png" path="/imgs/"/>
+    <image id="bj8qw" name="btnBag.png" path="/imgs/"/>
+    <image id="dr1xx" name="btnFreeItem.png" path="/imgs/"/>
+    <image id="djnjy" name="lobbybutton3.png" path="/imgs/"/>
+    <image id="gnq2z" name="lobbyButton4.png" path="/imgs/"/>
+  </resources>
+  <publish name="" genCode="true"/>
+</packageDescription>

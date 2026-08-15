@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component size="665,1073">
+  <controller name="ctrl_result" pages="0,,1," selected="0">
+    <remark page="0" value="失败"/>
+    <remark page="1" value="成功"/>
+  </controller>
+  <displayList>
+    <image id="n0_iccm" name="n0" src="iccm1" fileName="imgs/challengeWinBg.png" xy="0,0"/>
+    <image id="n4_iccm" name="n4" src="iccm5" fileName="imgs/pass.png" xy="135,33" size="400,90" aspect="true">
+      <gearDisplay controller="ctrl_result" pages="1"/>
+    </image>
+    <image id="n12_k2hq" name="n12" src="k2hqc" fileName="imgs/passFail.png" xy="139,34" size="387,90" aspect="true">
+      <gearDisplay controller="ctrl_result" pages="0"/>
+    </image>
+    <component id="n5_iccm" name="UI_COMP_STAR" src="iccmb" fileName="comp/CompStarAni.xml" xy="58,189"/>
+    <component id="n6_iccm" name="UI_BTN_NEXT" src="is91n" fileName="comp/CompBtnCommon.xml" pkg="gj0r6g5i" xy="345,917" size="290,125" controller="ctrl_color,3">
+      <gearDisplay controller="ctrl_result" pages="1"/>
+      <Button title="下一关" titleFontSize="60" icon="ui://gj0r6g5ijorf1g"/>
+    </component>
+    <component id="n7_gt9r" name="UI_BTN_REPLAY" src="is91n" fileName="comp/CompBtnCommon.xml" pkg="gj0r6g5i" xy="187,917" size="290,125" controller="ctrl_color,2">
+      <gearXY controller="ctrl_result" pages="0" values="187,917" default="31,917"/>
+      <Button title="重新挑战" titleFontSize="60" icon="ui://gj0r6g5ijorf1h"/>
+    </component>
+    <image id="n8_gt9r" name="n8" src="jin6a" fileName="imgs/mask.png" pkg="gj0r6g5i" xy="52,489" size="561,326" group="n11_k2hq"/>
+    <text id="n9_gt9r" name="UI_TXT_SCORE" xy="102,525" pivot="0.5,0.5" size="460,74" group="n11_k2hq" font="ui://so20wr0wjt3f1l" fontSize="24" text="得分:100000">
+      <relation target="" sidePair="center-center,middle-middle"/>
+    </text>
+    <text id="n10_gt9r" name="UI_TXT_TIME" xy="58,646" pivot="0.5,0.5" size="546,74" group="n11_k2hq" font="ui://so20wr0wjt3f1l" fontSize="24" text="用时:100.567秒">
+      <relation target="" sidePair="center-center,middle-middle"/>
+    </text>
+    <group id="n11_k2hq" name="n11" xy="52,489" size="561,326" advanced="true">
+      <gearDisplay controller="ctrl_result" pages="1"/>
+    </group>
+  </displayList>
+</component>

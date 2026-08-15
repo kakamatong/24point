@@ -1,0 +1,14 @@
+{
+    "name": "24point",
+    "uuid": "df4ce132-20a0-4f6f-bd16-3298e03cd377",
+    "creator": {
+        "version": "3.8.8"
+    },
+    "dependencies": {
+        "crypto-js": "^3.3.0",
+        "fairygui-cc": "^1.2.2"
+    },
+    "devDependencies": {
+        "minigame-api-typings": "^3.8.19"
+    }
+}

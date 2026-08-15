@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<packageDescription id="fwundh2c">
+  <resources>
+    <component id="pz9v1b" name="ComProp.xml" path="/comp/" exported="true"/>
+    <image id="pz9v1c" name="propBg.png" path="/imgs/" exported="true" scale="9grid" scale9grid="23,25,18,15"/>
+    <image id="rgj11d" name="prop_10002.png" path="/imgs/" exported="true"/>
+    <image id="rgj11e" name="prop_10001.png" path="/imgs/" exported="true"/>
+    <image id="hot01f" name="prop_20002.png" path="/imgs/" exported="true"/>
+  </resources>
+  <publish name="" genCode="true"/>
+</packageDescription>

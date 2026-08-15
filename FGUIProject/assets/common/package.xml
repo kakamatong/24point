@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<packageDescription id="gj0r6g5i">
+  <resources>
+    <component id="cmlt4" name="CompBtnScale.xml" path="/comp/" exported="true"/>
+    <image id="gtlg8" name="headBox.png" path="/imgs/"/>
+    <component id="cvev9" name="CompHead.xml" path="/comp/" exported="true"/>
+    <image id="jin6a" name="mask.png" path="/imgs/" exported="true" scale="9grid" scale9grid="18,12,36,24"/>
+    <component id="muz3g" name="CompPopMessage.xml" path="/comp/"/>
+    <component id="muz3h" name="CompBtnClose.xml" path="/comp/" exported="true"/>
+    <component id="muz3i" name="PopMessageView.xml" path="/" exported="true"/>
+    <component id="ddz1j" name="TipsView.xml" path="/" exported="true"/>
+    <component id="ddz1k" name="CompTips.xml" path="/comp/"/>
+    <component id="is91n" name="CompBtnCommon.xml" path="/comp/" exported="true"/>
+    <component id="is91o" name="LoadingView.xml" path="/" exported="true"/>
+    <image id="fnugv" name="select.png" path="/imgs/" exported="true"/>
+    <image id="fnugw" name="select2.png" path="/imgs/" exported="true"/>
+    <component id="fnugx" name="CompBtnCheck.xml" path="/comp/" exported="true"/>
+    <component id="nomuz" name="CompBtnSingleCheck.xml" path="/comp/" exported="true"/>
+    <image id="q5lz13" name="selectC.png" path="/imgs/" exported="true"/>
+    <image id="q5lz14" name="selectC2.png" path="/imgs/" exported="true"/>
+    <sound id="fugr15" name="click.mp3" path="/sound/" exported="true"/>
+    <image id="bbyt1c" name="ad.png" path="/imgs/" exported="true"/>
+    <component id="pz9v1d" name="CompBtnAdScale.xml" path="/comp/" exported="true"/>
+    <image id="pz9v1e" name="矩形 1.png" path="/imgs/" exported="true" scale="9grid" scale9grid="32,35,27,16"/>
+    <image id="jorf1f" name="btnBule.png" path="/imgs/" exported="true" scale="9grid" scale9grid="53,25,29,50"/>
+    <image id="jorf1g" name="btnGreen.png" path="/imgs/" exported="true" scale="9grid" scale9grid="50,24,39,48"/>
+    <image id="jorf1h" name="btnYellow.png" path="/imgs/" exported="true" scale="9grid" scale9grid="49,24,35,48"/>
+    <image id="axf11i" name="buttonClose.png" path="/imgs/"/>
+    <image id="axf11k" name="popbg2.png" path="/imgs/" scale="9grid" scale9grid="111,163,78,91"/>
+    <component id="axf11l" name="CompPopBg.xml" path="/comp/" exported="true"/>
+    <image id="axf11n" name="inlinebg.png" path="/imgs/" exported="true" scale="9grid" scale9grid="78,59,120,32"/>
+    <image id="oott1p" name="btnBack.png" path="/imgs/" exported="true"/>
+    <image id="vcww8" name="star.png" path="/imgs/" exported="true"/>
+    <image id="vcww9" name="starGray.png" path="/imgs/" exported="true"/>
+    <image id="ddk11q" name="add.png" path="/imgs/" exported="true"/>
+    <image id="gnq21r" name="wenhao.png" path="/imgs/" exported="true"/>
+  </resources>
+  <publish name="" genCode="true"/>
+</packageDescription>

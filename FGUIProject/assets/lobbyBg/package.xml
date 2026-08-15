@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<packageDescription id="m52rjp09">
+  <resources>
+    <component id="d01o0" name="CompLobbyBg.xml" path="/comp/" exported="true"/>
+    <component id="ddk1o" name="CompBgCube.xml" path="/comp/"/>
+    <image id="ddk1p" name="bg1.png" path="/imgs/"/>
+    <component id="ddk1q" name="CompBgCubeLine.xml" path="/comp/"/>
+    <component id="ddk1r" name="CompBgCubePage.xml" path="/comp/"/>
+    <image id="ddk1s" name="lobbyBg2.jpg" path="/imgs/" scale="9grid" scale9grid="2,2,4,4"/>
+  </resources>
+  <publish name="" genCode="true"/>
+</packageDescription>

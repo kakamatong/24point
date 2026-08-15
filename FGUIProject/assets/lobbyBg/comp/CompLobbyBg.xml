@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component size="776,1688">
+  <displayList>
+    <image id="n3_ddk1" name="n3" src="ddk1s" fileName="imgs/lobbyBg2.jpg" xy="0,0" size="776,1688">
+      <relation target="" sidePair="width-width,height-height"/>
+    </image>
+    <graph id="n2_ddk1" name="n2" xy="0,0" size="776,1688" visible="false" alpha="0.2" type="rect" lineSize="0">
+      <relation target="" sidePair="width-width,height-height"/>
+    </graph>
+    <component id="n1_ddk1" name="UI_COMP_CUBE_PAGE" src="ddk1r" fileName="comp/CompBgCubePage.xml" xy="0,0" alpha="0.2">
+      <relation target="" sidePair="center-center,middle-middle"/>
+    </component>
+  </displayList>
+</component>

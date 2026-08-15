@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component size="776,1688">
+  <displayList>
+    <graph id="n1_kv65" name="n1" xy="0,0" size="776,1688" type="rect" lineSize="0" lineColor="#00000000" fillColor="#b2000000">
+      <relation target="" sidePair="width-width,height-height"/>
+    </graph>
+    <component id="n10_oott" name="n10" src="axf11l" fileName="comp/CompPopBg.xml" pkg="gj0r6g5i" xy="58,346" size="660,997" group="n9_af5i"/>
+    <image id="n4_kv65" name="n4" src="kv65q" fileName="imgs/gameEnd.png" xy="89,344" group="n9_af5i"/>
+    <list id="n5_kv65" name="UI_LV_INFO" xy="102,504" size="574,660" group="n9_af5i" overflow="scroll" lineGap="10" defaultItem="ui://5x18e99vkv65r" autoClearItems="true">
+      <item/>
+      <item/>
+    </list>
+    <component id="n6_kv65" name="UI_BTN_EXIT" src="is91n" fileName="comp/CompBtnCommon.xml" pkg="gj0r6g5i" xy="435,1189" size="230,99" group="n8_kv65" controller="ctrl_color,1">
+      <Button title="退出" icon="ui://gj0r6g5ijorf1f"/>
+    </component>
+    <component id="n7_kv65" name="UI_BTN_BACK" src="is91n" fileName="comp/CompBtnCommon.xml" pkg="gj0r6g5i" xy="112,1190" size="230,98" group="n8_kv65" controller="ctrl_color,2">
+      <Button title="返回" icon="ui://gj0r6g5ijorf1h"/>
+    </component>
+    <group id="n8_kv65" name="n8" xy="112,1189" size="553,99" group="n9_af5i"/>
+    <group id="n9_af5i" name="n9" xy="58,344" size="660,999" advanced="true">
+      <relation target="" sidePair="center-center,middle-middle"/>
+    </group>
+  </displayList>
+</component>

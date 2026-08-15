@@ -1,0 +1,10 @@
+{
+    "authList": "https://minigame.qiudaoyu.xyz/api/game/authlist",
+    "webUrl": "https://minigame.qiudaoyu.xyz",
+
+    "authList_dev": "http://192.168.1.131:8080/api/game/authlist",
+    "webUrl_dev": "http://192.168.1.131:8080",
+
+    "channelID": "wechatMiniGame",
+    "env": "prod"
+}

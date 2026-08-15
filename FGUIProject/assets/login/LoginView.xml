@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component size="776,1688">
+  <displayList>
+    <component id="n9_oott" name="n9" src="d01o0" fileName="comp/ComLobbyBg.xml" pkg="m52rjp09" xy="0,0">
+      <relation target="" sidePair="width-width,height-height"/>
+    </component>
+    <component id="n7_7ivz" name="UI_BTN_START" src="is91n" fileName="comp/CompBtnCommon.xml" pkg="gj0r6g5i" xy="273,1185" size="230,99" controller="ctrl_color,1">
+      <relation target="" sidePair="center-center,middle-middle"/>
+      <Button title="登入" icon="ui://gj0r6g5ijorf1f"/>
+    </component>
+    <text id="n8_7ivz" name="n8" xy="22,1558" size="732,104" fontSize="26" color="#ffffff" align="center" text="《健康游戏忠告》&#xA;抵制不良游戏，拒绝盗版游戏。注意自我保护，谨防受骗上当。&#xA;适度游戏益脑，沉迷游戏伤身。合理安排时间，享受健康生活。"/>
+    <image id="n12_qagw" name="n12" src="qagw2" fileName="imgs/logo2.png" xy="63,396">
+      <relation target="" sidePair="center-center,middle-middle"/>
+    </image>
+    <image id="n11_c2qx" name="n11" src="c2qx1" fileName="imgs/age8.png" xy="49,73" size="117,149" aspect="true">
+      <relation target="" sidePair="left-left,top-top"/>
+    </image>
+  </displayList>
+</component>

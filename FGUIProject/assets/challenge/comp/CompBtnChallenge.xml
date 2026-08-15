@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component size="230,99" extention="Button">
+  <displayList>
+    <loader id="n3_kq4j" name="icon" xy="0,0" size="230,99" url="ui://gj0r6g5ijorf1g" fill="scaleFree">
+      <relation target="" sidePair="width-width,height-height"/>
+    </loader>
+    <text id="n4_kq4j" name="title" xy="31,7" size="168,54" fontSize="30" color="#ffffff" align="center" vAlign="middle" autoSize="none" strokeColor="#278232" strokeSize="2" singleLine="true" text="开始游戏">
+      <relation target="" sidePair="center-center,middle-middle"/>
+    </text>
+    <image id="n5_kq4j" name="n5" src="hot01f" fileName="imgs/prop_20002.png" pkg="fwundh2c" xy="88,59" size="30,30" group="n7_kq4j" aspect="true"/>
+    <text id="n6_kq4j" name="UI_TXT_ENERGY" xy="122,55" size="20,39" group="n7_kq4j" fontSize="28" color="#ffffff" strokeColor="#ffcc33" text="0"/>
+    <group id="n7_kq4j" name="n7" xy="88,55" size="54,39" advanced="true">
+      <relation target="" sidePair="center-center,middle-middle"/>
+    </group>
+  </displayList>
+  <Button/>
+</component>

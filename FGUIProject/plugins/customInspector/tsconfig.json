@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "sourceMap": false,
+    "typeRoots": [
+      "./node_modules/@types"
+    ],
+    "outDir": "./"
+  },
+  "include": ["./*"],
+  "exclude": ["./node_modules/**/*"]
+}

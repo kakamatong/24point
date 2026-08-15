@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component size="60,51">
+  <controller name="ctrl_rank" exported="true" pages="0,,1,,2,,3,,4,,5,,6," selected="1">
+    <remark page="0" value="不显示"/>
+    <remark page="1" value="1"/>
+    <remark page="2" value="2"/>
+    <remark page="3" value="3"/>
+    <remark page="4" value="4"/>
+    <remark page="5" value="5"/>
+    <remark page="6" value="6"/>
+  </controller>
+  <displayList>
+    <loader id="n1_eijp" name="n1" xy="0,0" size="60,51" url="ui://so20wr0weijp11" autoSize="true">
+      <gearIcon controller="ctrl_rank" pages="0,2,3,4,5,6" values="|ui://so20wr0weijp1j|ui://so20wr0weijp1k|ui://so20wr0weijp1g|ui://so20wr0weijp1h|ui://so20wr0weijp1i" default="ui://so20wr0weijp11"/>
+    </loader>
+  </displayList>
+</component>

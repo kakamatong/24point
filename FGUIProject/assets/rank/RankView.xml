@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component size="776,1688">
+  <displayList>
+    <graph id="n8_is91" name="n8" xy="0,0" size="776,1688" type="rect" lineSize="0" lineColor="#00000000" fillColor="#b2000000">
+      <relation target="" sidePair="width-width,height-height"/>
+    </graph>
+    <component id="n12_vgv3" name="n12" src="axf11l" fileName="comp/CompPopBg.xml" pkg="gj0r6g5i" xy="57,363" group="n7_is91"/>
+    <image id="n10_gd4t" name="n10" src="jin6a" fileName="imgs/mask.png" pkg="gj0r6g5i" xy="89,505" size="595,516" group="n7_is91" alpha="0.5"/>
+    <list id="n3_is91" name="UI_LV_RANK" xy="90,512" size="595,502" group="n7_is91" overflow="scroll" defaultItem="ui://2a32uf5yis911" align="center" autoClearItems="true">
+      <item/>
+      <item/>
+      <item/>
+      <item/>
+    </list>
+    <component id="n2_is91" name="UI_BTN_CLOSE" src="muz3h" fileName="comp/CompBtnClose.xml" pkg="gj0r6g5i" xy="625,376" group="n7_is91"/>
+    <text id="n5_is91" name="n5" xy="97,1033" size="254,66" group="n7_is91" fontSize="50" color="#ffffff" strokeColor="#000000" strokeSize="2" text="您的排名："/>
+    <text id="n6_is91" name="UI_TXT_SELF_RANK" xy="349,1034" size="178,66" group="n7_is91" fontSize="50" color="#ff0000" singleLine="true" text="000000"/>
+    <text id="n9_gd4t" name="n9" xy="236,400" size="304,79" group="n7_is91" fontSize="60" color="#ffffff" strokeColor="#3d4b61" strokeSize="4" text="每日排行榜"/>
+    <text id="n11_sexy" name="n11" xy="113,1105" size="317,20" group="n7_is91" alpha="0.7" fontSize="13" color="#333333" text="匹配模式按排名进行得分，未完成不加分，每日0点清0"/>
+    <group id="n7_is91" name="n7" xy="57,363" size="660,790" advanced="true">
+      <relation target="" sidePair="center-center,middle-middle"/>
+    </group>
+  </displayList>
+</component>

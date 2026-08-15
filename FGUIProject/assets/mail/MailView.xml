@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component size="776,1688">
+  <controller name="ctrl_have" pages="0,没有邮件,1,有邮件" selected="0"/>
+  <displayList>
+    <graph id="n7_gd4t" name="n7" xy="0,0" size="776,1688" type="rect" lineSize="0" lineColor="#00000000" fillColor="#b2000000">
+      <relation target="" sidePair="width-width,height-height"/>
+    </graph>
+    <component id="n9_oott" name="n9" src="axf11l" fileName="comp/CompPopBg.xml" pkg="gj0r6g5i" xy="56,449" group="n10_oott"/>
+    <image id="n12_oott" name="n12" src="axf11n" fileName="imgs/inlinebg.png" pkg="gj0r6g5i" xy="90,590" size="595,609" group="n10_oott"/>
+    <component id="n3_gd4t" name="UI_BTN_CLOSE" src="muz3h" fileName="comp/CompBtnClose.xml" pkg="gj0r6g5i" xy="627,464" group="n10_oott"/>
+    <text id="n11_oott" name="UI_TXT_TITLE" xy="266,486" pivot="0.5,0.5" size="244,79" group="n10_oott" fontSize="60" color="#ffffff" align="center" vAlign="middle" strokeColor="#3d4b61" strokeSize="4" singleLine="true" text="温馨提示"/>
+    <list id="n4_gd4t" name="UI_LV_LIST" xy="89,630" size="595,528" group="n10_oott" overflow="scroll" margin="7,7,7,0" lineGap="10" defaultItem="ui://8lqwicsugd4t1" align="center" autoClearItems="true">
+      <gearDisplay controller="ctrl_have" pages="1"/>
+      <item/>
+      <item/>
+      <item/>
+      <item/>
+    </list>
+    <text id="n5_gd4t" name="n5" xy="307,816" size="154,66" group="n10_oott" fontSize="50" color="#7e6547" text="无邮件">
+      <gearDisplay controller="ctrl_have" pages="0"/>
+    </text>
+    <group id="n10_oott" name="n10" xy="56,449" size="663,790" advanced="true">
+      <relation target="" sidePair="center-center,middle-middle"/>
+    </group>
+    <component id="n8_gd4t" name="UI_COMP_CONTENT" src="gd4t2" fileName="comp/CompMailContent.xml" xy="59,449" visible="false">
+      <relation target="" sidePair="center-center,middle-middle"/>
+      <property target="title" propertyId="0" value=""/>
+    </component>
+  </displayList>
+</component>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<packageDescription id="22u2b061">
+  <resources>
+    <component id="hot00" name="ChallengeView.xml" path="/" exported="true"/>
+    <component id="hot01" name="CompChallenge.xml" path="/comp/"/>
+    <component id="hot02" name="CompEnergy.xml" path="/comp/"/>
+    <component id="vcww3" name="CompChapter.xml" path="/comp/"/>
+    <component id="vcww5" name="CompLevel.xml" path="/comp/"/>
+    <image id="vcww6" name="comp.png" path="/imgs/"/>
+    <image id="vcww7" name="gray.png" path="/imgs/"/>
+    <image id="vcwwa" name="unlocked.png" path="/imgs/"/>
+    <image id="vcwwb" name="boss.png" path="/imgs/"/>
+    <component id="vcwwc" name="CompStar.xml" path="/comp/"/>
+    <image id="vcwwd" name="mask.png" path="/imgs/"/>
+    <component id="kq4je" name="ChallengeRuleHintView.xml" path="/" exported="true"/>
+    <component id="kq4jf" name="CompRuleHint.xml" path="/comp/"/>
+    <component id="kq4jg" name="CompBtnChallenge.xml" path="/comp/"/>
+  </resources>
+  <publish name="" genCode="true"/>
+</packageDescription>

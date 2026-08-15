@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<packageDescription id="2zsfe53x">
+  <resources>
+    <component id="is911" name="GameView.xml" path="/" exported="true"/>
+    <image id="qaf24" name="ready.png" path="/imgs/"/>
+    <image id="qaf25" name="clock.png" path="/imgs/"/>
+    <image id="qaf27" name="think.png" path="/imgs/"/>
+    <component id="qaf28" name="CompThinkAct.xml" path="/comp/"/>
+    <image id="qaf29" name="offline.png" path="/imgs/"/>
+    <component id="qaf2a" name="CompOffline.xml" path="/comp/"/>
+    <component id="qaf2f" name="BtnSelect.xml" path="/comp/"/>
+    <image id="fnugg" name="gameStart.png" path="/imgs/"/>
+    <component id="fnugh" name="CompGameStartAct.xml" path="/comp/"/>
+    <component id="r1yn1" name="CompVoteInfo.xml" path="/comp/"/>
+    <component id="r1yn0" name="CompDisband.xml" path="/comp/"/>
+    <component id="kw9ii" name="CompRoundAct.xml" path="/comp/"/>
+    <component id="gk14j" name="CompPlayerHead.xml" path="/comp/"/>
+    <image id="pxa5m" name="talkbg.png" path="/imgs/" scale="9grid" scale9grid="32,22,50,25"/>
+    <component id="pxa5n" name="CompTalk.xml" path="/comp/"/>
+    <image id="pxa5o" name="talk.png" path="/imgs/"/>
+    <component id="ln74p" name="CompGameMain.xml" path="/comp/"/>
+    <component id="hs3tq" name="CompMap.xml" path="/comp/map/"/>
+    <component id="hs3tr" name="CompCube.xml" path="/comp/map/"/>
+    <image id="8yj8u" name="line.png" path="/imgs/" scale="9grid" scale9grid="6,6,1,1"/>
+    <component id="8yj8v" name="CompLine.xml" path="/comp/" exported="true"/>
+    <component id="pgw3w" name="CompOtherPlayer.xml" path="/comp/"/>
+    <component id="pgw3x" name="CompPlayers.xml" path="/comp/"/>
+    <image id="eijpz" name="comp.png" path="/imgs/"/>
+    <component id="mnt112" name="CompTimeLeft.xml" path="/comp/"/>
+    <component id="mnt118" name="CompFinshInfo.xml" path="/comp/"/>
+    <image id="rei519" name="unComp.png" path="/imgs/"/>
+    <component id="ouez1a" name="CompPirvateInfo.xml" path="/comp/"/>
+    <misc id="qcd3m" name="E54011.atlas" path="/spine/"/>
+    <image id="qcd3n" name="E54011.png" path="/spine/"/>
+    <spine id="qcd3l" name="E54011.json" path="/spine/" exported="true" width="360" height="360" require="qcd3m,qcd3n" atlasNames="E54011" anchor="180,180"/>
+    <image id="drdu1b" name="gamebg.jpg" path="/imgs/" scale="9grid" scale9grid="2,2,4,4"/>
+    <image id="h0nk1c" name="bg1.png" path="/imgs/"/>
+    <image id="h0nk1d" name="bg2.png" path="/imgs/"/>
+    <component id="tw1h1f" name="CompBtnProp.xml" path="/comp/"/>
+    <component id="tw1h1g" name="CompPropPanel.xml" path="/comp/"/>
+    <image id="jt3f1i" name="clockBG.png" path="/imgs/" scale="9grid" scale9grid="29,24,8,13"/>
+    <image id="jt3f1j" name="clockIn.png" path="/imgs/"/>
+    <component id="jt3f1k" name="CompComb.xml" path="/comp/"/>
+    <component id="kq4j1z" name="CompTimeStar.xml" path="/comp/"/>
+    <component id="gxvf20" name="CompScoreStar.xml" path="/comp/"/>
+    <image id="eqzm21" name="bar.png" path="/imgs/"/>
+    <component id="gnq222" name="CompSpeRuleHint.xml" path="/comp/"/>
+  </resources>
+  <publish name="" genCode="true"/>
+</packageDescription>

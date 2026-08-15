@@ -1,0 +1,15 @@
+{
+  "__version__": "1.0.6",
+  "general": {
+    "designResolution": {
+      "width": 776,
+      "height": 1688,
+      "fitHeight": true,
+      "fitWidth": false
+    }
+  },
+  "script": {
+    "importMap": "project://import-map.json"
+  },
+  "custom_joint_texture_layouts": []
+}

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<packageDescription id="vljlqy6g">
+  <resources>
+    <component id="f9cy0" name="GmView.xml" path="/" exported="true"/>
+    <component id="f9cy1" name="CompGm.xml" path="/comp/"/>
+    <component id="f9cy2" name="BtnGm.xml" path="/" exported="true"/>
+  </resources>
+  <publish name="" genCode="true"/>
+</packageDescription>

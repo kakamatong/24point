@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component size="776,1688">
+  <displayList>
+    <graph id="n1_bp6f" name="UI_BG_MASK" xy="0,0" size="776,1688" type="rect" lineSize="0" lineColor="#00000000" fillColor="#b2000000">
+      <relation target="" sidePair="width-width,height-height"/>
+    </graph>
+    <component id="n19_oott" name="n19" src="axf11l" fileName="comp/CompPopBg.xml" pkg="gj0r6g5i" xy="58,449" group="n20_oott"/>
+    <component id="n3_bp6f" name="UI_BTN_CLOSE" src="muz3h" fileName="comp/CompBtnClose.xml" pkg="gj0r6g5i" xy="625,467" group="n20_oott"/>
+    <image id="n5_bp6f" name="n5" src="jin6a" fileName="imgs/mask.png" pkg="gj0r6g5i" xy="274,647" size="220,100" group="n20_oott"/>
+    <component id="n4_bp6f" name="UI_COMP_HEAD" src="cvev9" fileName="comp/CompHead.xml" pkg="gj0r6g5i" xy="127,598" group="n20_oott"/>
+    <text id="n6_bp6f" name="UI_TXT_NICKNAME" xy="293,650" size="64,42" group="n20_oott" fontSize="30" color="#ffffff" singleLine="true" text="昵称"/>
+    <text id="n7_bp6f" name="UI_TXT_USERID" xy="293,700" size="34,42" group="n20_oott" fontSize="30" color="#ffffff" singleLine="true" text="ID"/>
+    <image id="n21_oott" name="n21" src="axf11n" fileName="imgs/inlinebg.png" pkg="gj0r6g5i" xy="101,788" size="577,360" group="n20_oott"/>
+    <text id="n9_bp6f" name="n9" xy="120,840" size="76,49" group="n20_oott" fontSize="36" color="#7e6547" align="right" text="赢："/>
+    <text id="n10_bp6f" name="n10" xy="120,905" size="76,49" group="n20_oott" fontSize="36" color="#7e6547" align="right" text="平："/>
+    <text id="n11_bp6f" name="n11" xy="421,840" size="76,49" group="n20_oott" fontSize="36" color="#7e6547" align="right" text="输："/>
+    <text id="n12_bp6f" name="n12" xy="385,905" size="112,49" group="n20_oott" fontSize="36" color="#7e6547" align="right" text="胜率："/>
+    <text id="n13_bp6f" name="UI_TXT_WIN" xy="208,840" size="140,49" group="n20_oott" fontSize="36" color="#7e6547" autoSize="none" text="0"/>
+    <text id="n14_bp6f" name="UI_TXT_LOSE" xy="509,840" size="140,49" group="n20_oott" fontSize="36" color="#7e6547" autoSize="none" text="0"/>
+    <text id="n15_bp6f" name="UI_TXT_DRAW" xy="208,905" size="140,49" group="n20_oott" fontSize="36" color="#7e6547" autoSize="none" text="0"/>
+    <text id="n16_bp6f" name="UI_TXT_RATE" xy="509,905" size="140,49" group="n20_oott" fontSize="36" color="#7e6547" autoSize="none" text="0"/>
+    <text id="n18_bp6f" name="UI_TXT_CP" xy="211,1028" size="140,49" group="n20_oott" fontSize="36" color="#ff0000" align="center" vAlign="middle" autoSize="none" strokeColor="#000000" text="999"/>
+    <text id="n22_oott" name="UI_TXT_TITLE" xy="266,477" pivot="0.5,0.5" size="244,79" group="n20_oott" fontSize="60" color="#ffffff" align="center" vAlign="middle" strokeColor="#3d4b61" strokeSize="4" singleLine="true" text="玩家信息"/>
+    <text id="n23_o6ru" name="n23" xy="123,1028" size="112,49" group="n20_oott" fontSize="36" color="#7e6547" text="积分："/>
+    <group id="n20_oott" name="n20" xy="58,449" size="660,790" advanced="true">
+      <relation target="" sidePair="center-center,middle-middle"/>
+    </group>
+  </displayList>
+</component>

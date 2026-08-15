@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component size="660,790">
+  <controller name="ctrl_have" pages="0,,1," selected="1">
+    <remark page="0" value="没有道具"/>
+    <remark page="1" value="有道具"/>
+  </controller>
+  <displayList>
+    <component id="n0_rgj1" name="n0" src="axf11l" fileName="comp/CompPopBg.xml" pkg="gj0r6g5i" xy="0,0"/>
+    <text id="n1_rgj1" name="UI_TXT_TITLE" xy="268,34" pivot="0.5,0.5" size="124,79" fontSize="60" color="#ffffff" align="center" vAlign="middle" strokeColor="#3d4b61" strokeSize="4" singleLine="true" text="背包"/>
+    <component id="n2_rgj1" name="UI_BTN_CLOSE" src="muz3h" fileName="comp/CompBtnClose.xml" pkg="gj0r6g5i" xy="557,23"/>
+    <text id="n6_rgj1" name="n6" xy="83,349" size="493,49" fontSize="36" color="#7e6547" text="空空如也~每日签到可获得道具">
+      <gearDisplay controller="ctrl_have" pages="0"/>
+      <relation target="" sidePair="center-center,middle-middle"/>
+    </text>
+    <image id="n8_bj8q" name="n8" src="axf11n" fileName="imgs/inlinebg.png" pkg="gj0r6g5i" xy="23,132" size="615,430" group="n7_rgj1"/>
+    <list id="n3_rgj1" name="UI_LV_BAGS" xy="45,152" size="571,387" group="n7_rgj1" layout="flow_hz" overflow="scroll" lineGap="3" colGap="30" defaultItem="ui://fwundh2cpz9v1b" autoClearItems="true">
+      <item/>
+      <item/>
+      <item/>
+      <item/>
+      <item/>
+      <item/>
+      <item/>
+      <item/>
+      <item/>
+      <item/>
+      <item/>
+    </list>
+    <component id="n4_rgj1" name="UI_COMP_ICON" src="pz9v1b" fileName="comp/ComProp.xml" pkg="fwundh2c" xy="63,591" size="120,120" group="n7_rgj1" scale="1.2,1.2" touchable="false"/>
+    <text id="n5_rgj1" name="UI_COMP_DIS" xy="218,589" size="398,127" group="n7_rgj1" fontSize="36" color="#7e6547" autoSize="none" text="这里是描述"/>
+    <group id="n7_rgj1" name="n7" xy="23,132" size="615,583" advanced="true">
+      <gearDisplay controller="ctrl_have" pages="1"/>
+    </group>
+  </displayList>
+</component>

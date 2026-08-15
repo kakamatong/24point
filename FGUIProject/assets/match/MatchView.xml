@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component size="776,1688">
+  <controller name="ctrl_btn_join" pages="0,灰色不可点击,1,可以点击" selected="0"/>
+  <controller name="ctrl_enter" pages="0,正在匹配,1,等待加入,2,匹配成功" selected="0"/>
+  <displayList>
+    <graph id="n0_wfqx" name="n0" xy="0,0" size="776,1688" type="rect" lineSize="0" lineColor="#00000000" fillColor="#b2000000">
+      <relation target="" sidePair="width-width,height-height"/>
+    </graph>
+    <component id="n10_oott" name="n10" src="axf11l" fileName="comp/CompPopBg.xml" pkg="gj0r6g5i" xy="58,449" group="n11_oott"/>
+    <text id="n2_wfqx" name="n2" xy="209,619" pivot="0.5,0.5" size="364,79" group="n11_oott" fontSize="60" color="#7e6547" align="center" vAlign="middle" text="正在匹配玩家">
+      <gearText controller="ctrl_enter" pages="1,2" values="等待加入|匹配成功" default="正在匹配玩家"/>
+    </text>
+    <component id="n3_wfqx" name="UI_BTN_JOIN" src="is91n" fileName="comp/CompBtnCommon.xml" pkg="gj0r6g5i" xy="422,1095" size="230,99" group="n11_oott" touchable="false" grayed="true" controller="ctrl_color,1">
+      <gearDisplay controller="ctrl_enter" pages="0,2"/>
+      <gearLook controller="ctrl_btn_join" pages="0" values="1,0,1,0" default="1,0,0,1"/>
+      <Button title="加入" icon="ui://gj0r6g5ijorf1f"/>
+    </component>
+    <component id="n4_wfqx" name="UI_BTN_CANCEL" src="is91n" fileName="comp/CompBtnCommon.xml" pkg="gj0r6g5i" xy="128,1095" size="230,98" group="n11_oott" controller="ctrl_color,2">
+      <gearDisplay controller="ctrl_enter" pages="0,2"/>
+      <Button title="取消" icon="ui://gj0r6g5ijorf1h"/>
+    </component>
+    <component id="n5_wfqx" name="UI_COMP_ACT" src="wfqx1" fileName="comp/CompMatchAct.xml" xy="116,774" group="n11_oott"/>
+    <component id="n6_fnug" name="UI_BTN_AUTO_CHECK" src="fnugx" fileName="comp/CompBtnCheck.xml" pkg="gj0r6g5i" xy="278,1009" group="n8_fnug">
+      <Button checked="true"/>
+    </component>
+    <text id="n7_fnug" name="n7" xy="339,1011" size="148,49" group="n8_fnug" fontSize="36" color="#7e6547" align="center" vAlign="middle" text="自动加入"/>
+    <group id="n8_fnug" name="UI_GROUP_AUTO" xy="278,1009" size="209,56" group="n11_oott" advanced="true"/>
+    <component id="n12_o6ru" name="UI_BTN_CLOSE" src="muz3h" fileName="comp/CompBtnClose.xml" pkg="gj0r6g5i" xy="615,471" group="n11_oott"/>
+    <group id="n11_oott" name="n11" xy="58,449" size="660,790" advanced="true">
+      <relation target="" sidePair="center-center,middle-middle"/>
+    </group>
+  </displayList>
+</component>

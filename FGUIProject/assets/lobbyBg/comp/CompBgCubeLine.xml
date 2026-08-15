@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component size="1250,80">
+  <displayList>
+    <component id="n0_ddk1" name="UI_COMP_CUBE_0" src="ddk1o" fileName="comp/CompBgCube.xml" xy="0,0"/>
+    <component id="n1_ddk1" name="UI_COMP_CUBE_1" src="ddk1o" fileName="comp/CompBgCube.xml" xy="900,0"/>
+    <component id="n2_ddk1" name="UI_COMP_CUBE_2" src="ddk1o" fileName="comp/CompBgCube.xml" xy="1170,0"/>
+    <component id="n3_ddk1" name="UI_COMP_CUBE_3" src="ddk1o" fileName="comp/CompBgCube.xml" xy="90,0"/>
+    <component id="n4_ddk1" name="UI_COMP_CUBE_4" src="ddk1o" fileName="comp/CompBgCube.xml" xy="180,0"/>
+    <component id="n5_ddk1" name="UI_COMP_CUBE_5" src="ddk1o" fileName="comp/CompBgCube.xml" xy="270,0"/>
+    <component id="n6_ddk1" name="UI_COMP_CUBE_6" src="ddk1o" fileName="comp/CompBgCube.xml" xy="360,0"/>
+    <component id="n7_ddk1" name="UI_COMP_CUBE_7" src="ddk1o" fileName="comp/CompBgCube.xml" xy="450,0"/>
+    <component id="n8_ddk1" name="UI_COMP_CUBE_8" src="ddk1o" fileName="comp/CompBgCube.xml" xy="540,0"/>
+    <component id="n9_ddk1" name="UI_COMP_CUBE_9" src="ddk1o" fileName="comp/CompBgCube.xml" xy="630,0"/>
+    <component id="n10_ddk1" name="UI_COMP_CUBE_10" src="ddk1o" fileName="comp/CompBgCube.xml" xy="720,0"/>
+    <component id="n11_ddk1" name="UI_COMP_CUBE_11" src="ddk1o" fileName="comp/CompBgCube.xml" xy="810,0"/>
+    <component id="n12_ddk1" name="UI_COMP_CUBE_12" src="ddk1o" fileName="comp/CompBgCube.xml" xy="990,0"/>
+    <component id="n13_ddk1" name="UI_COMP_CUBE_13" src="ddk1o" fileName="comp/CompBgCube.xml" xy="1080,0"/>
+  </displayList>
+</component>

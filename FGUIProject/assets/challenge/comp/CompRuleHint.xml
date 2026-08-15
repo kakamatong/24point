@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component size="660,503">
+  <displayList>
+    <component id="n0_kq4j" name="n0" src="axf11l" fileName="comp/CompPopBg.xml" pkg="gj0r6g5i" xy="0,0" size="660,503"/>
+    <text id="n1_kq4j" name="UI_TXT_TITLE" xy="208,39" pivot="0.5,0.5" size="244,79" fontSize="60" color="#ffffff" align="center" vAlign="middle" strokeColor="#3d4b61" strokeSize="4" singleLine="true" text="温馨提示"/>
+    <component id="n4_kq4j" name="UI_BTN_CLOSE" src="muz3h" fileName="comp/CompBtnClose.xml" pkg="gj0r6g5i" xy="553,12"/>
+    <richtext id="n5_kq4j" name="UI_TXT_CONTENT" xy="41,153" pivot="0.5,0.5" size="577,217" fontSize="50" color="#7e6547" align="center" vAlign="middle" autoSize="shrink" text=""/>
+    <component id="n6_kq4j" name="UI_BTN_SURE" src="kq4jg" fileName="comp/CompBtnChallenge.xml" xy="215,378"/>
+  </displayList>
+</component>

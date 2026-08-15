@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component size="776,1688">
+  <controller name="ctrl_flag" pages="0,失败,1,胜利,2,平局" selected="0">
+    <action type="change_page" fromPage="" toPage="0" objectId="n9_fnug" controller="ctrl_sign" targetPage="0"/>
+    <action type="change_page" fromPage="" toPage="1" objectId="n9_fnug" controller="ctrl_sign" targetPage="1"/>
+    <action type="change_page" fromPage="" toPage="2" objectId="n9_fnug" controller="ctrl_sign" targetPage="2"/>
+  </controller>
+  <controller name="ctrl_btn" pages="0,返回继续,1,返回" selected="0"/>
+  <displayList>
+    <graph id="n10_mifd" name="n10" xy="0,0" size="776,1688" type="rect" lineSize="0" lineColor="#00000000" fillColor="#b2000000">
+      <relation target="" sidePair="width-width,height-height"/>
+    </graph>
+    <component id="n18_oott" name="n18" src="axf11l" fileName="comp/CompPopBg.xml" pkg="gj0r6g5i" xy="58,363" size="660,860" group="n19_oott"/>
+    <component id="n4_fnug" name="UI_BTN_CON" src="is91n" fileName="comp/CompBtnCommon.xml" pkg="gj0r6g5i" xy="422,1101" size="230,98" group="n19_oott" controller="ctrl_color,1">
+      <gearDisplay controller="ctrl_btn" pages="0"/>
+      <Button title="继续游戏" icon="ui://gj0r6g5ijorf1f"/>
+    </component>
+    <component id="n5_fnug" name="UI_BTN_BACK" src="is91n" fileName="comp/CompBtnCommon.xml" pkg="gj0r6g5i" xy="124,1101" size="230,99" group="n19_oott" controller="ctrl_color,2">
+      <gearDisplay controller="ctrl_btn" pages="0,1"/>
+      <gearXY controller="ctrl_btn" pages="0,1" values="124,1101|273,1093"/>
+      <Button title="返回" icon="ui://gj0r6g5ijorf1h"/>
+    </component>
+    <text id="n12_rei5" name="n12" xy="105,508" size="80,52" group="n19_oott" fontSize="38" color="#cc6600" text="玩家"/>
+    <list id="n6_fnug" name="UI_LV_GAME_INFO" xy="90,573" size="600,521" group="n19_oott" overflow="scroll" lineGap="5" defaultItem="ui://5x18e99vfnug1" autoClearItems="true">
+      <item title="1" name="1"/>
+      <item title="2" name="2"/>
+      <item title="3" name="3"/>
+      <item title="4" name="4"/>
+    </list>
+    <text id="n13_rei5" name="n13" xy="219,508" size="80,52" group="n19_oott" fontSize="38" color="#cc6600" text="用时"/>
+    <text id="n14_rei5" name="n14" xy="605,508" size="80,52" group="n19_oott" fontSize="38" color="#cc6600" text="总分"/>
+    <text id="n16_jqb6" name="n16" xy="486,508" size="80,52" group="n19_oott" fontSize="38" color="#cc6600" text="分数"/>
+    <text id="n17_coh5" name="n17" xy="357,508" size="80,52" group="n19_oott" fontSize="38" color="#cc6600" text="连击"/>
+    <group id="n19_oott" name="UI_GROP_RESULT" xy="58,363" size="660,860" advanced="true">
+      <relation target="" sidePair="center-center,middle-middle"/>
+    </group>
+    <image id="n15_jqb6" name="n15" src="jqb6s" fileName="imgs/roundend.png" xy="88,700">
+      <relation target="" sidePair="center-center,middle-middle"/>
+    </image>
+  </displayList>
+  <transition name="act" options="4">
+    <item time="0" type="Alpha" target="n19_oott" value="0"/>
+    <item time="0" type="XY" target="n15_jqb6" value="-,700"/>
+    <item time="12" type="Alpha" target="n19_oott" tween="true" startValue="0" endValue="1" duration="12"/>
+    <item time="12" type="XY" target="n15_jqb6" tween="true" startValue="-,700" endValue="-,357,0.113,0.211" duration="12"/>
+  </transition>
+</component>

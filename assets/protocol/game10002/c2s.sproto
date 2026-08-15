@@ -1,0 +1,168 @@
+# 连连看游戏10002协议 (客户端 -> 服务端)
+# 协议号范围: 1-9999
+
+.package {
+    type 0 : integer
+    session 1 : integer
+}
+
+# ============================================
+# 基础通用协议 (1-20)
+# ============================================
+
+# 调用接口
+call 2 {
+    request {
+        moduleName 0 : string
+        funcName 1 : string
+        args 2 : string
+    }
+    response {
+        code 0 : integer
+        msg 1 : string
+        richNum 2 : integer  # 剩余道具数量
+    }
+}
+
+# 发送接口（无响应）
+send 3 {
+    request {
+        moduleName 0 : string
+        funcName 1 : string
+        args 2 : string
+    }
+}
+
+# 客户端准备就绪
+clientReady 4 {
+    request {
+        ready 0 : integer  # 1:准备, 0:取消准备
+    }
+}
+
+# 游戏准备
+gameReady 5 {
+    request {
+        ready 0 : integer  # 1:准备, 0:取消准备
+    }
+    response {
+        code 0 : integer
+        msg 1 : string
+    }
+}
+
+# 房主开始游戏
+ownerStartGame 27 {
+    request {
+    }
+    response {
+        code 0 : integer
+        msg 1 : string
+        notReadyUserids 2 : *integer  # 未准备玩家ID数组
+    }
+}
+
+# 离开房间
+leaveRoom 6 {
+    request {
+    }
+    response {
+        code 0 : integer
+        msg 1 : string
+    }
+}
+
+# 发起投票解散
+voteDisbandRoom 7 {
+    request {
+        reason 0 : string  # 解散原因(可选)
+    }
+    response {
+        code 0 : integer
+        msg 1 : string
+    }
+}
+
+# 投票解散响应
+voteDisbandResponse 8 {
+    request {
+        voteId 0 : integer  # 投票ID
+        agree 1 : integer   # 1:同意, 0:拒绝
+    }
+    response {
+        code 0 : integer
+        msg 1 : string
+    }
+}
+
+# 消息转发
+forwardMessage 9 {
+    request {
+        type 0 : integer    # 消息类型
+        to 1 : *integer     # 目标玩家ID列表，空则全员
+        msg 2 : string      # 消息内容(JSON)
+    }
+    response {
+        code 0 : integer
+        msg 1 : string
+    }
+}
+
+# 使用聊天
+chatUse 10 {
+    request {
+        id 0 : integer      # 聊天ID
+        ext 1 : string      # 扩展数据
+    }
+    response {
+        code 0 : integer
+        richNum 1 : integer # 剩余道具数
+        msg 2 : string
+    }
+}
+
+# ============================================
+# 连连看游戏协议 (21-40)
+# ============================================
+
+# 点击消除方块
+clickTiles 21 {
+    request {
+        row1 0 : integer    # 第一个方块行坐标
+        col1 1 : integer    # 第一个方块列坐标
+        row2 2 : integer    # 第二个方块行坐标
+        col2 3 : integer    # 第二个方块列坐标
+    }
+    response {
+        code 0 : integer    # 1:成功, 0:失败
+        msg 1 : string      # 错误信息
+        eliminated 2 : integer  # 已消除数量
+        remaining 3 : integer   # 剩余方块数
+    }
+}
+
+# 道具使用 (预留)
+useItem 22 {
+    request {
+        itemId 0 : integer  # 道具ID
+    }
+    response {
+        code 0 : integer
+        msg 1 : string
+        richNum 2 : integer # 剩余道具数量
+    }
+}
+
+# ============================================
+# 坐标结构定义
+# ============================================
+
+.Point {
+    row 0 : integer
+    col 1 : integer
+}
+
+.LineSegment {
+    start 0 : Point
+    dest 1 : Point
+}

@@ -1,0 +1,11 @@
+{
+    "imports": {
+        "@frameworks/": "./assets/scripts/frameworks/",
+        "@fgui/": "./assets/scripts/fgui/",
+        "@modules/": "./assets/scripts/modules/",
+        "@datacenter/": "./assets/scripts/datacenter/",
+        "@view/": "./assets/scripts/view/",
+        "@localGame/": "./assets/scripts/localGame/",
+        "@game10002/": "./assets/scripts/games/game10002/"
+    }
+}

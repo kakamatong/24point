@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component size="660,790">
+  <displayList>
+    <component id="n2_oott" name="n2" src="axf11l" fileName="comp/CompPopBg.xml" pkg="gj0r6g5i" xy="0,0"/>
+    <list id="n1_pxa5" name="UI_LIST_TALK" xy="41,142" size="512,611" overflow="scroll" defaultItem="ui://fznom2fxpxa52">
+      <item/>
+      <item/>
+      <item/>
+      <item/>
+      <item/>
+    </list>
+  </displayList>
+</component>

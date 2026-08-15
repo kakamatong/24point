@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component size="574,200">
+  <displayList>
+    <image id="n0_kv65" name="n0" src="jin6a" fileName="imgs/mask.png" pkg="gj0r6g5i" xy="0,0" size="574,200"/>
+    <component id="n1_kv65" name="UI_COMP_HEAD" src="cvev9" fileName="comp/CompHead.xml" pkg="gj0r6g5i" xy="6,5" scale="0.7,0.7"/>
+    <text id="n2_kv65" name="UI_TXT_NICKNAME" xy="121,24" size="10,42" fontSize="30" color="#ffffff" singleLine="true" text=""/>
+    <text id="n3_kv65" name="UI_TXT_ID" xy="121,71" size="10,42" fontSize="30" color="#ffffff" singleLine="true" text=""/>
+    <text id="n4_qj8g" name="n2" xy="18,144" size="94,42" fontSize="30" color="#ffffff" vAlign="middle" singleLine="true" text="总分："/>
+    <text id="n6_qj8g" name="UI_TXT_SCORE" xy="126,144" size="21,42" fontSize="30" color="#ff0000" vAlign="middle" singleLine="true" text="0"/>
+    <component id="n8_jqb6" name="UI_COMP_MEDAL" src="eijp1f" fileName="comp/CompMedal.xml" pkg="so20wr0w" xy="421,48" scale="2,2" controller="ctrl_rank,0"/>
+  </displayList>
+</component>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component size="660,790">
+  <displayList>
+    <component id="n4_oott" name="n4" src="axf11l" fileName="comp/CompPopBg.xml" pkg="gj0r6g5i" xy="0,0"/>
+    <component id="n1_gd4t" name="UI_BTN_CLOSE" src="muz3h" fileName="comp/CompBtnClose.xml" pkg="gj0r6g5i" xy="561,14"/>
+    <image id="n2_gd4t" name="n2" src="jin6a" fileName="imgs/mask.png" pkg="gj0r6g5i" xy="31,146" size="595,608"/>
+    <text id="n3_gd4t" name="title" xy="29,146" size="595,608" fontSize="36" color="#ffffff" autoSize="none" text=""/>
+  </displayList>
+  <customProperty target="title" propertyId="0"/>
+</component>

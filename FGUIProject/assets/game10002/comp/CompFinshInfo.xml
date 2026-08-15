@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component size="360,380">
+  <displayList>
+    <image id="n0_mnt1" name="n0" src="jin6a" fileName="imgs/mask.png" pkg="gj0r6g5i" xy="0,0" size="360,380"/>
+    <image id="n1_mnt1" name="n1" src="eijpz" fileName="imgs/comp.png" xy="75,30" size="210,114" aspect="true"/>
+    <text id="n2_mnt1" name="n2" xy="37,184" size="156,62" fontSize="46" color="#ffffff" vAlign="middle" bold="true" text="排 名："/>
+    <text id="n3_mnt1" name="n3" xy="37,270" size="156,62" fontSize="46" color="#ffffff" vAlign="middle" bold="true" text="用 时："/>
+    <text id="n4_mnt1" name="UI_TXT_RANK" xy="171,185" size="31,62" fontSize="46" color="#ffcc33" vAlign="middle" bold="true" text="0"/>
+    <text id="n5_mnt1" name="UI_TXT_TIME" xy="171,271" size="154,62" fontSize="46" color="#ffcc33" vAlign="middle" autoSize="shrink" bold="true" text="0秒"/>
+  </displayList>
+</component>

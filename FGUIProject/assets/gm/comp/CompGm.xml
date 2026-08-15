@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component size="660,790">
+  <displayList>
+    <component id="n0_f9cy" name="n0" src="axf11l" fileName="comp/CompPopBg.xml" pkg="gj0r6g5i" xy="0,0"/>
+    <component id="n1_f9cy" name="UI_BTN_CLOSE" src="muz3h" fileName="comp/CompBtnClose.xml" pkg="gj0r6g5i" xy="551,29"/>
+    <text id="n2_f9cy" name="UI_TXT_TITLE" xy="192,35" pivot="0.5,0.5" size="276,79" fontSize="60" color="#ffffff" align="center" vAlign="middle" strokeColor="#3d4b61" strokeSize="4" singleLine="true" text="GM控制台"/>
+    <component id="n3_f9cy" name="UI_BTN_ENERGY_ADD" src="is91n" fileName="comp/CompBtnCommon.xml" pkg="gj0r6g5i" xy="26,158" size="235,95">
+      <Button title="增加体力" icon="ui://gj0r6g5ijorf1f"/>
+    </component>
+    <component id="n4_f9cy" name="UI_BTN_ENERGY_REDUCE" src="is91n" fileName="comp/CompBtnCommon.xml" pkg="gj0r6g5i" xy="28,268" size="235,95">
+      <Button title="减少体力" icon="ui://gj0r6g5ijorf1h"/>
+    </component>
+    <component id="n5_iccm" name="UI_BTN_TEST" src="is91n" fileName="comp/CompBtnCommon.xml" pkg="gj0r6g5i" xy="29,373" size="235,95">
+      <Button title="测试页面" icon="ui://gj0r6g5ijorf1h"/>
+    </component>
+  </displayList>
+</component>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component size="776,1688">
+  <displayList>
+    <graph id="n1_klme" name="n1" xy="0,0" size="776,1688" type="rect" lineSize="0" lineColor="#00000000" fillColor="#b2000000">
+      <relation target="" sidePair="width-width,height-height"/>
+    </graph>
+    <component id="n29_axf1" name="n29" src="axf11l" fileName="comp/CompPopBg.xml" pkg="gj0r6g5i" xy="58,501" group="n32_axf1"/>
+    <image id="n3_klme" name="n3" src="jin6a" fileName="imgs/mask.png" pkg="gj0r6g5i" xy="269,694" size="220,100" group="n32_axf1"/>
+    <component id="n2_klme" name="UI_COMP_HEAD" src="cvev9" fileName="comp/CompHead.xml" pkg="gj0r6g5i" xy="129,652" group="n32_axf1"/>
+    <text id="n4_klme" name="UI_TXT_NICKNAME" xy="298,701" size="64,42" group="n32_axf1" fontSize="30" color="#ffffff" singleLine="true" text="昵称"/>
+    <text id="n5_klme" name="UI_TXT_USERID" xy="298,751" size="34,42" group="n32_axf1" fontSize="30" color="#ffffff" singleLine="true" text="ID"/>
+    <component id="n30_axf1" name="UI_BTN_WECHAT" src="cmlt4" fileName="comp/CompBtnScale.xml" pkg="gj0r6g5i" xy="273,1159" group="n32_axf1" controller="ctrl_color,1">
+      <Button title="同步微信" icon="ui://gj0r6g5ijorf1f"/>
+    </component>
+    <text id="n9_klme" name="n9" xy="121,841" size="76,49" group="n32_axf1" fontSize="36" color="#7e6547" align="right" text="赢："/>
+    <text id="n10_klme" name="n10" xy="121,906" size="76,49" group="n32_axf1" fontSize="36" color="#7e6547" align="right" text="平："/>
+    <text id="n11_klme" name="n11" xy="422,841" size="76,49" group="n32_axf1" fontSize="36" color="#7e6547" align="right" text="输："/>
+    <text id="n12_klme" name="n12" xy="386,906" size="112,49" group="n32_axf1" fontSize="36" color="#7e6547" align="right" text="胜率："/>
+    <text id="n13_klme" name="UI_TXT_WIN" xy="209,841" size="140,49" group="n32_axf1" fontSize="36" color="#7e6547" autoSize="none" text="0"/>
+    <text id="n14_klme" name="UI_TXT_LOSE" xy="510,841" size="140,49" group="n32_axf1" fontSize="36" color="#7e6547" autoSize="none" text="0"/>
+    <text id="n15_klme" name="UI_TXT_DRAW" xy="209,906" size="140,49" group="n32_axf1" fontSize="36" color="#7e6547" autoSize="none" text="0"/>
+    <text id="n16_klme" name="UI_TXT_RATE" xy="510,906" size="140,49" group="n32_axf1" fontSize="36" color="#7e6547" autoSize="none" text="0"/>
+    <component id="n18_klme" name="UI_BTN_CLOSE" src="muz3h" fileName="comp/CompBtnClose.xml" pkg="gj0r6g5i" xy="622,509" group="n32_axf1"/>
+    <text id="n19_pr8n" name="n19" xy="121,1005" size="184,49" group="n32_axf1" fontSize="36" color="#7e6547" align="right" text="背景音乐："/>
+    <text id="n20_pr8n" name="n20" xy="194,1074" size="112,49" group="n32_axf1" fontSize="36" color="#7e6547" align="right" text="音效："/>
+    <component id="n23_pr8n" name="UI_BTN_BGMUSIC" src="pr8n1" fileName="comp/CompBtnSound.xml" xy="292,1001" group="n32_axf1" aspect="true" scale="0.6,0.6" controller="ctrl_status,0"/>
+    <component id="n24_pr8n" name="UI_BTN_EFFECT" src="pr8n1" fileName="comp/CompBtnSound.xml" xy="291,1069" group="n32_axf1" aspect="true" scale="0.6,0.6" controller="ctrl_status,0"/>
+    <text id="n27_sexy" name="UI_TXT_CP" xy="513,1007" size="140,49" group="n32_axf1" fontSize="36" color="#ff0000" align="center" vAlign="middle" autoSize="none" strokeColor="#000000" text="999"/>
+    <component id="n28_lvao" name="UI_BTN_DEL_ACC" src="lvao2" fileName="comp/BtnRevoke.xml" xy="591,1227" group="n32_axf1"/>
+    <text id="n31_axf1" name="UI_TXT_TITLE" xy="266,535" pivot="0.5,0.5" size="244,79" group="n32_axf1" fontSize="60" color="#ffffff" align="center" vAlign="middle" strokeColor="#3d4b61" strokeSize="4" singleLine="true" text="个人信息"/>
+    <text id="n33_o6ru" name="n33" xy="423,1008" size="112,49" group="n32_axf1" fontSize="36" color="#7e6547" text="积分："/>
+    <group id="n32_axf1" name="n32" xy="58,501" size="660,790" advanced="true">
+      <relation target="" sidePair="center-center,middle-middle"/>
+    </group>
+  </displayList>
+</component>

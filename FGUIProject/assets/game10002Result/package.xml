@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<packageDescription id="5x18e99v">
+  <resources>
+    <component id="fnug0" name="ResultView.xml" path="/" exported="true"/>
+    <component id="fnug1" name="CompResultInfo.xml" path="/comp/"/>
+    <component id="fnug2" name="CompAct.xml" path="/comp/"/>
+    <component id="kv65p" name="TotalResultView.xml" path="/" exported="true"/>
+    <image id="kv65q" name="gameEnd.png" path="/imgs/"/>
+    <component id="kv65r" name="CompTotalResultInfo.xml" path="/comp/"/>
+    <image id="jqb6s" name="roundend.png" path="/imgs/"/>
+  </resources>
+  <publish name="" genCode="true"/>
+</packageDescription>

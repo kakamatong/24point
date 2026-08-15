@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component size="660,790">
+  <controller name="ctrl_btn_type" pages="0,2个按钮,1,1个确定按钮,2,1个取消按钮,3,没有按钮" selected="0"/>
+  <displayList>
+    <component id="n8_axf1" name="n8" src="axf11l" fileName="comp/CompPopBg.xml" xy="0,0"/>
+    <component id="n2_muz3" name="UI_BTN_CLOSE" src="muz3h" fileName="comp/CompBtnClose.xml" xy="566,12"/>
+    <component id="n3_muz3" name="UI_BTN_SURE" src="cmlt4" fileName="comp/CompBtnScale.xml" xy="356,640" controller="ctrl_color,1">
+      <gearDisplay controller="ctrl_btn_type" pages="0,1"/>
+      <gearXY controller="ctrl_btn_type" pages="0,1" values="356,640|213,641" default="356,641"/>
+      <Button title="确定" titleColor="#ffffff" icon="ui://gj0r6g5ijorf1f"/>
+    </component>
+    <component id="n4_muz3" name="UI_BTN_CANCEL" src="cmlt4" fileName="comp/CompBtnScale.xml" xy="72,641" controller="ctrl_color,2">
+      <gearDisplay controller="ctrl_btn_type" pages="0,2"/>
+      <gearXY controller="ctrl_btn_type" pages="2" values="213,641" default="72,641"/>
+      <Button title="取消" icon="ui://gj0r6g5ijorf1h"/>
+    </component>
+    <text id="n5_muz3" name="UI_TXT_TITLE" xy="206,35" pivot="0.5,0.5" size="244,79" fontSize="60" color="#ffffff" align="center" vAlign="middle" strokeColor="#3d4b61" strokeSize="4" singleLine="true" text="温馨提示"/>
+    <text id="n6_muz3" name="UI_TXT_CONTENT" xy="54,187" size="553,384" fontSize="35" color="#7e6547" autoSize="none" text="测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试"/>
+  </displayList>
+</component>

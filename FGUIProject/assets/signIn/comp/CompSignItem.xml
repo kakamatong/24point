@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component size="592,113">
+  <controller name="ctrl_geted" pages="0,,1,,2," selected="0">
+    <remark page="0" value="未领取"/>
+    <remark page="1" value="已经领取"/>
+    <remark page="2" value="补签"/>
+  </controller>
+  <controller name="ctrl_today" pages="0,,1," selected="0">
+    <remark page="0" value="不是当日"/>
+    <remark page="1" value="当日"/>
+  </controller>
+  <displayList>
+    <image id="n0_bbyt" name="n0" src="jin6a" fileName="imgs/mask.png" pkg="gj0r6g5i" xy="0,0" size="592,113" alpha="0.706"/>
+    <text id="n2_bbyt" name="UI_TXT_DAY" xy="277,35" size="112,49" fontSize="36" color="#ffffff" strokeColor="#000000" text="第一天"/>
+    <image id="n5_bbyt" name="n5" src="bbyt6" fileName="imgs/gou.png" xy="455,-2">
+      <gearDisplay controller="ctrl_geted" pages="1"/>
+    </image>
+    <component id="n6_pz9v" name="UI_BTN_FILL" src="pz9v1d" fileName="comp/CompBtnAdScale.xml" pkg="gj0r6g5i" xy="382,8" aspect="true" scale="0.6,0.6">
+      <gearDisplay controller="ctrl_geted" pages="2"/>
+      <Button title="补签" icon="ui://gj0r6g5ijorf1f"/>
+    </component>
+    <image id="n7_pz9v" name="n7" src="pz9v1e" fileName="imgs/矩形 1.png" pkg="gj0r6g5i" xy="-4,-6" size="603,130">
+      <gearDisplay controller="ctrl_today" pages="1"/>
+    </image>
+    <list id="n8_i6x7" name="UI_LV_PROPS" xy="11,9" size="256,124" scale="0.8,0.8" layout="row" overflow="scroll" scrollBarFlags="160" scrollBar="hidden" colGap="10" defaultItem="ui://fwundh2cpz9v1b" align="center" vAlign="middle" autoClearItems="true">
+      <item/>
+    </list>
+  </displayList>
+</component>
