@@ -24,7 +24,6 @@ import { Logger } from "@frameworks/utils/Utils";
  * @category 匹配视图
  */
 @ViewClass()
-@PackageLoad(["resFruit"])
 export class MatchView extends FGUIMatchView {
     /** 匹配确认ID */
     private _checkID: number = 0;

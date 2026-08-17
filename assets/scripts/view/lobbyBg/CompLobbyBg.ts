@@ -14,7 +14,7 @@ import { CompBgCubePage } from "./comp/CompBgCubePage";
  * @description 大厅背景入口，控制背景动画的启停
  * @category 大厅背景
  */
-@PackageLoad(["resFruit", "lobbyBg"])
+@PackageLoad(["lobbyBg"])
 @ViewClass()
 export class CompLobbyBg extends FGUICompLobbyBg {
     onConstruct() {
