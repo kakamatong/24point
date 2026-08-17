@@ -1,4 +1,4 @@
-import FGUIGameView from "@fgui/game10002/FGUIGameView";
+import FGUIGameView from "@fgui/game10003/FGUIGameView";
 import { PackageLoad, ViewClass } from "@frameworks/Framework";
 import * as fgui from "fairygui-cc";
 /**

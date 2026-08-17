@@ -2,36 +2,39 @@
 
 import { assetManager, AssetManager } from "cc";
 import * as fgui from "fairygui-cc";
-import FGUICompMainTalk from "./FGUICompMainTalk";
 
 import { PackageManager } from "@frameworks/PackageManager";
 import { Logger } from "@frameworks/utils/Utils";
 
-export default class FGUITalkView extends fgui.GComponent {
+export default class FGUIResultView extends fgui.GComponent {
 
-	public UI_COMP_MAIN:FGUICompMainTalk;
-	public in:fgui.Transition;
-	public out:fgui.Transition;
-	public static URL:string = "ui://fznom2fxpxa50";
+	public ctrl_flag:fgui.Controller;
+	public ctrl_btn:fgui.Controller;
+	public UI_BTN_CON:fgui.GButton;
+	public UI_BTN_BACK:fgui.GButton;
+	public UI_LV_GAME_INFO:fgui.GList;
+	public UI_GROP_RESULT:fgui.GGroup;
+	public act:fgui.Transition;
+	public static URL:string = "ui://5x18e99vfnug0";
 
-	public static packageName:string = "game10002Talk";
+	public static packageName:string = "game10003Result";
 
 	public static instance:any | null = null;
 
 	public enableAnimation: boolean = false;
 
 	public static showView(params?:any, callBack?:(b:boolean)=>void):void {
-		if(FGUITalkView.instance) {
+		if(FGUIResultView.instance) {
 			console.log("allready show");
 			callBack&&callBack(false);
 			return;
 		}
 		PackageManager.instance.loadPackage("fgui", this.packageName).then(()=> {
 
-			const view = fgui.UIPackage.createObject("game10002Talk", "TalkView") as FGUITalkView;
+			const view = fgui.UIPackage.createObject("game10003Result", "ResultView") as FGUIResultView;
 
 			view.makeFullScreen();
-			FGUITalkView.instance = view;
+			FGUIResultView.instance = view;
 			fgui.GRoot.inst.addChild(view);
 			view.show && view.show(params);
 			callBack&&callBack(true);
@@ -41,10 +44,10 @@ export default class FGUITalkView extends fgui.GComponent {
 
 	protected onDestroy():void {
 		super.onDestroy();
-		FGUITalkView.instance = null;
+		FGUIResultView.instance = null;
 	}
 	public static hideView():void {
-		FGUITalkView.instance && FGUITalkView.instance.dispose();
+		FGUIResultView.instance && FGUIResultView.instance.dispose();
 	}
 
 	show(data?:any):void{};
@@ -70,19 +73,27 @@ export default class FGUITalkView extends fgui.GComponent {
 		    });
 	}
 
-	public static createInstance():FGUITalkView {
-		return <FGUITalkView>(fgui.UIPackage.createObject("game10002Talk", "TalkView"));
+	public static createInstance():FGUIResultView {
+		return <FGUIResultView>(fgui.UIPackage.createObject("game10003Result", "ResultView"));
 	}
 
 	protected onConstruct():void {
-		this.UI_COMP_MAIN = <FGUICompMainTalk>(this.getChildAt(0));
-		this.in = this.getTransitionAt(0);
-		this.out = this.getTransitionAt(1);
+		this.ctrl_flag = this.getControllerAt(0);
+		this.ctrl_btn = this.getControllerAt(1);
+		this.UI_BTN_CON = <fgui.GButton>(this.getChildAt(2));
+		this.UI_BTN_CON.onClick(this.onBtnCon, this);
+		this.UI_BTN_BACK = <fgui.GButton>(this.getChildAt(3));
+		this.UI_BTN_BACK.onClick(this.onBtnBack, this);
+		this.UI_LV_GAME_INFO = <fgui.GList>(this.getChildAt(5));
+		this.UI_GROP_RESULT = <fgui.GGroup>(this.getChildAt(10));
+		this.act = this.getTransitionAt(0);
 		if (this.enableAnimation) this.enterAnimation();
 	}
 	scheduleOnce(callback: () => void, delay: number):void{};
 	unscheduleAllCallbacks():void{};
 	unschedule(callback: () => void):void{};
 	schedule(callback: () => void, interval: number):void{};
+	onBtnCon():void{};
+	onBtnBack():void{};
 }
-fgui.UIObjectFactory.setExtension(FGUITalkView.URL, FGUITalkView);
+fgui.UIObjectFactory.setExtension(FGUIResultView.URL, FGUIResultView);

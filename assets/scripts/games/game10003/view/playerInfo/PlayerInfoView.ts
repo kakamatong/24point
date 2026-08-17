@@ -1,5 +1,5 @@
 import { UserGameRecord } from "@modules/UserGameRecord";
-import FGUIPlayerInfoView from "@fgui/game10002PlayerInfo/FGUIPlayerInfoView";
+import FGUIPlayerInfoView from "@fgui/game10003PlayerInfo/FGUIPlayerInfoView";
 import * as fgui from "fairygui-cc";
 import { GameData } from "../../data/GameData";
 import FGUICompHead from "@fgui/common/FGUICompHead";

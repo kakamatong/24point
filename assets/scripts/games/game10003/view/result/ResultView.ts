@@ -1,10 +1,10 @@
-import FGUIResultView from "@fgui/game10002Result/FGUIResultView";
+import FGUIResultView from "@fgui/game10003Result/FGUIResultView";
 import * as fgui from "fairygui-cc";
 import { GameData } from "../../data/GameData";
 import { SoundManager } from "@frameworks/SoundManager";
 import { MiniGameUtils } from "@frameworks/utils/sdk/MiniGameUtils";
 import { PackageLoad, ViewClass } from "@frameworks/Framework";
-import FGUICompResultInfo from "@fgui/game10002Result/FGUICompResultInfo";
+import FGUICompResultInfo from "@fgui/game10003Result/FGUICompResultInfo";
 import FGUICompHead from "@fgui/common/FGUICompHead";
 import FGUICompMedal from "@fgui/gameCommon/FGUICompMedal";
 import { DataCenter } from "@datacenter/Datacenter";
@@ -29,9 +29,9 @@ export class ResultView extends FGUIResultView {
         const flag = 1;
         this.ctrl_flag.selectedIndex = flag;
         if (flag === 1) {
-            SoundManager.instance.playSoundEffect("game10002/win");
+            SoundManager.instance.playSoundEffect("game10003/win");
         } else if (flag === 0) {
-            SoundManager.instance.playSoundEffect("game10002/lose");
+            SoundManager.instance.playSoundEffect("game10003/lose");
         }
 
         this._continueFunc = data?.continueFunc;

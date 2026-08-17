@@ -34,7 +34,7 @@ export class AuthGame extends BaseModule {
      */
     req(addr: string, gatewayUrl: string, gameid: number, roomid: string, callBack: (success: boolean) => void) {
         this._callBack = callBack;
-        GameSocketManager.instance.loadProtocol("game10002", () => {
+        GameSocketManager.instance.loadProtocol("game10003", () => {
             const loginInfo = DataCenter.instance.getLoginInfo();
             const loginData = {
                 device: "pc",

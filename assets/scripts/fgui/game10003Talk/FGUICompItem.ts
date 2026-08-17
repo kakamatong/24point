@@ -6,33 +6,29 @@ import * as fgui from "fairygui-cc";
 import { PackageManager } from "@frameworks/PackageManager";
 import { Logger } from "@frameworks/utils/Utils";
 
-export default class FGUICompTotalResultInfo extends fgui.GComponent {
+export default class FGUICompItem extends fgui.GComponent {
 
-	public UI_COMP_HEAD:fgui.GComponent;
-	public UI_TXT_NICKNAME:fgui.GTextField;
-	public UI_TXT_ID:fgui.GTextField;
-	public UI_TXT_SCORE:fgui.GTextField;
-	public UI_COMP_MEDAL:fgui.GComponent;
-	public static URL:string = "ui://5x18e99vkv65r";
+	public UI_TXT_TALK:fgui.GTextField;
+	public static URL:string = "ui://fznom2fxpxa52";
 
-	public static packageName:string = "game10002Result";
+	public static packageName:string = "game10003Talk";
 
 	public static instance:any | null = null;
 
 	public enableAnimation: boolean = false;
 
 	public static showView(params?:any, callBack?:(b:boolean)=>void):void {
-		if(FGUICompTotalResultInfo.instance) {
+		if(FGUICompItem.instance) {
 			console.log("allready show");
 			callBack&&callBack(false);
 			return;
 		}
 		PackageManager.instance.loadPackage("fgui", this.packageName).then(()=> {
 
-			const view = fgui.UIPackage.createObject("game10002Result", "CompTotalResultInfo") as FGUICompTotalResultInfo;
+			const view = fgui.UIPackage.createObject("game10003Talk", "CompItem") as FGUICompItem;
 
 			view.makeFullScreen();
-			FGUICompTotalResultInfo.instance = view;
+			FGUICompItem.instance = view;
 			fgui.GRoot.inst.addChild(view);
 			view.show && view.show(params);
 			callBack&&callBack(true);
@@ -42,10 +38,10 @@ export default class FGUICompTotalResultInfo extends fgui.GComponent {
 
 	protected onDestroy():void {
 		super.onDestroy();
-		FGUICompTotalResultInfo.instance = null;
+		FGUICompItem.instance = null;
 	}
 	public static hideView():void {
-		FGUICompTotalResultInfo.instance && FGUICompTotalResultInfo.instance.dispose();
+		FGUICompItem.instance && FGUICompItem.instance.dispose();
 	}
 
 	show(data?:any):void{};
@@ -71,16 +67,12 @@ export default class FGUICompTotalResultInfo extends fgui.GComponent {
 		    });
 	}
 
-	public static createInstance():FGUICompTotalResultInfo {
-		return <FGUICompTotalResultInfo>(fgui.UIPackage.createObject("game10002Result", "CompTotalResultInfo"));
+	public static createInstance():FGUICompItem {
+		return <FGUICompItem>(fgui.UIPackage.createObject("game10003Talk", "CompItem"));
 	}
 
 	protected onConstruct():void {
-		this.UI_COMP_HEAD = <fgui.GComponent>(this.getChildAt(1));
-		this.UI_TXT_NICKNAME = <fgui.GTextField>(this.getChildAt(2));
-		this.UI_TXT_ID = <fgui.GTextField>(this.getChildAt(3));
-		this.UI_TXT_SCORE = <fgui.GTextField>(this.getChildAt(5));
-		this.UI_COMP_MEDAL = <fgui.GComponent>(this.getChildAt(6));
+		this.UI_TXT_TALK = <fgui.GTextField>(this.getChildAt(0));
 		if (this.enableAnimation) this.enterAnimation();
 	}
 	scheduleOnce(callback: () => void, delay: number):void{};
@@ -88,4 +80,4 @@ export default class FGUICompTotalResultInfo extends fgui.GComponent {
 	unschedule(callback: () => void):void{};
 	schedule(callback: () => void, interval: number):void{};
 }
-fgui.UIObjectFactory.setExtension(FGUICompTotalResultInfo.URL, FGUICompTotalResultInfo);
+fgui.UIObjectFactory.setExtension(FGUICompItem.URL, FGUICompItem);

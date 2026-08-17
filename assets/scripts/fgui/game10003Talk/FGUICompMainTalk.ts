@@ -6,31 +6,29 @@ import * as fgui from "fairygui-cc";
 import { PackageManager } from "@frameworks/PackageManager";
 import { Logger } from "@frameworks/utils/Utils";
 
-export default class FGUITotalResultView extends fgui.GComponent {
+export default class FGUICompMainTalk extends fgui.GComponent {
 
-	public UI_LV_INFO:fgui.GList;
-	public UI_BTN_EXIT:fgui.GButton;
-	public UI_BTN_BACK:fgui.GButton;
-	public static URL:string = "ui://5x18e99vkv65p";
+	public UI_LIST_TALK:fgui.GList;
+	public static URL:string = "ui://fznom2fxpxa51";
 
-	public static packageName:string = "game10002Result";
+	public static packageName:string = "game10003Talk";
 
 	public static instance:any | null = null;
 
 	public enableAnimation: boolean = false;
 
 	public static showView(params?:any, callBack?:(b:boolean)=>void):void {
-		if(FGUITotalResultView.instance) {
+		if(FGUICompMainTalk.instance) {
 			console.log("allready show");
 			callBack&&callBack(false);
 			return;
 		}
 		PackageManager.instance.loadPackage("fgui", this.packageName).then(()=> {
 
-			const view = fgui.UIPackage.createObject("game10002Result", "TotalResultView") as FGUITotalResultView;
+			const view = fgui.UIPackage.createObject("game10003Talk", "CompMainTalk") as FGUICompMainTalk;
 
 			view.makeFullScreen();
-			FGUITotalResultView.instance = view;
+			FGUICompMainTalk.instance = view;
 			fgui.GRoot.inst.addChild(view);
 			view.show && view.show(params);
 			callBack&&callBack(true);
@@ -40,10 +38,10 @@ export default class FGUITotalResultView extends fgui.GComponent {
 
 	protected onDestroy():void {
 		super.onDestroy();
-		FGUITotalResultView.instance = null;
+		FGUICompMainTalk.instance = null;
 	}
 	public static hideView():void {
-		FGUITotalResultView.instance && FGUITotalResultView.instance.dispose();
+		FGUICompMainTalk.instance && FGUICompMainTalk.instance.dispose();
 	}
 
 	show(data?:any):void{};
@@ -69,23 +67,17 @@ export default class FGUITotalResultView extends fgui.GComponent {
 		    });
 	}
 
-	public static createInstance():FGUITotalResultView {
-		return <FGUITotalResultView>(fgui.UIPackage.createObject("game10002Result", "TotalResultView"));
+	public static createInstance():FGUICompMainTalk {
+		return <FGUICompMainTalk>(fgui.UIPackage.createObject("game10003Talk", "CompMainTalk"));
 	}
 
 	protected onConstruct():void {
-		this.UI_LV_INFO = <fgui.GList>(this.getChildAt(3));
-		this.UI_BTN_EXIT = <fgui.GButton>(this.getChildAt(4));
-		this.UI_BTN_EXIT.onClick(this.onBtnExit, this);
-		this.UI_BTN_BACK = <fgui.GButton>(this.getChildAt(5));
-		this.UI_BTN_BACK.onClick(this.onBtnBack, this);
+		this.UI_LIST_TALK = <fgui.GList>(this.getChildAt(1));
 		if (this.enableAnimation) this.enterAnimation();
 	}
 	scheduleOnce(callback: () => void, delay: number):void{};
 	unscheduleAllCallbacks():void{};
 	unschedule(callback: () => void):void{};
 	schedule(callback: () => void, interval: number):void{};
-	onBtnExit():void{};
-	onBtnBack():void{};
 }
-fgui.UIObjectFactory.setExtension(FGUITotalResultView.URL, FGUITotalResultView);
+fgui.UIObjectFactory.setExtension(FGUICompMainTalk.URL, FGUICompMainTalk);

@@ -14,7 +14,7 @@
             "@datacenter/*": ["./assets/scripts/datacenter/*"],
             "@view/*": ["./assets/scripts/view/*"],
             "@localGame/*": ["./assets/scripts/localGame/*"],
-            "@game10002/*": ["assets/scripts/games/game10003/*"]
+            "@game10003/*": ["assets/scripts/games/game10003/*"]
         },
         "types": ["minigame-api-typings"]
     }

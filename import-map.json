@@ -6,6 +6,6 @@
         "@datacenter/": "./assets/scripts/datacenter/",
         "@view/": "./assets/scripts/view/",
         "@localGame/": "./assets/scripts/localGame/",
-        "@game10002/": "./assets/scripts/games/game10002/"
+        "@game10003/": "./assets/scripts/games/game10003/"
     }
 }
