@@ -29,7 +29,7 @@ import { MAIN_GAME_ID, RICH_TYPE } from "@datacenter/InterfaceConfig";
 import { DataCenter } from "@datacenter/Datacenter";
 import { generateRandomMap, generateFromDesign } from "./mapGenerator";
 import { MAP_LEVEL_CONFIG, CHALLENGE_LEVEL_TYPE, CHALLENGE_END_TYPE } from "@datacenter/ChallengeData";
-import { shiftMap, SHIFT_DIR } from "../games/game10002/logic/TileMapData";
+import { shiftMap, SHIFT_DIR } from "../games/game10003/logic/TileMapData";
 
 /**
  * @enum LOCAL_SVR_MODE
@@ -707,7 +707,12 @@ export class LocalSvr {
      * 构建两点之间的连接路径线段（用于 tilesRemoved 的 lines 字段）
      * @returns LineSegment 数组，按顺序从 p1 连到 p2
      */
-    private _buildConnectionLines(r1: number, c1: number, r2: number, c2: number): { start: { row: number; col: number }; dest: { row: number; col: number } }[] {
+    private _buildConnectionLines(
+        r1: number,
+        c1: number,
+        r2: number,
+        c2: number
+    ): { start: { row: number; col: number }; dest: { row: number; col: number } }[] {
         const p = (r: number, c: number) => ({ row: r, col: c });
 
         // 0 拐：直线直连

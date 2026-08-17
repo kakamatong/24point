@@ -2,7 +2,7 @@ import FGUICompItem from "@fgui/game10002Talk/FGUICompItem";
 import FGUITalkView from "@fgui/game10002Talk/FGUITalkView";
 import { PackageLoad, ViewClass } from "@frameworks/Framework";
 import { GameSocketManager } from "@frameworks/GameSocketManager";
-import { TALK_LIST, FORWARD_MESSAGE_TYPE } from "../../view/talk/TalkConfig";
+import { TALK_LIST, FORWARD_MESSAGE_TYPE } from "./TalkConfig";
 import { SprotoForwardMessage } from "../../../../../types/protocol/game10002/c2s";
 import * as fgui from "fairygui-cc";
 import { Logger } from "@frameworks/utils/Utils";

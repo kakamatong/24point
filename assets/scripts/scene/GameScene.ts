@@ -1,6 +1,6 @@
 import { _decorator, Component } from "cc";
 import * as fgui from "fairygui-cc";
-import { GameView } from "../games/game10002/view/game/GameView";
+import { GameView } from "../games/game10003/view/game/GameView";
 import { SoundManager } from "@frameworks/SoundManager";
 import { PackageManager } from "@frameworks/PackageManager";
 import { Logger } from "@frameworks/utils/Utils";

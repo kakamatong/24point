@@ -9,7 +9,7 @@ import { PackageLoad, ViewClass } from "@frameworks/Framework";
 import * as fgui from "fairygui-cc";
 import { UserEnergy } from "@modules/UserEnergy";
 import { GmView } from "../GmView";
-import { GameChallengeResultView } from "@game10002/view/challengeResult/GameChallengeResultView";
+import { GameChallengeResultView } from "../../../games/game10003/view/challengeResult/GameChallengeResultView";
 
 @PackageLoad(["gm"])
 @ViewClass()
