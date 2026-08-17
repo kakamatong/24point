@@ -6,19 +6,6 @@
 
 import { DEFAULT_HEADURL } from "@datacenter/InterfaceConfig";
 import { GAME_PLAYER_INFO, ENUM_GAME_STEP, GAME_DATA } from "./InterfaceGameConfig";
-import { shiftMap, SHIFT_DIR } from "../logic/TileMapData";
-
-/**
- * @interface PLAYER_MAP_DATA
- * @description 玩家地图数据结构
- */
-export interface PLAYER_MAP_DATA {
-    seat: number;
-    mapData: number[][];
-    totalBlocks: number;
-    col: number;
-    row: number;
-}
 
 /**
  * @class GameData
@@ -42,20 +29,7 @@ export class GameData {
     private _record: Array<any> = [];
     private _privateNowCnt: number = 0; // 第几局
     private _privateMaxCnt: number = 0; // 最大局数
-    /** 所有玩家的地图数据，key为服务器座位号 */
-    private _playerMaps: Map<number, PLAYER_MAP_DATA> = new Map();
-    /** 对局阶段时间（秒） */
-    private _playingStepTime: number = 0;
-    private _itemEnabled: boolean = false; // 道具是否可用
-    /** 消除后方块移动方向（SHIFT_DIR 枚举值，0=关闭，由服务器 logicInfo.ext 下发） */
-    private _shiftDir: number = SHIFT_DIR.OFF;
-    /** 消除后方块移动的最边边位置（默认 2，由服务器 logicInfo.ext 下发） */
-    private _shiftEdge: number = 2;
-
-    /**
-     * @description 是否是本地游戏
-     * @returns {boolean} 是否是本地游戏
-     */
+    /** 是否是本地游戏 */
     private _isLocalGame: boolean = false;
 
     /**
@@ -94,13 +68,8 @@ export class GameData {
         this.gameData = null;
         this._owner = 0;
         this._privateNowCnt = 0;
-        this._playerMaps.clear();
-        this._playingStepTime = 0;
         this._isLocalGame = false;
         this._isChallengeMode = false;
-        this._itemEnabled = false;
-        this._shiftDir = SHIFT_DIR.OFF;
-        this._shiftEdge = 2;
     }
 
     get gameStep(): ENUM_GAME_STEP {
@@ -301,84 +270,6 @@ export class GameData {
         return this._privateMaxCnt;
     }
 
-    /**
-     * @description 设置玩家地图数据
-     * @param seat 服务器座位号
-     * @param mapData 地图数据
-     * @param totalBlocks 总方块数
-     */
-    setPlayerMapData(seat: number, mapData: number[][], totalBlocks: number, col: number, row: number): void {
-        this._playerMaps.set(seat, {
-            seat,
-            mapData,
-            totalBlocks,
-            col,
-            row,
-        });
-    }
-
-    /**
-     * @description 获取玩家地图数据
-     * @param seat 服务器座位号
-     * @returns 玩家地图数据
-     */
-    getPlayerMapData(seat: number): PLAYER_MAP_DATA | undefined {
-        return this._playerMaps.get(seat);
-    }
-
-    /**
-     * @description 获取所有玩家地图数据
-     * @returns 所有玩家地图数据
-     */
-    getAllPlayerMaps(): Map<number, PLAYER_MAP_DATA> {
-        return this._playerMaps;
-    }
-
-    /**
-     * @description 清除所有玩家地图数据
-     */
-    clearAllPlayerMaps(): void {
-        this._playerMaps.clear();
-    }
-
-    /**
-     * @description 更新玩家地图中的方块（消除）
-     * @param seat 服务器座位号
-     * @param row1 第一个方块的行
-     * @param col1 第一个方块的列
-     * @param row2 第二个方块的行
-     * @param col2 第二个方块的列
-     */
-    updatePlayerMapTilesRemoved(seat: number, row1: number, col1: number, row2: number, col2: number): void {
-        const playerMap = this._playerMaps.get(seat);
-        if (playerMap && playerMap.mapData) {
-            if (row1 >= 0 && row1 < playerMap.mapData.length && col1 >= 0 && col1 < playerMap.mapData[0].length) {
-                playerMap.mapData[row1][col1] = 0;
-            }
-            if (row2 >= 0 && row2 < playerMap.mapData.length && col2 >= 0 && col2 < playerMap.mapData[0].length) {
-                playerMap.mapData[row2][col2] = 0;
-            }
-            // 消除后将剩余方块向指定方向移动（与服务器保持一致，服务器每次消除后执行相同移动）
-            shiftMap(playerMap.mapData, this._shiftDir, this._shiftEdge);
-        }
-    }
-
-    /**
-     * @description 获取对局阶段时间
-     * @returns {number} 对局阶段时间（秒）
-     */
-    get playingStepTime(): number {
-        return this._playingStepTime;
-    }
-
-    /**
-     * @description 设置对局阶段时间
-     * @param {number} value 对局阶段时间（秒）
-     */
-    set playingStepTime(value: number) {
-        this._playingStepTime = value;
-    }
-
     set isLocalGame(flag: boolean) {
         this._isLocalGame = flag;
     }
@@ -393,52 +284,5 @@ export class GameData {
 
     get isChallengeMode(): boolean {
         return this._isChallengeMode;
-    }
-
-    /**
-     * @description 设置道具是否可用
-     */
-    set itemEnabled(flag: boolean) {
-        this._itemEnabled = flag;
-    }
-
-    /**
-     * @description 获取道具是否可用
-     * @returns {boolean} 道具是否可用
-     */
-    get itemEnabled(): boolean {
-        return this._itemEnabled;
-    }
-
-    /**
-     * @description 设置消除后方块移动方向
-     * @param {number} dir - SHIFT_DIR 枚举值（0=关闭）
-     */
-    set shiftDir(dir: number) {
-        this._shiftDir = dir;
-    }
-
-    /**
-     * @description 获取消除后方块移动方向
-     * @returns {number} SHIFT_DIR 枚举值
-     */
-    get shiftDir(): number {
-        return this._shiftDir;
-    }
-
-    /**
-     * @description 设置消除后方块移动的最边边位置
-     * @param {number} edge - 最边边位置（默认 2）
-     */
-    set shiftEdge(edge: number) {
-        this._shiftEdge = edge;
-    }
-
-    /**
-     * @description 获取消除后方块移动的最边边位置
-     * @returns {number} 最边边位置
-     */
-    get shiftEdge(): number {
-        return this._shiftEdge;
     }
 }
