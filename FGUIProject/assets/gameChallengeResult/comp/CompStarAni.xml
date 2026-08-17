@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<component size="554,224">
-  <displayList>
-    <component id="n0_iccm" name="UI_COMP_STAR_1" src="iccm8" fileName="comp/CompStarAni1.xml" xy="2,79"/>
-    <component id="n1_iccm" name="UI_COMP_STAR_2" src="iccm9" fileName="comp/CompStarAni2.xml" xy="201,18"/>
-    <component id="n2_iccm" name="UI_COMP_STAR_3" src="iccma" fileName="comp/CompStarAni3.xml" xy="404,79"/>
-  </displayList>
-</component>

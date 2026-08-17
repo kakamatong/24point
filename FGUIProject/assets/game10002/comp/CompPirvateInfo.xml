@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<component size="415,193">
-  <displayList>
-    <image id="n39_jsve" name="n39" src="jin6a" fileName="imgs/mask.png" pkg="gj0r6g5i" xy="0,0" size="415,193"/>
-    <text id="n40_jsve" name="UI_TXT_ROOMID" xy="73,14" size="269,49" fontSize="36" color="#cc6600" align="center" vAlign="middle" autoSize="none" text="房间号:000000"/>
-    <text id="n46_ncy2" name="UI_TXT_RULE" xy="12,86" size="391,102" fontSize="34" color="#ffffff" align="center" vAlign="middle" autoSize="none" text="可以通过分享或者房间号，邀请好友加入房间"/>
-  </displayList>
-</component>
