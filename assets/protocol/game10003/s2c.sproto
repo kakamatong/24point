@@ -140,11 +140,10 @@ privateInfo 12 {
 # 私人房对战记录
 .Record {
     index 0 : integer
-    outhand 1 : *integer
-    win 2 : integer
-    startTime 3 : integer
-    endTime 4 : integer
-    round 5 : integer
+    startTime 1 : integer
+    endTime 2 : integer
+    round 3 : integer
+    ext 4 : string
 }
 
 gameRecord 13 {
@@ -189,29 +188,9 @@ forwardMessage 15 {
     }
 }
 
-# 聊天消息
-talk 16 {
-    request {
-        from 0 : integer
-        id 1 : integer
-    }
-}
-
 # ============================================
-# 连连看游戏协议 (31-60)
+# 算24点游戏协议 (31-50)
 # ============================================
-
-# 坐标结构
-.Point {
-    row 0 : integer
-    col 1 : integer
-}
-
-# 线段结构（路径）
-.LineSegment {
-    start 0 : Point
-    dest 1 : Point
-}
 
 # 游戏开始
 gameStart 31 {
@@ -222,125 +201,62 @@ gameStart 31 {
     }
 }
 
-# 游戏阶段ID (参考10001)
+# 游戏阶段ID
 stepId 32 {
     request {
-        step 0 : integer         # 当前阶段: 1=START, 2=PLAYING, 3=END
+        step 0 : integer         # 1=START, 2=PLAYING, 3=END
     }
 }
 
-# 方块消除成功通知
-tilesRemoved 34 {
+# 发牌：本局4个数字
+dealCards 33 {
     request {
-        code 0 : integer
-        p1 1 : Point             # 第一个方块
-        p2 2 : Point             # 第二个方块
-        lines 3 : *LineSegment   # 连接路径
-        eliminated 4 : integer   # 已消除数量
-        remaining 5 : integer    # 剩余方块数
-        seat 6 : integer         # 执行消除的玩家座位号
-        score 7 : integer        # 本次消除加分分数（闯关模式携带）
-        totalScore 8 : integer   # 当前对局玩家总分数（闯关模式携带）
+        roundNum 0 : integer
+        numbers 1 : *integer     # 4个数字
+        timeLimit 2 : integer    # 答题时限(秒)
+        startTime 3 : integer
     }
 }
 
-# 玩家完成游戏
-playerFinished 35 {
+# 提交结果广播（正确/错误都广播给所有玩家）
+answerResult 34 {
     request {
-        seat 0 : integer
-        usedTime 1 : integer     # 用时(秒)
-        rank 2 : integer         # 排名
+        seat 0 : integer         # 提交的玩家座位
+        expression 1 : string    # 提交的算式
+        correct 2 : integer      # 1:正确, 0:错误
+        rank 3 : integer         # 排名（答对时为1，其余0）
     }
 }
 
-# 游戏结束
+# 排名信息
 .RankingInfo {
     seat 0 : integer
-    usedTime 1 : integer     # -1表示未完成
-    eliminated 2 : integer   # 消除数量
-    rank 3 : integer         # 排名（1开始，未完成则为0）
-    maxCombo 4 : integer     # 最大连击数
+    expression 1 : string        # 答对算式
+    usedTime 2 : integer         # 用时(毫秒)，未答对为-1
+    rank 3 : integer             # 排名（1开始，未答对则为0）
 }
 
 # 分数信息
 .ScoreInfo {
     seat 0 : integer
-    newScore 1 : integer     # 新的积分/得分
-    delta 2 : integer        # 变化积分（新增-减少）
+    newScore 1 : integer
+    delta 2 : integer
 }
 
-gameEnd 36 {
+# 游戏结束
+gameEnd 35 {
     request {
         roundNum 0 : integer
         endTime 1 : integer
-        endType 2 : integer      # 结束类型 (1:正常完成, 2:超时, 3:全部完成, 4:解散)
+        endType 2 : integer      # 1=有人答对, 2=超时无人答对, 4=解散
         rankings 3 : *RankingInfo
-        scores 4 : *ScoreInfo   # 分数信息
+        scores 4 : *ScoreInfo
     }
 }
 
 # 游戏重连恢复
-gameRelink 37 {
+gameRelink 36 {
     request {
         startTime 0 : integer
-    }
-}
-
-# 道具效果通知 (预留)
-itemEffect 38 {
-    request {
-        seat 0 : integer
-        itemId 1 : integer
-        effect 2 : string        # 效果描述JSON
-    }
-}
-
-# 游戏进度更新 (广播给所有人看其他人的进度)
-progressUpdate 39 {
-    request {
-        seat 0 : integer
-        eliminated 1 : integer   # 已消除数量
-        remaining 2 : integer    # 剩余方块数
-        percentage 3 : integer   # 完成百分比
-        finished 4 : integer     # 1:已完成, 0:未完成
-        usedTime 5 : integer     # 用时(秒)
-    }
-}
-
-# 地图数据
-mapData 40 {
-    request {
-        mapData 0 : string       # 地图数据JSON
-        totalBlocks 1 : integer  # 总方块数
-        seat 2 : integer         # 座位号，标识这是哪个玩家的地图
-        col 3 : integer          # 地图列数
-        row 4 : integer           # 地图行数
-    }
-}
-
-# 游戏逻辑信息
-logicInfo 41 {
-    request {
-        playerCnt 0 : integer        # 玩家数量
-        playingStepTime 1 : integer  # 对局阶段时间（秒）
-        ext 2 : string               # 扩展字段
-    }
-}
-
-# 地图打乱/重新生成通知
-mapShuffled 42 {
-    request {
-        seat 0 : integer         # 触发打乱的玩家座位
-        reason 1 : integer        # 原因: 1=打乱, 2=重新生成
-    }
-}
-
-# 连击成功通知
-comboSuccess 43 {
-    request {
-        seat 0 : integer         # 执行消除的玩家座位号
-        comboCount 1 : integer   # 当前连击数
-        comboTime 2 : integer    # 当前连击时间(ms)
-        comboDuration 3 : integer # 连击持续时间(ms)
     }
 }

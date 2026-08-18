@@ -1,18 +1,6 @@
 // Auto-generated from sproto files
 // Do not edit manually
 
-/** ============================================ */
-export interface Point {
-    row: number;
-    col: number;
-}
-
-/** LineSegment 结构体定义 */
-export interface LineSegment {
-    start: Point;
-    dest: Point;
-}
-
 /** 调用接口 - 请求参数 */
 export interface CallRequest {
     moduleName: string;
@@ -24,7 +12,6 @@ export interface CallRequest {
 export interface CallResponse {
     code: number;
     msg: string;
-    richNum: number;
 }
 
 /** 发送接口（无响应） - 请求参数 */
@@ -48,13 +35,6 @@ export interface GamereadyRequest {
 export interface GamereadyResponse {
     code: number;
     msg: string;
-}
-
-/** 房主开始游戏 - 响应参数 */
-export interface OwnerstartgameResponse {
-    code: number;
-    msg: string;
-    notReadyUserids: number[];
 }
 
 /** 离开房间 - 响应参数 */
@@ -99,45 +79,23 @@ export interface ForwardmessageResponse {
     msg: string;
 }
 
-/** 使用聊天 - 请求参数 */
-export interface ChatuseRequest {
-    id: number;
-    ext: string;
-}
-
-/** 使用聊天 - 响应参数 */
-export interface ChatuseResponse {
-    code: number;
-    richNum: number;
-    msg: string;
-}
-
-/** 点击消除方块 - 请求参数 */
-export interface ClicktilesRequest {
-    row1: number;
-    col1: number;
-    row2: number;
-    col2: number;
-}
-
-/** 点击消除方块 - 响应参数 */
-export interface ClicktilesResponse {
+/** 房主开始游戏 - 响应参数 */
+export interface OwnerstartgameResponse {
     code: number;
     msg: string;
-    eliminated: number;
-    remaining: number;
+    notReadyUserids: number[];
 }
 
-/** 道具使用 (预留) - 请求参数 */
-export interface UseitemRequest {
-    itemId: number;
+/** 提交算式 - 请求参数 */
+export interface SubmitanswerRequest {
+    expression: string;
 }
 
-/** 道具使用 (预留) - 响应参数 */
-export interface UseitemResponse {
+/** 提交算式 - 响应参数 */
+export interface SubmitanswerResponse {
     code: number;
     msg: string;
-    richNum: number;
+    rank: number;
 }
 
 export namespace SprotoCall {
@@ -164,12 +122,6 @@ export namespace SprotoGameReady {
     export type Response = GamereadyResponse;
 }
 
-export namespace SprotoOwnerStartGame {
-    export const Name = "ownerStartGame";
-    export type Request = undefined;  // ownerStartGame 协议没有请求参数
-    export type Response = OwnerstartgameResponse;
-}
-
 export namespace SprotoLeaveRoom {
     export const Name = "leaveRoom";
     export type Request = undefined;  // leaveRoom 协议没有请求参数
@@ -194,20 +146,14 @@ export namespace SprotoForwardMessage {
     export type Response = ForwardmessageResponse;
 }
 
-export namespace SprotoChatUse {
-    export const Name = "chatUse";
-    export type Request = ChatuseRequest;
-    export type Response = ChatuseResponse;
+export namespace SprotoOwnerStartGame {
+    export const Name = "ownerStartGame";
+    export type Request = undefined;  // ownerStartGame 协议没有请求参数
+    export type Response = OwnerstartgameResponse;
 }
 
-export namespace SprotoClickTiles {
-    export const Name = "clickTiles";
-    export type Request = ClicktilesRequest;
-    export type Response = ClicktilesResponse;
-}
-
-export namespace SprotoUseItem {
-    export const Name = "useItem";
-    export type Request = UseitemRequest;
-    export type Response = UseitemResponse;
+export namespace SprotoSubmitAnswer {
+    export const Name = "submitAnswer";
+    export type Request = SubmitanswerRequest;
+    export type Response = SubmitanswerResponse;
 }

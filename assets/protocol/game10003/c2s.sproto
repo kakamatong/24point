@@ -1,4 +1,4 @@
-# 连连看游戏10002协议 (客户端 -> 服务端)
+# 算24点游戏10003协议 (客户端 -> 服务端)
 # 协议号范围: 1-9999
 
 .package {
@@ -20,7 +20,6 @@ call 2 {
     response {
         code 0 : integer
         msg 1 : string
-        richNum 2 : integer  # 剩余道具数量
     }
 }
 
@@ -48,17 +47,6 @@ gameReady 5 {
     response {
         code 0 : integer
         msg 1 : string
-    }
-}
-
-# 房主开始游戏
-ownerStartGame 27 {
-    request {
-    }
-    response {
-        code 0 : integer
-        msg 1 : string
-        notReadyUserids 2 : *integer  # 未准备玩家ID数组
     }
 }
 
@@ -108,61 +96,29 @@ forwardMessage 9 {
     }
 }
 
-# 使用聊天
-chatUse 10 {
+# 房主开始游戏
+ownerStartGame 27 {
     request {
-        id 0 : integer      # 聊天ID
-        ext 1 : string      # 扩展数据
-    }
-    response {
-        code 0 : integer
-        richNum 1 : integer # 剩余道具数
-        msg 2 : string
-    }
-}
-
-# ============================================
-# 连连看游戏协议 (21-40)
-# ============================================
-
-# 点击消除方块
-clickTiles 21 {
-    request {
-        row1 0 : integer    # 第一个方块行坐标
-        col1 1 : integer    # 第一个方块列坐标
-        row2 2 : integer    # 第二个方块行坐标
-        col2 3 : integer    # 第二个方块列坐标
-    }
-    response {
-        code 0 : integer    # 1:成功, 0:失败
-        msg 1 : string      # 错误信息
-        eliminated 2 : integer  # 已消除数量
-        remaining 3 : integer   # 剩余方块数
-    }
-}
-
-# 道具使用 (预留)
-useItem 22 {
-    request {
-        itemId 0 : integer  # 道具ID
     }
     response {
         code 0 : integer
         msg 1 : string
-        richNum 2 : integer # 剩余道具数量
+        notReadyUserids 2 : *integer  # 未准备玩家ID数组
     }
 }
 
 # ============================================
-# 坐标结构定义
+# 算24点游戏协议 (21-40)
 # ============================================
 
-.Point {
-    row 0 : integer
-    col 1 : integer
-}
-
-.LineSegment {
-    start 0 : Point
-    dest 1 : Point
+# 提交算式
+submitAnswer 21 {
+    request {
+        expression 0 : string  # 算式，如 8/(3-8/3)
+    }
+    response {
+        code 0 : integer       # 1:正确, 0:错误
+        msg 1 : string         # 错误信息
+        rank 2 : integer       # 排名（答对时为1）
+    }
 }
