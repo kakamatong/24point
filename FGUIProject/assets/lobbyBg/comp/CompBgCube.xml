@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <component size="80,80">
-  <controller name="ctrl_img" pages="0,,1,,2,,3,,4,,5,,6,,7,,8,,9,,10,,11,,12,,13,,14,,15,,16,,17,,18,,19,,20,,21," selected="13"/>
+  <controller name="ctrl_img" pages="0,,1,,2,,3,,4,,5,,6,,7,,8,,9,,10,,11,,12,,13,,14,,15,,16,,17,,18,,19,,20,,21," selected="0"/>
   <displayList>
     <image id="n0_ddk1" name="n0" src="ddk1p" fileName="imgs/bg1.png" xy="0,0"/>
-    <loader id="n1_ddk1" name="n1" xy="0,0" pivot="0.5,0.5" size="80,80" url="ui://89tt2lh8djnjd" autoSize="true">
-      <gearIcon controller="ctrl_img" pages="1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21" values="ui://89tt2lh8h0nk2|ui://89tt2lh8h0nk3|ui://89tt2lh8h0nk4|ui://89tt2lh8h0nk5|ui://89tt2lh8h0nk6|ui://89tt2lh8h0nk7|ui://89tt2lh8h0nk8|ui://89tt2lh8h0nk9|ui://89tt2lh8h0nka|ui://89tt2lh8h0nk0|ui://89tt2lh8djnjb|ui://89tt2lh8djnjc|ui://89tt2lh8djnjd|ui://89tt2lh8djnje|ui://89tt2lh8djnjj|ui://89tt2lh8djnjk|ui://89tt2lh8djnjl|ui://89tt2lh8djnjf|ui://89tt2lh8djnjg|ui://89tt2lh8djnjh|ui://89tt2lh8djnji" default="ui://89tt2lh8h0nk1"/>
-    </loader>
+    <text id="n2_h3uk" name="n2" xy="20,14" pivot="0.5,0.5" size="39,51" font="ui://gj0r6g5ijt3f1l" fontSize="16" align="center" vAlign="middle" text="5"/>
   </displayList>
 </component>
