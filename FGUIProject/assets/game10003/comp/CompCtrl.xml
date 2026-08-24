@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component size="700,818">
+  <controller name="ctrl_nums" pages="0,,1,,2,,3," selected="0"/>
+  <controller name="ctrl_symbol" pages="0,,1,,2,,3," selected="0">
+    <remark page="0" value="加"/>
+    <remark page="1" value="减"/>
+    <remark page="2" value="乘"/>
+    <remark page="3" value="除"/>
+  </controller>
+  <displayList>
+    <component id="n0_h3uk" name="UI_BTN_NUM_0" src="h3uk1e" fileName="comp/BtnNum.xml" xy="113,88" group="n4_h3uk">
+      <Button title="8" controller="ctrl_nums" page="0"/>
+    </component>
+    <component id="n1_h3uk" name="UI_BTN_NUM_1" src="h3uk1e" fileName="comp/BtnNum.xml" xy="419,93" group="n4_h3uk">
+      <Button title="8" controller="ctrl_nums" page="1"/>
+    </component>
+    <component id="n2_h3uk" name="UI_BTN_NUM_2" src="h3uk1e" fileName="comp/BtnNum.xml" xy="114,363" group="n4_h3uk">
+      <Button title="8" controller="ctrl_nums" page="2"/>
+    </component>
+    <component id="n3_h3uk" name="UI_BTN_NUM_3" src="h3uk1e" fileName="comp/BtnNum.xml" xy="420,368" group="n4_h3uk">
+      <Button title="8" controller="ctrl_nums" page="3"/>
+    </component>
+    <group id="n4_h3uk" name="n4" xy="113,88" size="473,484"/>
+    <component id="n5_h3uk" name="UI_BTN_SYMBOL_0" src="h3uk1q" fileName="comp/BtnSymbol.xml" xy="57,654" group="n9_h3uk">
+      <Button title="+" controller="ctrl_symbol" page="0"/>
+    </component>
+    <component id="n6_h3uk" name="UI_BTN_SYMBOL_1" src="h3uk1q" fileName="comp/BtnSymbol.xml" xy="212,654" group="n9_h3uk">
+      <Button title="−" controller="ctrl_symbol" page="1"/>
+    </component>
+    <component id="n7_h3uk" name="UI_BTN_SYMBOL_2" src="h3uk1q" fileName="comp/BtnSymbol.xml" xy="367,654" group="n9_h3uk">
+      <Button controller="ctrl_symbol" page="2"/>
+    </component>
+    <component id="n8_h3uk" name="UI_BTN_SYMBOL_3" src="h3uk1q" fileName="comp/BtnSymbol.xml" xy="522,654" group="n9_h3uk">
+      <Button title="÷" controller="ctrl_symbol" page="3"/>
+    </component>
+    <group id="n9_h3uk" name="n9" xy="57,654" size="585,120"/>
+  </displayList>
+</component>

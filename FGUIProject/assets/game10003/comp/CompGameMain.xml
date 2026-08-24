@@ -2,6 +2,8 @@
 <component size="776,1688">
   <displayList>
     <component id="n0_h3uk" name="n0" src="h3uk1c" fileName="comp/CompDisband.xml" xy="13,0" visible="false"/>
-    <component id="n9_h3uk" name="n9" src="h3uk1e" fileName="comp/CompNum.xml" xy="277,780"/>
+    <component id="n10_h3uk" name="n10" src="h3uk1r" fileName="comp/CompCtrl.xml" xy="38,506">
+      <relation target="" sidePair="center-center,middle-middle"/>
+    </component>
   </displayList>
 </component>
