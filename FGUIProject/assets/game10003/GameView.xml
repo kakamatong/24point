@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <component size="776,1688">
-  <controller name="ctrl_select" pages="0,剪刀,1,石头,2,�? selected="0"/>
+  <controller name="ctrl_select" pages="0,剪刀,1,石头,2,�? selected=" selected="0"/>
   <controller name="ctrl_btn" pages="0,都不显示,1,确定,2,更换,3,继续游戏,4,准备" selected="0"/>
-  <controller name="ctrl_playerCnt" pages="0,,1,,2," selected="0">
-    <remark page="0" value="2�?/>
-    <remark page="1" value="3�?/>
-    <remark page="2" value="4�?/>
-  </controller>
+  <controller name="ctrl_playerCnt" pages="0,,1,,2," selected="0"/>
   <displayList>
     <image id="n45_drdu" name="n45" src="drdu1b" fileName="imgs/gamebg.jpg" xy="0,0" size="776,1688">
       <relation target="" sidePair="width-width,height-height"/>
     </image>
+    <component id="n46_h3uk" name="UI_COMP_MAIN" src="h3uk1d" fileName="comp/CompGameMain.xml" xy="0,0"/>
   </displayList>
 </component>

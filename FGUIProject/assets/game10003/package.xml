@@ -5,6 +5,7 @@
     <component id="r1yn1" name="CompVoteInfo.xml" path="/comp/"/>
     <image id="drdu1b" name="gamebg.jpg" path="/imgs/" scale="9grid" scale9grid="2,2,4,4"/>
     <component id="h3uk1c" name="CompDisband.xml" path="/comp/"/>
+    <component id="h3uk1d" name="CompGameMain.xml" path="/comp/"/>
   </resources>
   <publish name="" genCode="true"/>
 </packageDescription>

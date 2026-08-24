@@ -6,13 +6,16 @@ import * as fgui from "fairygui-cc";
 import { PackageManager } from "@frameworks/PackageManager";
 import { Logger } from "@frameworks/utils/Utils";
 
-export default class FGUIGameView extends fgui.GComponent {
+export default class FGUICompDisband extends fgui.GComponent {
 
-	public ctrl_select:fgui.Controller;
 	public ctrl_btn:fgui.Controller;
-	public ctrl_playerCnt:fgui.Controller;
-	public UI_COMP_MAIN:fgui.GComponent;
-	public static URL:string = "ui://2zsfe53xis911";
+	public UI_BTN_REFUSE:fgui.GButton;
+	public UI_BTN_AGREE:fgui.GButton;
+	public UI_LV_VOTE_INFO:fgui.GList;
+	public UI_TXT_LEFT_TIME:fgui.GTextField;
+	public UI_TXT_MSG:fgui.GTextField;
+	public UI_TXT_DISBAN:fgui.GTextField;
+	public static URL:string = "ui://2zsfe53xh3uk1c";
 
 	public static packageName:string = "game10003";
 
@@ -21,17 +24,17 @@ export default class FGUIGameView extends fgui.GComponent {
 	public enableAnimation: boolean = false;
 
 	public static showView(params?:any, callBack?:(b:boolean)=>void):void {
-		if(FGUIGameView.instance) {
+		if(FGUICompDisband.instance) {
 			console.log("allready show");
 			callBack&&callBack(false);
 			return;
 		}
 		PackageManager.instance.loadPackage("fgui", this.packageName).then(()=> {
 
-			const view = fgui.UIPackage.createObject("game10003", "GameView") as FGUIGameView;
+			const view = fgui.UIPackage.createObject("game10003", "CompDisband") as FGUICompDisband;
 
 			view.makeFullScreen();
-			FGUIGameView.instance = view;
+			FGUICompDisband.instance = view;
 			fgui.GRoot.inst.addChild(view);
 			view.show && view.show(params);
 			callBack&&callBack(true);
@@ -41,10 +44,10 @@ export default class FGUIGameView extends fgui.GComponent {
 
 	protected onDestroy():void {
 		super.onDestroy();
-		FGUIGameView.instance = null;
+		FGUICompDisband.instance = null;
 	}
 	public static hideView():void {
-		FGUIGameView.instance && FGUIGameView.instance.dispose();
+		FGUICompDisband.instance && FGUICompDisband.instance.dispose();
 	}
 
 	show(data?:any):void{};
@@ -70,20 +73,27 @@ export default class FGUIGameView extends fgui.GComponent {
 		    });
 	}
 
-	public static createInstance():FGUIGameView {
-		return <FGUIGameView>(fgui.UIPackage.createObject("game10003", "GameView"));
+	public static createInstance():FGUICompDisband {
+		return <FGUICompDisband>(fgui.UIPackage.createObject("game10003", "CompDisband"));
 	}
 
 	protected onConstruct():void {
-		this.ctrl_select = this.getControllerAt(0);
-		this.ctrl_btn = this.getControllerAt(1);
-		this.ctrl_playerCnt = this.getControllerAt(2);
-		this.UI_COMP_MAIN = <fgui.GComponent>(this.getChildAt(1));
+		this.ctrl_btn = this.getControllerAt(0);
+		this.UI_BTN_REFUSE = <fgui.GButton>(this.getChildAt(1));
+		this.UI_BTN_REFUSE.onClick(this.onBtnRefuse, this);
+		this.UI_BTN_AGREE = <fgui.GButton>(this.getChildAt(2));
+		this.UI_BTN_AGREE.onClick(this.onBtnAgree, this);
+		this.UI_LV_VOTE_INFO = <fgui.GList>(this.getChildAt(3));
+		this.UI_TXT_LEFT_TIME = <fgui.GTextField>(this.getChildAt(4));
+		this.UI_TXT_MSG = <fgui.GTextField>(this.getChildAt(6));
+		this.UI_TXT_DISBAN = <fgui.GTextField>(this.getChildAt(7));
 		if (this.enableAnimation) this.enterAnimation();
 	}
 	scheduleOnce(callback: () => void, delay: number):void{};
 	unscheduleAllCallbacks():void{};
 	unschedule(callback: () => void):void{};
 	schedule(callback: () => void, interval: number):void{};
+	onBtnRefuse():void{};
+	onBtnAgree():void{};
 }
-fgui.UIObjectFactory.setExtension(FGUIGameView.URL, FGUIGameView);
+fgui.UIObjectFactory.setExtension(FGUICompDisband.URL, FGUICompDisband);
