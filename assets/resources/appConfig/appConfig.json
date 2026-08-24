@@ -1,5 +1,5 @@
 {
-    "appid": 2,
+    "appid": 3,
     "authList": "https://minigame.qiudaoyu.xyz/api/game/authlist",
     "webUrl": "https://minigame.qiudaoyu.xyz",
 
@@ -7,5 +7,5 @@
     "webUrl_dev": "http://192.168.1.131:8080",
 
     "channelID": "wechatMiniGame",
-    "env": "prod"
+    "env": "dev"
 }
