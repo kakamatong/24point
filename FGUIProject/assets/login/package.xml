@@ -3,7 +3,7 @@
   <resources>
     <component id="7ivz0" name="LoginView.xml" path="/" exported="true"/>
     <image id="c2qx1" name="age8.png" path="/imgs/"/>
-    <image id="qagw2" name="logo2.png" path="/imgs/"/>
+    <image id="h3uk3" name="logo.png" path="/imgs/"/>
   </resources>
   <publish name="" genCode="true"/>
 </packageDescription>
