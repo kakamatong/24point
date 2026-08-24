@@ -10,7 +10,7 @@ import { PackageLoad, ViewClass } from "@frameworks/Framework";
 
 /**
  * @class CompBgCube
- * @description 大厅背景单个方块，ctrl_img 控制器 index 0-21 对应 22 种图片
+ * @description 大厅背景单个方块，ctrl_img 控制器 index 0-9 对应 10 种图片
  * @category 大厅背景
  */
 @PackageLoad(["lobbyBg"])
@@ -18,10 +18,10 @@ import { PackageLoad, ViewClass } from "@frameworks/Framework";
 export class CompBgCube extends FGUICompBgCube {
     /**
      * @method randomIndex
-     * @description 随机一个图片 index（0-21）
-     */
+ * @description 随机一个图片 index（0-9）
+ */
     randomIndex(): void {
-        this.ctrl_img.selectedIndex = Math.floor(Math.random() * 22);
+        this.UI_TXT_NUM.text = `${Math.floor(Math.random() * 10)}`;
     }
 }
 fgui.UIObjectFactory.setExtension(CompBgCube.URL, CompBgCube);
