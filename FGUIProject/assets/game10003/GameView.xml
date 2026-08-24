@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <component size="776,1688">
-  <controller name="ctrl_select" pages="0,剪刀,1,石头,2,�? selected=" selected="0"/>
-  <controller name="ctrl_btn" pages="0,都不显示,1,确定,2,更换,3,继续游戏,4,准备" selected="0"/>
-  <controller name="ctrl_playerCnt" pages="0,,1,,2," selected="0"/>
   <displayList>
-    <image id="n45_drdu" name="n45" src="drdu1b" fileName="imgs/gamebg.jpg" xy="0,0" size="776,1688">
+    <image id="n49_h3uk" name="n49" src="h3uk1n" fileName="imgs/bg24.jpg" xy="0,0">
       <relation target="" sidePair="width-width,height-height"/>
     </image>
     <component id="n46_h3uk" name="UI_COMP_MAIN" src="h3uk1d" fileName="comp/CompGameMain.xml" xy="0,0"/>

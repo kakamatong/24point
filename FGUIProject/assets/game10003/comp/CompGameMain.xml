@@ -2,5 +2,6 @@
 <component size="776,1688">
   <displayList>
     <component id="n0_h3uk" name="n0" src="h3uk1c" fileName="comp/CompDisband.xml" xy="13,0" visible="false"/>
+    <component id="n9_h3uk" name="n9" src="h3uk1e" fileName="comp/CompNum.xml" xy="277,780"/>
   </displayList>
 </component>

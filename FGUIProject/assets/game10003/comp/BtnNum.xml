@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component size="166,205" pivot="0.5,0.5" extention="Button">
+  <controller name="button" pages="0,up,1,down,2,over,3,selectedOver" selected="1"/>
+  <displayList>
+    <image id="n1_h3uk" name="n1" src="h3uk1h" fileName="imgs/bgNum.png" xy="0,0"/>
+    <text id="n2_h3uk" name="UI_TXT_NUM" xy="18,-6" size="130,218" fontSize="171" color="#005b3c" align="center" vAlign="middle" autoSize="shrink" singleLine="true" text="8/18"/>
+    <image id="n5_h3uk" name="n5" src="h3uk1l" fileName="imgs/box.png" xy="2,-1">
+      <gearDisplay controller="button" pages="1,3"/>
+    </image>
+  </displayList>
+  <Button mode="Radio"/>
+</component>

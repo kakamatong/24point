@@ -3,9 +3,12 @@
   <resources>
     <component id="is911" name="GameView.xml" path="/" exported="true"/>
     <component id="r1yn1" name="CompVoteInfo.xml" path="/comp/"/>
-    <image id="drdu1b" name="gamebg.jpg" path="/imgs/" scale="9grid" scale9grid="2,2,4,4"/>
     <component id="h3uk1c" name="CompDisband.xml" path="/comp/"/>
     <component id="h3uk1d" name="CompGameMain.xml" path="/comp/"/>
+    <component id="h3uk1e" name="BtnNum.xml" path="/comp/"/>
+    <image id="h3uk1h" name="bgNum.png" path="/imgs/"/>
+    <image id="h3uk1l" name="box.png" path="/imgs/"/>
+    <image id="h3uk1n" name="bg24.jpg" path="/imgs/"/>
   </resources>
   <publish name="" genCode="true"/>
 </packageDescription>

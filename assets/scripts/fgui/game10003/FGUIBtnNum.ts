@@ -6,10 +6,10 @@ import * as fgui from "fairygui-cc";
 import { PackageManager } from "@frameworks/PackageManager";
 import { Logger } from "@frameworks/utils/Utils";
 
-export default class FGUIGameView extends fgui.GComponent {
+export default class FGUIBtnNum extends fgui.GButton {
 
-	public UI_COMP_MAIN:fgui.GComponent;
-	public static URL:string = "ui://2zsfe53xis911";
+	public UI_TXT_NUM:fgui.GTextField;
+	public static URL:string = "ui://2zsfe53xh3uk1e";
 
 	public static packageName:string = "game10003";
 
@@ -18,17 +18,17 @@ export default class FGUIGameView extends fgui.GComponent {
 	public enableAnimation: boolean = false;
 
 	public static showView(params?:any, callBack?:(b:boolean)=>void):void {
-		if(FGUIGameView.instance) {
+		if(FGUIBtnNum.instance) {
 			console.log("allready show");
 			callBack&&callBack(false);
 			return;
 		}
 		PackageManager.instance.loadPackage("fgui", this.packageName).then(()=> {
 
-			const view = fgui.UIPackage.createObject("game10003", "GameView") as FGUIGameView;
+			const view = fgui.UIPackage.createObject("game10003", "BtnNum") as FGUIBtnNum;
 
 			view.makeFullScreen();
-			FGUIGameView.instance = view;
+			FGUIBtnNum.instance = view;
 			fgui.GRoot.inst.addChild(view);
 			view.show && view.show(params);
 			callBack&&callBack(true);
@@ -38,10 +38,10 @@ export default class FGUIGameView extends fgui.GComponent {
 
 	protected onDestroy():void {
 		super.onDestroy();
-		FGUIGameView.instance = null;
+		FGUIBtnNum.instance = null;
 	}
 	public static hideView():void {
-		FGUIGameView.instance && FGUIGameView.instance.dispose();
+		FGUIBtnNum.instance && FGUIBtnNum.instance.dispose();
 	}
 
 	show(data?:any):void{};
@@ -67,12 +67,12 @@ export default class FGUIGameView extends fgui.GComponent {
 		    });
 	}
 
-	public static createInstance():FGUIGameView {
-		return <FGUIGameView>(fgui.UIPackage.createObject("game10003", "GameView"));
+	public static createInstance():FGUIBtnNum {
+		return <FGUIBtnNum>(fgui.UIPackage.createObject("game10003", "BtnNum"));
 	}
 
 	protected onConstruct():void {
-		this.UI_COMP_MAIN = <fgui.GComponent>(this.getChildAt(1));
+		this.UI_TXT_NUM = <fgui.GTextField>(this.getChildAt(1));
 		if (this.enableAnimation) this.enterAnimation();
 	}
 	scheduleOnce(callback: () => void, delay: number):void{};
@@ -80,4 +80,4 @@ export default class FGUIGameView extends fgui.GComponent {
 	unschedule(callback: () => void):void{};
 	schedule(callback: () => void, interval: number):void{};
 }
-fgui.UIObjectFactory.setExtension(FGUIGameView.URL, FGUIGameView);
+fgui.UIObjectFactory.setExtension(FGUIBtnNum.URL, FGUIBtnNum);
