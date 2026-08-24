@@ -38,7 +38,7 @@ export class ConnectSvr extends BaseModule {
         };
 
         const req = {
-            appid: 2,
+            appid: DataCenter.instance.appConfig.appid ?? 2,
             loginType: DataCenter.instance.channelLoginType,
             loginData: data,
         };
