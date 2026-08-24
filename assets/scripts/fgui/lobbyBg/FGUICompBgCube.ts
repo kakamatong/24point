@@ -8,7 +8,6 @@ import { Logger } from "@frameworks/utils/Utils";
 
 export default class FGUICompBgCube extends fgui.GComponent {
 
-	public ctrl_img:fgui.Controller;
 	public UI_TXT_NUM:fgui.GTextField;
 	public static URL:string = "ui://m52rjp09ddk1o";
 
@@ -73,7 +72,6 @@ export default class FGUICompBgCube extends fgui.GComponent {
 	}
 
 	protected onConstruct():void {
-		this.ctrl_img = this.getControllerAt(0);
 		this.UI_TXT_NUM = <fgui.GTextField>(this.getChildAt(1));
 		if (this.enableAnimation) this.enterAnimation();
 	}
