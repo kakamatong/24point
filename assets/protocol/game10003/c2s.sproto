@@ -114,7 +114,7 @@ ownerStartGame 27 {
 # 提交算式
 submitAnswer 21 {
     request {
-        expression 0 : string  # 算式，如 8/(3-8/3)
+        expression 0 : string  # 算式，如 8/((3-8)/3)
     }
     response {
         code 0 : integer       # 1:正确, 0:错误
