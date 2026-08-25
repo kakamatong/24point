@@ -1,15 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <component size="700,818">
-  <controller name="ctrl_nums" pages="0,,1,,2,,3," selected="0"/>
-  <controller name="ctrl_symbol" pages="0,,1,,2,,3," selected="0">
+  <controller name="ctrl_nums" pages="0,,1,,2,,3,,4," selected="0">
+    <remark page="0" value="第1个数字"/>
+    <remark page="1" value="第2个数字"/>
+    <remark page="2" value="第3个数字"/>
+    <remark page="3" value="第4个数字"/>
+    <remark page="4" value="都不选中"/>
+  </controller>
+  <controller name="ctrl_symbol" pages="0,,1,,2,,3,,5," selected="0">
     <remark page="0" value="加"/>
     <remark page="1" value="减"/>
     <remark page="2" value="乘"/>
     <remark page="3" value="除"/>
+    <remark page="4" value="都不选中"/>
   </controller>
   <displayList>
     <component id="n0_h3uk" name="UI_BTN_NUM_0" src="h3uk1e" fileName="comp/BtnNum.xml" xy="113,88" group="n4_h3uk">
-      <Button title="8" controller="ctrl_nums" page="0"/>
+      <Button checked="true" title="8" controller="ctrl_nums" page="0"/>
     </component>
     <component id="n1_h3uk" name="UI_BTN_NUM_1" src="h3uk1e" fileName="comp/BtnNum.xml" xy="419,93" group="n4_h3uk">
       <Button title="8" controller="ctrl_nums" page="1"/>

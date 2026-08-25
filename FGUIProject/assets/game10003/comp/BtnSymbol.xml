@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<component size="120,120" extention="Button">
+<component size="120,120" pivot="0.5,0.5" extention="Button">
   <controller name="button" pages="0,up,1,down,2,over,3,selectedOver" selected="0"/>
   <displayList>
     <image id="n3_h3uk" name="n3" src="h3uk1o" fileName="imgs/bgx.png" xy="0,0"/>
@@ -8,5 +8,5 @@
     </image>
     <text id="n6_h3uk" name="title" xy="18,8" pivot="0.5,0.5" size="84,104" fontSize="80" color="#005b3c" align="center" vAlign="middle" singleLine="true" text="×"/>
   </displayList>
-  <Button/>
+  <Button sound="ui://gj0r6g5ifugr15" downEffect="scale" downEffectValue="0.9"/>
 </component>

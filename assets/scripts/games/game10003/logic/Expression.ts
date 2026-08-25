@@ -121,6 +121,29 @@ function fractionDiv(a: FRACTION, b: FRACTION): FRACTION | null {
 }
 
 /**
+ * @method calc
+ * @description 分数四则运算统一入口
+ * @param {FRACTION} a - 分数a
+ * @param {string} op - 运算符："+" 加、"-" 减、"*" 乘、"/" 除
+ * @param {FRACTION} b - 分数b
+ * @returns {FRACTION | null} 结果分数，除数为0时返回 null
+ */
+export function calc(a: FRACTION, op: string, b: FRACTION): FRACTION | null {
+    switch (op) {
+        case "+":
+            return fractionAdd(a, b);
+        case "-":
+            return fractionSub(a, b);
+        case "*":
+            return fractionMul(a, b);
+        case "/":
+            return fractionDiv(a, b);
+        default:
+            return null;
+    }
+}
+
+/**
  * @method tokenize
  * @description 分词器：将表达式字符串拆分为 token 列表
  * @param {string} str - 表达式字符串
