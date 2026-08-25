@@ -14,25 +14,6 @@ import { calc, FRACTION } from "../../../logic/Expression";
 import { submitAnswer } from "../../../net/SubmitAnswer";
 
 /**
- * @interface UNDO_ITEM
- * @description 撤销栈元素：记录一次运算前两个格子（被消耗格与结果格）的状态
- */
-interface UNDO_ITEM {
-    /** 被消耗的格 */
-    first: number;
-    /** 结果格 */
-    second: number;
-    /** 被消耗格运算前的数值 */
-    firstValue: FRACTION | null;
-    /** 结果格运算前的数值 */
-    secondValue: FRACTION | null;
-    /** 被消耗格运算前的算式 */
-    firstExpr: string;
-    /** 结果格运算前的算式 */
-    secondExpr: string;
-}
-
-/**
  * @class CompCtrl
  * @description 算24点操作组件业务子类：管理数字格状态机（选数/选符/合并运算/撤销/提交）
  * @category 游戏 10003
@@ -57,10 +38,8 @@ export class CompCtrl extends FGUICompCtrl {
     private _opCount: number = 0;
     /** 飞行动画期间锁定输入 */
     private _busy: boolean = false;
-    /** 本局发牌数字（提交用） */
+    /** 本局发牌数字（提交与撤销重置用） */
     private _dealNumbers: number[] = [];
-    /** 撤销栈 */
-    private _undoStack: UNDO_ITEM[] = [];
     /** 当前飞行 tween 引用 */
     private _flyTween: fgui.GTweener | null = null;
 
@@ -99,10 +78,26 @@ export class CompCtrl extends FGUICompCtrl {
         }
         this.resetRound();
         this._dealNumbers = data.numbers.slice();
-        for (let i = 0; i < 4 && i < data.numbers.length; i++) {
+        this.applyDealNumbers(this._dealNumbers);
+    }
+
+    /**
+     * @description 将发牌数字写入四格：设置数值/算式、显示按钮并刷新标题
+     * @param {number[]} numbers - 发牌数字
+     * @private
+     */
+    private applyDealNumbers(numbers: number[]): void {
+        for (let i = 0; i < this._numBtns.length; i++) {
+            const num = numbers[i];
+            if (num === undefined) {
+                this._slots[i] = null;
+                this._exprs[i] = "";
+                this._numBtns[i].visible = false;
+                continue;
+            }
             // 发牌数字均为正整数，直接构造最简分数 {n, d=1}
-            this._slots[i] = { n: data.numbers[i], d: 1 };
-            this._exprs[i] = `${data.numbers[i]}`;
+            this._slots[i] = { n: num, d: 1 };
+            this._exprs[i] = `${num}`;
             this._numBtns[i].visible = true;
             this._numBtns[i].title = this.formatFraction(this._slots[i] as FRACTION);
         }
@@ -230,15 +225,6 @@ export class CompCtrl extends FGUICompCtrl {
             this.ctrl_symbol.selectedIndex = 4;
             return;
         }
-        // 入栈运算前状态，供撤销
-        this._undoStack.push({
-            first,
-            second,
-            firstValue: a,
-            secondValue: b,
-            firstExpr: this._exprs[first],
-            secondExpr: this._exprs[second],
-        });
         const opChar = CompCtrl._OP_CHARS[this._selSymbol];
         this._busy = true;
         const fromBtn = this._numBtns[first];
@@ -286,29 +272,16 @@ export class CompCtrl extends FGUICompCtrl {
     }
 
     /**
-     * @description 撤销上一步运算（公开接口，暂无调用入口）：恢复被消耗格与结果格的数值/算式/显示
+     * @description 撤销整局操作（公开接口，暂无调用入口）：恢复到发牌初始状态
      */
     public undo(): void {
-        if (this._busy || this._undoStack.length === 0) {
+        if (this._busy || this._opCount === 0) {
             return;
         }
-        const item = this._undoStack.pop();
-        if (!item) {
-            return;
-        }
-        // 恢复被消耗格
-        this._slots[item.first] = item.firstValue;
-        this._exprs[item.first] = item.firstExpr;
-        const firstBtn = this._numBtns[item.first];
-        firstBtn.visible = true;
-        firstBtn.setPosition(this._numBtnPos[item.first].x, this._numBtnPos[item.first].y);
-        firstBtn.title = item.firstValue ? this.formatFraction(item.firstValue) : "";
-        // 恢复结果格
-        this._slots[item.second] = item.secondValue;
-        this._exprs[item.second] = item.secondExpr;
-        this._numBtns[item.second].title = item.secondValue ? this.formatFraction(item.secondValue) : "";
-        this._opCount--;
-        this.clearSelection();
+        this._flyTween && this._flyTween.kill();
+        this._flyTween = null;
+        this.resetRound();
+        this.applyDealNumbers(this._dealNumbers);
     }
 
     /**
@@ -320,7 +293,6 @@ export class CompCtrl extends FGUICompCtrl {
         this._flyTween = null;
         this._busy = false;
         this._opCount = 0;
-        this._undoStack = [];
         this._slots = [null, null, null, null];
         this._exprs = ["", "", "", ""];
         for (let i = 0; i < this._numBtns.length; i++) {
