@@ -13,6 +13,17 @@
     <image id="h3uk1p" name="bgx2.png" path="/imgs/"/>
     <component id="h3uk1q" name="BtnSymbol.xml" path="/comp/"/>
     <component id="h3uk1r" name="CompCtrl.xml" path="/comp/"/>
+    <component id="ifzr1s" name="CompPirvateInfo.xml" path="/comp/"/>
+    <component id="ifzr1t" name="CompOtherPlayer.xml" path="/comp/"/>
+    <component id="ifzr1u" name="CompPlayerHead.xml" path="/comp/"/>
+    <component id="ifzr1v" name="CompPlayers.xml" path="/comp/"/>
+    <image id="ifzr1w" name="comp.png" path="/imgs/"/>
+    <image id="ifzr1x" name="unComp.png" path="/imgs/"/>
+    <component id="vg621y" name="CompTalk.xml" path="/comp/"/>
+    <image id="vg621z" name="talkbg.png" path="/imgs/" scale="9grid" scale9grid="32,22,40,21"/>
+    <image id="vg6220" name="ready.png" path="/imgs/"/>
+    <component id="vg6221" name="CompOffline.xml" path="/comp/"/>
+    <image id="vg6222" name="offline.png" path="/imgs/"/>
   </resources>
   <publish name="" genCode="true"/>
 </packageDescription>

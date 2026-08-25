@@ -1,9 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <component size="776,1688">
+  <controller name="ctrl_roomtype" pages="0,,1," selected="0">
+    <remark page="0" value="普通房"/>
+    <remark page="1" value="私人房"/>
+  </controller>
   <displayList>
     <component id="n0_h3uk" name="n0" src="h3uk1c" fileName="comp/CompDisband.xml" xy="13,0" visible="false"/>
-    <component id="n10_h3uk" name="n10" src="h3uk1r" fileName="comp/CompCtrl.xml" xy="38,506">
+    <component id="n10_h3uk" name="UI_COMP_CTRL" src="h3uk1r" fileName="comp/CompCtrl.xml" xy="38,506">
       <relation target="" sidePair="center-center,middle-middle"/>
     </component>
+    <component id="n11_ifzr" name="UI_BTN_INVITE" src="is91n" fileName="comp/CompBtnCommon.xml" pkg="gj0r6g5i" xy="272,1124" size="230,98" group="n13_ifzr" controller="ctrl_color,2">
+      <Button title="邀请好友" icon="ui://gj0r6g5ijorf1h"/>
+    </component>
+    <component id="n12_ifzr" name="UI_BTN_START_GAME" src="is91n" fileName="comp/CompBtnCommon.xml" pkg="gj0r6g5i" xy="272,1126" size="230,98" group="n13_ifzr" visible="false" controller="ctrl_color,3">
+      <Button title="开始游戏" icon="ui://gj0r6g5ijorf1g"/>
+    </component>
+    <component id="n19_x6u8" name="UI_BTN_READY" src="is91n" fileName="comp/CompBtnCommon.xml" pkg="gj0r6g5i" xy="284,1126" size="230,98" group="n13_ifzr" visible="false" controller="ctrl_color,3">
+      <Button title="开始游戏" icon="ui://gj0r6g5ijorf1g"/>
+    </component>
+    <group id="n13_ifzr" name="n13" xy="272,1124" size="230,98" advanced="true" layout="hz" colGap="119" excludeInvisibles="true">
+      <gearDisplay controller="ctrl_roomtype" pages="1"/>
+      <relation target="" sidePair="center-center,middle-middle"/>
+    </group>
+    <component id="n14_ifzr" name="UI_COMP_PRIVITE_INFO" src="ifzr1s" fileName="comp/CompPirvateInfo.xml" xy="180,720">
+      <gearDisplay controller="ctrl_roomtype" pages="1"/>
+      <relation target="" sidePair="center-center,middle-middle"/>
+    </component>
+    <component id="n15_ifzr" name="UI_COMP_PLAYERS" src="ifzr1v" fileName="comp/CompPlayers.xml" xy="9,0">
+      <relation target="" sidePair="width-width,top-top"/>
+    </component>
+    <component id="n16_ifzr" name="UI_COMP_SELFPLAYER" src="ifzr1u" fileName="comp/CompPlayerHead.xml" xy="23,1499" group="n18_ifzr">
+      <gearDisplay controller="ctrl_roomtype" pages="0,1"/>
+      <relation target="" sidePair="left-left,bottom-bottom"/>
+    </component>
+    <component id="n17_ifzr" name="UI_COMP_SELF_MEDAL" src="eijp1f" fileName="comp/CompMedal.xml" pkg="so20wr0w" xy="136,1495" group="n18_ifzr">
+      <relation target="" sidePair="left-left,bottom-bottom"/>
+    </component>
+    <group id="n18_ifzr" name="n18" xy="23,1495" size="173,165"/>
+    <image id="n20_x6u8" name="n20" src="jin6a" fileName="imgs/mask.png" pkg="gj0r6g5i" xy="567,16" size="201,49" group="n22_x6u8"/>
+    <text id="n21_x6u8" name="UI_TXT_PROGRESS" xy="598,24" size="144,36" group="n22_x6u8" fontSize="26" color="#ffffff" align="center" vAlign="middle" text="第0轮 共5轮"/>
+    <group id="n22_x6u8" name="n22" xy="567,16" size="201,49" advanced="true">
+      <gearDisplay controller="ctrl_roomtype" pages="1"/>
+      <relation target="" sidePair="right-right,top-top"/>
+    </group>
   </displayList>
 </component>

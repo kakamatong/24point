@@ -2,15 +2,14 @@
 
 import { assetManager, AssetManager } from "cc";
 import * as fgui from "fairygui-cc";
-import FGUICompGameMain from "./FGUICompGameMain";
 
 import { PackageManager } from "@frameworks/PackageManager";
 import { Logger } from "@frameworks/utils/Utils";
 
-export default class FGUIGameView extends fgui.GComponent {
+export default class FGUICompOffline extends fgui.GComponent {
 
-	public UI_COMP_MAIN:FGUICompGameMain;
-	public static URL:string = "ui://2zsfe53xis911";
+	public act:fgui.Transition;
+	public static URL:string = "ui://2zsfe53xvg6221";
 
 	public static packageName:string = "game10003";
 
@@ -19,17 +18,17 @@ export default class FGUIGameView extends fgui.GComponent {
 	public enableAnimation: boolean = false;
 
 	public static showView(params?:any, callBack?:(b:boolean)=>void):void {
-		if(FGUIGameView.instance) {
+		if(FGUICompOffline.instance) {
 			console.log("allready show");
 			callBack&&callBack(false);
 			return;
 		}
 		PackageManager.instance.loadPackage("fgui", this.packageName).then(()=> {
 
-			const view = fgui.UIPackage.createObject("game10003", "GameView") as FGUIGameView;
+			const view = fgui.UIPackage.createObject("game10003", "CompOffline") as FGUICompOffline;
 
 			view.makeFullScreen();
-			FGUIGameView.instance = view;
+			FGUICompOffline.instance = view;
 			fgui.GRoot.inst.addChild(view);
 			view.show && view.show(params);
 			callBack&&callBack(true);
@@ -39,10 +38,10 @@ export default class FGUIGameView extends fgui.GComponent {
 
 	protected onDestroy():void {
 		super.onDestroy();
-		FGUIGameView.instance = null;
+		FGUICompOffline.instance = null;
 	}
 	public static hideView():void {
-		FGUIGameView.instance && FGUIGameView.instance.dispose();
+		FGUICompOffline.instance && FGUICompOffline.instance.dispose();
 	}
 
 	show(data?:any):void{};
@@ -68,12 +67,12 @@ export default class FGUIGameView extends fgui.GComponent {
 		    });
 	}
 
-	public static createInstance():FGUIGameView {
-		return <FGUIGameView>(fgui.UIPackage.createObject("game10003", "GameView"));
+	public static createInstance():FGUICompOffline {
+		return <FGUICompOffline>(fgui.UIPackage.createObject("game10003", "CompOffline"));
 	}
 
 	protected onConstruct():void {
-		this.UI_COMP_MAIN = <FGUICompGameMain>(this.getChildAt(1));
+		this.act = this.getTransitionAt(0);
 		if (this.enableAnimation) this.enterAnimation();
 	}
 	scheduleOnce(callback: () => void, delay: number):void{};
@@ -81,4 +80,4 @@ export default class FGUIGameView extends fgui.GComponent {
 	unschedule(callback: () => void):void{};
 	schedule(callback: () => void, interval: number):void{};
 }
-fgui.UIObjectFactory.setExtension(FGUIGameView.URL, FGUIGameView);
+fgui.UIObjectFactory.setExtension(FGUICompOffline.URL, FGUICompOffline);

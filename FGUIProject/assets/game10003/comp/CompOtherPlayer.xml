@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component size="160,324">
+  <controller name="ctrl_bComplate" pages="0,,1,,2," selected="0">
+    <remark page="0" value="进行中"/>
+    <remark page="1" value="已经完成"/>
+    <remark page="2" value="未完成"/>
+  </controller>
+  <displayList>
+    <component id="n7_ifzr" name="UI_COMP_HEAD" src="ifzr1u" fileName="comp/CompPlayerHead.xml" xy="0,0"/>
+    <image id="n3_eijp" name="n3" pkg="2zsfe53x" src="eijpz" fileName="imgs/comp.png" xy="20,205" size="120,70" aspect="true">
+      <gearDisplay controller="ctrl_bComplate" pages="1"/>
+    </image>
+    <component id="n5_eijp" name="UI_COMP_MEDAL" src="eijp1f" fileName="comp/CompMedal.xml" pkg="so20wr0w" xy="107,-2" controller="ctrl_rank,0"/>
+    <image id="n6_rei5" name="n6" pkg="2zsfe53x" src="rei519" fileName="imgs/unComp.png" xy="-2,205" size="165,70" aspect="true">
+      <gearDisplay controller="ctrl_bComplate" pages="2"/>
+    </image>
+    <image id="n8_ifzr" name="n8" src="ifzr1w" fileName="imgs/comp.png" xy="0,191">
+      <gearDisplay controller="ctrl_bComplate" pages="1"/>
+    </image>
+    <image id="n9_ifzr" name="n9" src="ifzr1x" fileName="imgs/unComp.png" xy="-30,184">
+      <gearDisplay controller="ctrl_bComplate" pages="2"/>
+    </image>
+  </displayList>
+</component>

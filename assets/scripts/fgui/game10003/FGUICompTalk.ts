@@ -2,15 +2,15 @@
 
 import { assetManager, AssetManager } from "cc";
 import * as fgui from "fairygui-cc";
-import FGUICompGameMain from "./FGUICompGameMain";
 
 import { PackageManager } from "@frameworks/PackageManager";
 import { Logger } from "@frameworks/utils/Utils";
 
-export default class FGUIGameView extends fgui.GComponent {
+export default class FGUICompTalk extends fgui.GComponent {
 
-	public UI_COMP_MAIN:FGUICompGameMain;
-	public static URL:string = "ui://2zsfe53xis911";
+	public UI_BG_0:fgui.GImage;
+	public UI_TXT_0:fgui.GTextField;
+	public static URL:string = "ui://2zsfe53xvg621y";
 
 	public static packageName:string = "game10003";
 
@@ -19,17 +19,17 @@ export default class FGUIGameView extends fgui.GComponent {
 	public enableAnimation: boolean = false;
 
 	public static showView(params?:any, callBack?:(b:boolean)=>void):void {
-		if(FGUIGameView.instance) {
+		if(FGUICompTalk.instance) {
 			console.log("allready show");
 			callBack&&callBack(false);
 			return;
 		}
 		PackageManager.instance.loadPackage("fgui", this.packageName).then(()=> {
 
-			const view = fgui.UIPackage.createObject("game10003", "GameView") as FGUIGameView;
+			const view = fgui.UIPackage.createObject("game10003", "CompTalk") as FGUICompTalk;
 
 			view.makeFullScreen();
-			FGUIGameView.instance = view;
+			FGUICompTalk.instance = view;
 			fgui.GRoot.inst.addChild(view);
 			view.show && view.show(params);
 			callBack&&callBack(true);
@@ -39,10 +39,10 @@ export default class FGUIGameView extends fgui.GComponent {
 
 	protected onDestroy():void {
 		super.onDestroy();
-		FGUIGameView.instance = null;
+		FGUICompTalk.instance = null;
 	}
 	public static hideView():void {
-		FGUIGameView.instance && FGUIGameView.instance.dispose();
+		FGUICompTalk.instance && FGUICompTalk.instance.dispose();
 	}
 
 	show(data?:any):void{};
@@ -68,12 +68,13 @@ export default class FGUIGameView extends fgui.GComponent {
 		    });
 	}
 
-	public static createInstance():FGUIGameView {
-		return <FGUIGameView>(fgui.UIPackage.createObject("game10003", "GameView"));
+	public static createInstance():FGUICompTalk {
+		return <FGUICompTalk>(fgui.UIPackage.createObject("game10003", "CompTalk"));
 	}
 
 	protected onConstruct():void {
-		this.UI_COMP_MAIN = <FGUICompGameMain>(this.getChildAt(1));
+		this.UI_BG_0 = <fgui.GImage>(this.getChildAt(0));
+		this.UI_TXT_0 = <fgui.GTextField>(this.getChildAt(1));
 		if (this.enableAnimation) this.enterAnimation();
 	}
 	scheduleOnce(callback: () => void, delay: number):void{};
@@ -81,4 +82,4 @@ export default class FGUIGameView extends fgui.GComponent {
 	unschedule(callback: () => void):void{};
 	schedule(callback: () => void, interval: number):void{};
 }
-fgui.UIObjectFactory.setExtension(FGUIGameView.URL, FGUIGameView);
+fgui.UIObjectFactory.setExtension(FGUICompTalk.URL, FGUICompTalk);

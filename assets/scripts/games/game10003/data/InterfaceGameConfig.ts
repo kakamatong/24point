@@ -169,5 +169,6 @@ export interface GAME_DATA {
 }
 
 // 消息转发类型
-export enum FORWARD_MESSAGE_TYPE {}
-//TALK = 1, // 聊天
+export enum FORWARD_MESSAGE_TYPE {
+    TALK = 1, // 聊天
+}

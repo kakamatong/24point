@@ -2,15 +2,17 @@
 
 import { assetManager, AssetManager } from "cc";
 import * as fgui from "fairygui-cc";
-import FGUICompGameMain from "./FGUICompGameMain";
+import FGUICompPlayerHead from "./FGUICompPlayerHead";
 
 import { PackageManager } from "@frameworks/PackageManager";
 import { Logger } from "@frameworks/utils/Utils";
 
-export default class FGUIGameView extends fgui.GComponent {
+export default class FGUICompOtherPlayer extends fgui.GComponent {
 
-	public UI_COMP_MAIN:FGUICompGameMain;
-	public static URL:string = "ui://2zsfe53xis911";
+	public ctrl_bComplate:fgui.Controller;
+	public UI_COMP_HEAD:FGUICompPlayerHead;
+	public UI_COMP_MEDAL:fgui.GComponent;
+	public static URL:string = "ui://2zsfe53xifzr1t";
 
 	public static packageName:string = "game10003";
 
@@ -19,17 +21,17 @@ export default class FGUIGameView extends fgui.GComponent {
 	public enableAnimation: boolean = false;
 
 	public static showView(params?:any, callBack?:(b:boolean)=>void):void {
-		if(FGUIGameView.instance) {
+		if(FGUICompOtherPlayer.instance) {
 			console.log("allready show");
 			callBack&&callBack(false);
 			return;
 		}
 		PackageManager.instance.loadPackage("fgui", this.packageName).then(()=> {
 
-			const view = fgui.UIPackage.createObject("game10003", "GameView") as FGUIGameView;
+			const view = fgui.UIPackage.createObject("game10003", "CompOtherPlayer") as FGUICompOtherPlayer;
 
 			view.makeFullScreen();
-			FGUIGameView.instance = view;
+			FGUICompOtherPlayer.instance = view;
 			fgui.GRoot.inst.addChild(view);
 			view.show && view.show(params);
 			callBack&&callBack(true);
@@ -39,10 +41,10 @@ export default class FGUIGameView extends fgui.GComponent {
 
 	protected onDestroy():void {
 		super.onDestroy();
-		FGUIGameView.instance = null;
+		FGUICompOtherPlayer.instance = null;
 	}
 	public static hideView():void {
-		FGUIGameView.instance && FGUIGameView.instance.dispose();
+		FGUICompOtherPlayer.instance && FGUICompOtherPlayer.instance.dispose();
 	}
 
 	show(data?:any):void{};
@@ -68,12 +70,14 @@ export default class FGUIGameView extends fgui.GComponent {
 		    });
 	}
 
-	public static createInstance():FGUIGameView {
-		return <FGUIGameView>(fgui.UIPackage.createObject("game10003", "GameView"));
+	public static createInstance():FGUICompOtherPlayer {
+		return <FGUICompOtherPlayer>(fgui.UIPackage.createObject("game10003", "CompOtherPlayer"));
 	}
 
 	protected onConstruct():void {
-		this.UI_COMP_MAIN = <FGUICompGameMain>(this.getChildAt(1));
+		this.ctrl_bComplate = this.getControllerAt(0);
+		this.UI_COMP_HEAD = <FGUICompPlayerHead>(this.getChildAt(0));
+		this.UI_COMP_MEDAL = <fgui.GComponent>(this.getChildAt(2));
 		if (this.enableAnimation) this.enterAnimation();
 	}
 	scheduleOnce(callback: () => void, delay: number):void{};
@@ -81,4 +85,4 @@ export default class FGUIGameView extends fgui.GComponent {
 	unschedule(callback: () => void):void{};
 	schedule(callback: () => void, interval: number):void{};
 }
-fgui.UIObjectFactory.setExtension(FGUIGameView.URL, FGUIGameView);
+fgui.UIObjectFactory.setExtension(FGUICompOtherPlayer.URL, FGUICompOtherPlayer);
