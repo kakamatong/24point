@@ -59,6 +59,7 @@ export class CompGameMain extends FGUICompGameMain {
     onConstruct() {
         super.onConstruct();
         this.init();
+        this.initListeners();
 
         // 客户端进入完成
         if (GameData.instance.isChallengeMode) {
@@ -80,6 +81,13 @@ export class CompGameMain extends FGUICompGameMain {
      */
     protected onDestroy(): void {
         super.onDestroy();
+        this.removeListeners();
+        if (GameData.instance.isLocalGame || GameData.instance.isChallengeMode) {
+            LocalSvr.instance.destroy();
+        }
+        if (GameSocketManager.instance.isOpen()) {
+            GameSocketManager.instance.close();
+        }
     }
 
     /**
