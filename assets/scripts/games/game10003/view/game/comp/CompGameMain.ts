@@ -33,7 +33,7 @@ import { SprotoGameRoomReady } from "../../../../../../types/protocol/lobby/s2c"
 import { Logger } from "@frameworks/utils/Utils";
 import { MatchView } from "@view/match/MatchView";
 import { AuthGame } from "@modules/AuthGame";
-import { SprotoClientReady } from "../../../../../../types/protocol/game10003/c2s";
+import { SprotoClientReady, SprotoLeaveRoom } from "../../../../../../types/protocol/game10003/c2s";
 import { PopMessageView } from "@view/common/PopMessageView";
 import { ENUM_POP_MESSAGE_TYPE } from "@datacenter/InterfaceConfig";
 import { CompPlayers } from "./CompPlayers";
@@ -836,6 +836,47 @@ export class CompGameMain extends FGUICompGameMain {
      */
     onSvrStepId(data: SprotoStepId.Request) {
         GameData.instance.gameStep = data.step;
+    }
+
+    /**
+     * 返回按钮处理
+     */
+    onBtnBack(): void {
+        // 闯关模式：游戏开始状态下退出增加二级确认弹窗
+        if (GameData.instance.isChallengeMode && GameData.instance.gameStart) {
+            PopMessageView.showView({
+                title: "温馨提示",
+                content: "退出将放弃本局进度",
+                type: ENUM_POP_MESSAGE_TYPE.NUM2,
+                sureBack: () => {
+                    this.changeToLobbyScene();
+                },
+            });
+            return;
+        }
+        // 如果房间的socket已经断开，直接退出
+        if (!GameSocketManager.instance.isOpen()) {
+            return this.changeToLobbyScene();
+        }
+        // 私人房退出 需要发送协议
+        if (GameData.instance.isPrivateRoom) {
+            if (!GameData.instance.roomEnd) {
+                if (GameData.instance.gameStart) {
+                    Logger.log("游戏中无法退出");
+                } else {
+                    GameSocketManager.instance.sendToServer(SprotoLeaveRoom, { flag: 1 });
+                }
+            }
+        }
+
+        if (GameData.instance.gameStart) {
+            PopMessageView.showView({
+                type: ENUM_POP_MESSAGE_TYPE.NUM1SURE,
+                content: "游戏进行中，无法返回",
+            });
+        } else {
+            this.changeToLobbyScene();
+        }
     }
 }
 fgui.UIObjectFactory.setExtension(CompGameMain.URL, CompGameMain);

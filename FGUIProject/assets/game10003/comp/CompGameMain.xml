@@ -43,5 +43,9 @@
       <gearDisplay controller="ctrl_roomtype" pages="1"/>
       <relation target="" sidePair="right-right,top-top"/>
     </group>
+    <component id="n23_z8r5" name="UI_BTN_BACK" src="is91n" fileName="comp/CompBtnCommon.xml" pkg="gj0r6g5i" xy="7,10" size="119,75">
+      <relation target="" sidePair="left-left,top-top"/>
+      <Button icon="ui://gj0r6g5ioott1p"/>
+    </component>
   </displayList>
 </component>
