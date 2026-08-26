@@ -1,7 +1,7 @@
 /**
  * @file TalkConfig.ts
  * @description 聊天配置：定义游戏中的快捷聊天内容
- * @category 游戏 10002
+ * @category 游戏 10003
  */
 
 /**

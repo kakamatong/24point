@@ -253,7 +253,7 @@ export class CompChapter extends FGUICompChapter {
      * @private
      */
     private doStartChallenge(config: MAP_LEVEL_CONFIG) {
-        ConnectGameSvr.instance.connectLocalGame({ gameid: 10002, challengeConfig: config }, (success) => {
+        ConnectGameSvr.instance.connectLocalGame({ gameid: 10003, challengeConfig: config }, (success) => {
             if (success) {
                 ChangeScene("GameScene");
             }

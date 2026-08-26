@@ -288,7 +288,7 @@ export class CompLobbyMain extends FGUICompLobbyMain {
     }
 
     onBtnLocalgame(): void {
-        ConnectGameSvr.instance.connectLocalGame({ gameid: 10002 }, (b: boolean) => {
+        ConnectGameSvr.instance.connectLocalGame({ gameid: 10003 }, (b: boolean) => {
             b && this.changeToGameScene();
         });
     }

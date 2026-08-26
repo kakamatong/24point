@@ -8,14 +8,14 @@ import { Logger } from "@frameworks/utils/Utils";
 /**
  * @typedef PlayerCompleteStatus
  * @description 玩家完成状态类型
- * @category 游戏 10002 - 连连看
+ * @category 游戏 10003
  */
 export type PlayerCompleteStatus = "playing" | "completed" | "incomplete";
 
 /**
  * @constant PLAYER_STATUS_MAP
  * @description 玩家状态到控制器索引的映射
- * @category 游戏 10002 - 连连看
+ * @category 游戏 10003
  */
 export const PLAYER_STATUS_MAP: Record<PlayerCompleteStatus, number> = {
     "playing": 0, // 进行中
@@ -25,8 +25,8 @@ export const PLAYER_STATUS_MAP: Record<PlayerCompleteStatus, number> = {
 
 /**
  * @class CompOtherPlayer
- * @description 其他玩家组件，包含头像和小地图预览
- * @category 游戏 10002 - 连连看
+ * @description 其他玩家组件，包含头像
+ * @category 游戏 10003
  */
 @ViewClass()
 export class CompOtherPlayer extends FGUICompOtherPlayer {

@@ -10,7 +10,7 @@ import { CompTalk } from "./CompTalk";
 /**
  * @class CompPlayerHead
  * @description 玩家头像组件，封装玩家信息展示的所有逻辑
- * @category 游戏 10002 - 连连看
+ * @category 游戏 10003
  */
 @ViewClass()
 export class CompPlayerHead extends FGUICompPlayerHead {

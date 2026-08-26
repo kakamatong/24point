@@ -1,7 +1,7 @@
 /**
  * @file Gamedata.ts
- * @description 游戏数据：管理游戏 10002 的游戏数据
- * @category 游戏 10002
+ * @description 游戏数据：管理游戏 10003 的游戏数据
+ * @category 游戏 10003
  */
 
 import { DEFAULT_HEADURL } from "@datacenter/InterfaceConfig";
@@ -9,8 +9,8 @@ import { GAME_PLAYER_INFO, ENUM_GAME_STEP, GAME_DATA } from "./InterfaceGameConf
 
 /**
  * @class GameData
- * @description 游戏数据类，管理游戏 10002 的游戏数据，使用单例模式
- * @category 游戏 10002
+ * @description 游戏数据类，管理游戏 10003 的游戏数据，使用单例模式
+ * @category 游戏 10003
  * @singleton 单例模式
  */
 export class GameData {

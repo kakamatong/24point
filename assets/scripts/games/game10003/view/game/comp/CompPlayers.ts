@@ -8,7 +8,7 @@ import { Logger } from "@frameworks/utils/Utils";
 /**
  * @class CompPlayers
  * @description 其他玩家列表管理组件
- * @category 游戏 10002 - 连连看
+ * @category 游戏 10003
  */
 @ViewClass()
 export class CompPlayers extends FGUICompPlayers {
