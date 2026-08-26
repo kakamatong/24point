@@ -170,14 +170,10 @@ export class CompCtrl extends FGUICompCtrl {
         }
         if (this._selFirst === -1) {
             this._selFirst = i;
-            this.ctrl_nums.selectedIndex = i;
         } else if (this._selFirst === i) {
-            // 再点同一格：取消选中（连带取消符号）
-            this.clearSelection();
         } else if (this._selSymbol === -1) {
             // 未选符号时点其他格：移动选中（换数）
             this._selFirst = i;
-            this.ctrl_nums.selectedIndex = i;
         } else {
             this.performOperation(this._selFirst, i);
         }
@@ -243,7 +239,12 @@ export class CompCtrl extends FGUICompCtrl {
                 this._exprs[second] = `(${this._exprs[first]})${opChar}(${this._exprs[second]})`;
                 toBtn.title = this.formatFraction(result);
                 this._opCount++;
-                this.clearSelection();
+                // 只清理运算符号，保留数字选中状态
+                this._selSymbol = -1;
+                this.ctrl_symbol.selectedIndex = 4;
+                // 选中计算结果卡片（第二格）
+                this._selFirst = second;
+                this.ctrl_nums.selectedIndex = second;
                 // 三次运算后只剩一个数字，进入结算
                 if (this._opCount >= 3) {
                     this.finishRound();
