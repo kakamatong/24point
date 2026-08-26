@@ -8,5 +8,5 @@
     </image>
     <text id="n6_h3uk" name="title" xy="18,8" pivot="0.5,0.5" size="84,104" fontSize="80" color="#005b3c" align="center" vAlign="middle" singleLine="true" text="×"/>
   </displayList>
-  <Button sound="ui://gj0r6g5ifugr15" downEffect="scale" downEffectValue="0.9"/>
+  <Button mode="Radio" sound="ui://gj0r6g5ifugr15" downEffect="scale" downEffectValue="0.9"/>
 </component>

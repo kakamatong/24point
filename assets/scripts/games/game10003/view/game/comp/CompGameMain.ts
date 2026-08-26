@@ -38,7 +38,7 @@ import { PopMessageView } from "@view/common/PopMessageView";
 import { ENUM_POP_MESSAGE_TYPE } from "@datacenter/InterfaceConfig";
 import { CompPlayers } from "./CompPlayers";
 import { CompPlayerHead } from "./CompPlayerHead";
-import { FORWARD_MESSAGE_TYPE, GAME_PLAYER_INFO, PLAYER_STATUS, ROOM_END_FLAG } from "@game10003/data/InterfaceGameConfig";
+import { FORWARD_MESSAGE_TYPE, GAME_PLAYER_INFO, PLAYER_STATUS, ROOM_END_FLAG, ROOM_TYPE } from "@game10003/data/InterfaceGameConfig";
 import { SoundManager } from "@frameworks/SoundManager";
 import FGUICompMedal from "@fgui/gameCommon/FGUICompMedal";
 import { UserStatus } from "@modules/UserStatus";
@@ -59,6 +59,20 @@ export class CompGameMain extends FGUICompGameMain {
     onConstruct() {
         super.onConstruct();
         this.init();
+
+        // 客户端进入完成
+        if (GameData.instance.isChallengeMode) {
+            this.ctrl_roomtype.selectedIndex = ROOM_TYPE.CHALLENGE;
+        } else if (GameData.instance.isPrivateRoom) {
+            this.ctrl_roomtype.selectedIndex = ROOM_TYPE.PRIVATE;
+        } else if (GameData.instance.isLocalGame) {
+            this.ctrl_roomtype.selectedIndex = ROOM_TYPE.LOCAL;
+        }
+
+        // 延迟发送客户端进入完成
+        this.scheduleOnce(() => {
+            this.sendClientReady();
+        }, 0);
     }
 
     /**
@@ -129,6 +143,13 @@ export class CompGameMain extends FGUICompGameMain {
 
         LobbySocketManager.instance.removeServerListen(SprotoGameRoomReady);
         RemoveEventListener(FW_EVENT_NAMES.GAME_SOCKET_DISCONNECT, this.onGameSocketDisconnect);
+    }
+
+    /**
+     * 发送客户端准备完成消息
+     */
+    sendClientReady() {
+        GameSocketManager.instance.sendToServer(SprotoClientReady, {});
     }
 
     /**

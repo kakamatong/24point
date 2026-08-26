@@ -199,10 +199,8 @@ export class CompCtrl extends FGUICompCtrl {
         }
         if (this._selSymbol === s) {
             this._selSymbol = -1;
-            this.ctrl_symbol.selectedIndex = 4;
         } else {
             this._selSymbol = s;
-            this.ctrl_symbol.selectedIndex = s;
         }
     }
 

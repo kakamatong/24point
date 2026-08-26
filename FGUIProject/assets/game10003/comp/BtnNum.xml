@@ -8,5 +8,5 @@
       <gearDisplay controller="button" pages="1,3"/>
     </image>
   </displayList>
-  <Button mode="Radio" sound="ui://gj0r6g5ifugr15" downEffect="scale" downEffectValue="0.9"/>
+  <Button mode="Radio" sound="ui://gj0r6g5ifugr15"/>
 </component>

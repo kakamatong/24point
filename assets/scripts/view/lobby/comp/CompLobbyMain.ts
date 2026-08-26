@@ -4,7 +4,14 @@ import * as fgui from "fairygui-cc";
 import { DataCenter } from "@datacenter/Datacenter";
 import { ConnectSvr } from "@modules/ConnectSvr";
 import { PopMessageView } from "../../common/PopMessageView";
-import { ENUM_POP_MESSAGE_TYPE, ENUM_USER_STATUS, LOBBY_SHARE_PIC_URL, LOCAL_KEY, RICH_TYPE } from "@datacenter/InterfaceConfig";
+import {
+    ENUM_POP_MESSAGE_TYPE,
+    ENUM_USER_STATUS,
+    LOBBY_SHARE_PIC_URL,
+    LOCAL_KEY,
+    MAIN_GAME_ID,
+    RICH_TYPE,
+} from "@datacenter/InterfaceConfig";
 import { EVENT_NAMES } from "@datacenter/CommonConfig";
 import { FW_EVENT_NAMES } from "@frameworks/config/Config";
 import { TipsView } from "../../common/TipsView";
@@ -288,7 +295,7 @@ export class CompLobbyMain extends FGUICompLobbyMain {
     }
 
     onBtnLocalgame(): void {
-        ConnectGameSvr.instance.connectLocalGame({ gameid: 10003 }, (b: boolean) => {
+        ConnectGameSvr.instance.connectLocalGame({ gameid: MAIN_GAME_ID }, (b: boolean) => {
             b && this.changeToGameScene();
         });
     }
