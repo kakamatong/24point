@@ -248,12 +248,13 @@ export class CompChapter extends FGUICompChapter {
 
     /**
      * @method doStartChallenge
-     * @description 执行开启闯关：连接本地游戏服务器并切换到游戏场景
-     * @param {MAP_LEVEL_CONFIG} config - 关卡配置
+     * @description 执行开启：连接本地游戏服务器并切换到游戏场景（24point 无闯关模式，
+     *              LocalSvr 已收敛为纯单机，关卡配置不再下发，仅保留 gameid 入参）
+     * @param {MAP_LEVEL_CONFIG} config - 关卡配置（已废弃忽略，保留形参仅为避免改动调用方）
      * @private
      */
-    private doStartChallenge(config: MAP_LEVEL_CONFIG) {
-        ConnectGameSvr.instance.connectLocalGame({ gameid: 10003, challengeConfig: config }, (success) => {
+    private doStartChallenge(_config: MAP_LEVEL_CONFIG) {
+        ConnectGameSvr.instance.connectLocalGame({ gameid: 10003 }, (success) => {
             if (success) {
                 ChangeScene("GameScene");
             }

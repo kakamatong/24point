@@ -1,6 +1,6 @@
 /**
  * @file LocalSvr.ts
- * @description 算24点(10003)本地游戏模拟服务器（单机/闯关模式）：
+ * @description 算24点(10003)本地游戏模拟服务器（单机模式）：
  *              接管 GameSocketManager 本地模式下的协议收发，按服务端 game10003 logic.lua / room.lua /
  *              privateRoom.lua 的推送顺序与字段模拟联网游戏核心协议流程（进场推送、单局回合机
  *              START→PLAYING→END、提交判定、计分收尾），算法口径与联网模式完全一致
@@ -11,10 +11,9 @@ import { AddEventListener, DispatchEvent, RemoveEventListener } from "@framework
 import { Logger } from "@frameworks/utils/Utils";
 import { MAIN_GAME_ID } from "@datacenter/InterfaceConfig";
 import { DataCenter } from "@datacenter/Datacenter";
-import { MAP_LEVEL_CONFIG } from "@datacenter/ChallengeData";
 import { validate } from "@game10003/logic/Expression";
 import { deal } from "@game10003/logic/Solver";
-import { GAME_STEP, END_TYPE, PLAYER_STATUS, STEP_TIME_LEN, DEFAULT_ROUND_TIME, DEFAULT_CHALLENGE_ROUND_COUNT, NUMBER_RANGE } from "@game10003/logic/GameRoundConfig";
+import { GAME_STEP, END_TYPE, PLAYER_STATUS, STEP_TIME_LEN, DEFAULT_ROUND_TIME, NUMBER_RANGE } from "@game10003/logic/GameRoundConfig";
 import {
     SprotoClientReady,
     SprotoGameReady,
@@ -38,17 +37,6 @@ import {
 } from "../../types/protocol/game10003/s2c";
 
 /**
- * @enum LOCAL_SVR_MODE
- * @description 本地服务器运行模式
- */
-export enum LOCAL_SVR_MODE {
-    /** 单机模式：一局结束即停，等待下次 clientReady 开下一局 */
-    STANDALONE = 0,
-    /** 闯关模式：使用外部传入的关卡配置，按关卡局数自动连开 N 局 */
-    CHALLENGE = 1,
-}
-
-/**
  * @interface PLAYER_ROUND_PROGRESS
  * @description 单局玩家进度（对齐 logic.lua playerProgress 结构，单机只有座位1一名玩家）
  */
@@ -68,23 +56,6 @@ interface PLAYER_ROUND_PROGRESS {
 }
 
 /**
- * @interface CHALLENGE_ROUND_CONFIG
- * @description 10003 闯关关卡配置：在公共 MAP_LEVEL_CONFIG 基础上扩展的回合字段（均带缺省）。
- *              建议后续将这几个字段同步进 datacenter/ChallengeData.ts 的 MAP_LEVEL_CONFIG 定义
- *              （规格附录A），届时可移除本地此接口的收窄定义
- */
-interface CHALLENGE_ROUND_CONFIG extends MAP_LEVEL_CONFIG {
-    /** 关卡局数（缺省3，呼应 config.lua PRIVATE_ROOM_MODE 白名单外默认3局） */
-    roundCount?: number;
-    /** 单局答题时限(秒)（缺省30 = config.lua ROUND_TIME） */
-    roundTime?: number;
-    /** 发牌数字下限（缺省1 = config.lua NUMBER_RANGE.MIN） */
-    dealMin?: number;
-    /** 发牌数字上限（缺省9 = config.lua NUMBER_RANGE.MAX） */
-    dealMax?: number;
-}
-
-/**
  * @class LocalSvr
  * @description 本地游戏模拟服务器单例：C2S 监听/响应分发 + S2C 推送模拟（进场、单局回合机、结束收尾），
  *              回合机与计分口径对齐服务端 10003（logic.lua:77-198 阶段管理、310-427 提交与结束、
@@ -97,9 +68,6 @@ export class LocalSvr {
     private static readonly SELF_SEAT: number = 1;
     /** 回合机 tick 间隔（毫秒），对齐 room.lua:438 的 100ms 驱动 */
     private static readonly TICK_INTERVAL_MS: number = 100;
-    /** 闯关模式局间自动连开的间隔（毫秒），给客户端结算动画留出展示时间 */
-    private static readonly AUTO_NEXT_ROUND_DELAY_MS: number = 1000;
-
     /** 单例实例 */
     private static _instance: LocalSvr;
 
@@ -112,11 +80,6 @@ export class LocalSvr {
         }
         return this._instance;
     }
-
-    /** 当前运行模式 */
-    private _mode: LOCAL_SVR_MODE = LOCAL_SVR_MODE.STANDALONE;
-    /** 闯关模式下的关卡配置 */
-    private _challengeConfig: CHALLENGE_ROUND_CONFIG | null = null;
 
     // ============ 单局回合机状态（对齐 logic.lua） ============
     /** 当前局序号（场会话内从1递增；clientReady 重置场会话） */
@@ -139,44 +102,14 @@ export class LocalSvr {
     private _endType: END_TYPE = END_TYPE.NONE;
     /** 本局玩家进度（座位1） */
     private _progress: PLAYER_ROUND_PROGRESS = LocalSvr.createProgress();
-    /** 闯关模式：当前关卡是否在进行中（进行中忽略重复 clientReady） */
-    private _challengeActive: boolean = false;
     /** 回合机 tick 定时器 */
     private _tickTimer: any = null;
-    /** 闯关局间自动连开定时器 */
-    private _autoNextTimer: any = null;
 
     /**
      * @constructor
      * @description 私有构造函数（单例）
      */
     private constructor() {}
-
-    /**
-     * 判断当前是否为闯关模式
-     */
-    isChallengeMode(): boolean {
-        return this._mode === LOCAL_SVR_MODE.CHALLENGE;
-    }
-
-    /**
-     * 设置运行模式（切回单机时清除残留的闯关配置，防止旧关卡参数污染单机本局）
-     * @param mode 运行模式
-     */
-    setMode(mode: LOCAL_SVR_MODE): void {
-        this._mode = mode;
-        if (mode === LOCAL_SVR_MODE.STANDALONE) {
-            this._challengeConfig = null;
-        }
-    }
-
-    /**
-     * 设置闯关模式的关卡配置（10003 复用 MAP_LEVEL_CONFIG 并按其扩展回合字段解读）
-     * @param config 关卡配置
-     */
-    setChallengeConfig(config: MAP_LEVEL_CONFIG): void {
-        this._challengeConfig = config as CHALLENGE_ROUND_CONFIG;
-    }
 
     /**
      * 启动本地服务器：注册所有 C2S 协议监听并启动回合机 tick
@@ -211,7 +144,6 @@ export class LocalSvr {
         RemoveEventListener(SprotoForwardMessage.Name, this.onForwardMessage);
 
         this._stopTick();
-        this._stopAutoNext();
     }
 
     /** 分发响应事件（"resp" + 协议名，供 GameSocketManager 本地分支的 c2s 回调使用） */
@@ -229,17 +161,11 @@ export class LocalSvr {
     // ============================================
 
     /**
-     * 客户端就绪 → 重置场状态并按 §8.1/§8.2 推送进场与开局序列
+     * 客户端就绪 → 重置场状态并推送进场与开局序列
      * 说明：每次 clientReady 视为一场新会话（重置 roundNum/累计分/时钟等跨场残留，避免串场）；
-     *       STANDALONE 由 UI"再来一局"再次发 clientReady 开下一局；CHALLENGE 每次关卡进场发一次，
-     *       关卡内 N 局由回合机自动连开。关卡进行中重复的 clientReady 忽略
+     *       单机模式一局结束即停，由 UI"再来一局"再次发 clientReady 开下一局
      */
     onClientReady(): void {
-        if (this._mode === LOCAL_SVR_MODE.CHALLENGE && this._challengeActive) {
-            Logger.warn("[LocalSvr] 闯关关卡进行中，忽略重复 clientReady");
-            return;
-        }
-
         this._resetSession();
         Logger.log("[LocalSvr] clientReady 进场，开始第1局");
 
@@ -405,8 +331,8 @@ export class LocalSvr {
     // ============================================
 
     /**
-     * 开始一局游戏（对外保留 API）：推送 gameStart → stepId{1} → dealCards 序列
-     * 由 clientReady（STANDALONE 每局/CHALLENGE 每关首局）与闯关自动连开调用
+     * 开始一局游戏：推送 gameStart → stepId{1} → dealCards 序列
+     * 由 clientReady（单机每局开始）调用
      */
     startStepGame(): void {
         if (this._stepId !== GAME_STEP.NONE) {
@@ -417,21 +343,20 @@ export class LocalSvr {
     }
 
     /**
-     * 开启新一局：重置单局状态、按模式读取本局参数并发局
+     * 开启新一局：重置单局状态并发局（单机固定参数：30秒时限、1-9数字范围）
      * @private
      */
     private _startRound(): void {
         this._roundNum++;
         this._resetRoundState();
-        this._challengeActive = this._mode === LOCAL_SVR_MODE.CHALLENGE;
 
-        // 本局参数：CHALLENGE 读关卡配置（缺省回落），STANDALONE 全缺省
-        this._roundTimeLimit = this._roundTimeForRound();
+        // 本局答题时限固定 30 秒（config.lua ROUND_TIME）
+        this._roundTimeLimit = DEFAULT_ROUND_TIME;
 
         // 本局开始时间（epoch秒）
         this._startTime = Math.floor(Date.now() / 1000);
 
-        Logger.log(`[LocalSvr] 第${this._roundNum}局开始，时限${this._roundTimeLimit}秒，数字范围${this._dealMin()}-${this._dealMax()}`);
+        Logger.log(`[LocalSvr] 第${this._roundNum}局开始，时限${this._roundTimeLimit}秒，数字范围${NUMBER_RANGE.MIN}-${NUMBER_RANGE.MAX}`);
 
         // 开局推送：gameStart → stepId{1}（内部发牌）
         this.dispatchEvent(SprotoGameStart.Name, {
@@ -467,8 +392,8 @@ export class LocalSvr {
      * @private
      */
     private _startStepStart(): void {
-        // 保证可解的4个数字（solver.deal 内部可解校验 + 预置兜底）
-        this._dealNumbers = deal(this._dealMin(), this._dealMax());
+        // 保证可解的4个数字（solver.deal 内部可解校验 + 预置兜底），范围 1-9
+        this._dealNumbers = deal(NUMBER_RANGE.MIN, NUMBER_RANGE.MAX);
         this._dealStartMs = Date.now();
 
         this.dispatchEvent(SprotoDealCards.Name, {
@@ -490,7 +415,7 @@ export class LocalSvr {
 
     /**
      * END 阶段进入动作：组装 rankings/scores 推送 gameEnd（对齐 logic.lua:376-427），
-     * 推送后内部回 NONE（对齐 stopStepEnd：logic.lua:194-197），再走局后场级调度
+     * 推送后内部回 NONE（对齐 stopStepEnd：logic.lua:194-197）
      * @private
      */
     private _startStepEnd(): void {
@@ -522,45 +447,6 @@ export class LocalSvr {
         // END 阶段收尾：内部回 NONE（不推送）
         this._stepId = GAME_STEP.NONE;
         this._stepBeginSec = 0;
-
-        // 局后场级调度（单机自由：停，等 clientReady；闯关：失败/成功停或自动连开下一局）
-        this._onRoundFinished();
-    }
-
-    /**
-     * 局后场级调度（对齐 room.lua onGameEnd 的单机简化形态）：
-     * STANDALONE 一局结束即停；CHALLENGE 任一局超时 → 关卡失败停，
-     * 最后一局答对 → 关卡成功停，否则间隔后自动连开下一局
-     * @private
-     */
-    private _onRoundFinished(): void {
-        if (this._mode !== LOCAL_SVR_MODE.CHALLENGE || !this._challengeConfig) {
-            return;
-        }
-        if (this._endType === END_TYPE.TIMEOUT) {
-            this._challengeActive = false;
-            Logger.log("[LocalSvr] 闯关第" + this._roundNum + "局超时，关卡失败，停止连开");
-            return;
-        }
-        if (this._roundNum >= this._roundCount()) {
-            this._challengeActive = false;
-            Logger.log("[LocalSvr] 闯关最后一局答对，关卡成功，停止连开");
-            return;
-        }
-        // 局间自动连开下一局（模拟私人房 gameReady 的局间节奏，省去等待，属规格§9差异）
-        this._autoNextTimer = setTimeout(() => {
-            this._autoNextTimer = null;
-            this.startStepGame();
-        }, LocalSvr.AUTO_NEXT_ROUND_DELAY_MS);
-    }
-
-    /**
-     * 游戏完成处理（对外保留 API）：整场收尾 = 停止自动连开与回合机推进。
-     * 单局 gameEnd 推送由回合机 END 阶段完成，本方法负责场级清理
-     */
-    onGameFinished(): void {
-        this._stopAutoNext();
-        this._challengeActive = false;
     }
 
     // ============================================
@@ -586,17 +472,6 @@ export class LocalSvr {
         if (this._tickTimer) {
             clearInterval(this._tickTimer);
             this._tickTimer = null;
-        }
-    }
-
-    /**
-     * 停止闯关局间自动连开定时器
-     * @private
-     */
-    private _stopAutoNext(): void {
-        if (this._autoNextTimer) {
-            clearTimeout(this._autoNextTimer);
-            this._autoNextTimer = null;
         }
     }
 
@@ -648,18 +523,16 @@ export class LocalSvr {
     }
 
     // ============================================
-    // 状态重置与闯关参数
+    // 状态重置
     // ============================================
 
     /**
-     * 重置场会话状态（跨场残留清零：局序号/累计分/本局数字/阶段/时钟/关卡进度）
+     * 重置场会话状态（跨场残留清零：局序号/累计分/本局数字/阶段/时钟）
      * @private
      */
     private _resetSession(): void {
         this._roundNum = 0;
         this._accumScore = 0;
-        this._challengeActive = false;
-        this._stopAutoNext();
         this._resetRoundState();
     }
 
@@ -676,51 +549,6 @@ export class LocalSvr {
         this._stepBeginSec = 0;
         this._endType = END_TYPE.NONE;
         this._progress = LocalSvr.createProgress();
-    }
-
-    /**
-     * 获取当前生效的关卡配置（仅闯关模式返回，单机模式一律 null，防止残留配置串参数）
-     * @returns 关卡配置或 null
-     * @private
-     */
-    private _levelRoundConfig(): CHALLENGE_ROUND_CONFIG | null {
-        return this._mode === LOCAL_SVR_MODE.CHALLENGE ? this._challengeConfig : null;
-    }
-
-    /**
-     * 闯关关卡局数（缺省3，仅闯关模式生效）
-     * @returns 关卡局数
-     * @private
-     */
-    private _roundCount(): number {
-        return this._levelRoundConfig()?.roundCount ?? DEFAULT_CHALLENGE_ROUND_COUNT;
-    }
-
-    /**
-     * 本局答题时限（秒）：闯关读关卡 roundTime（缺省30），单机恒为30
-     * @returns 答题时限（秒）
-     * @private
-     */
-    private _roundTimeForRound(): number {
-        return this._levelRoundConfig()?.roundTime ?? DEFAULT_ROUND_TIME;
-    }
-
-    /**
-     * 闯关发牌数字下限（缺省1，仅闯关模式生效）
-     * @returns 数字下限
-     * @private
-     */
-    private _dealMin(): number {
-        return this._levelRoundConfig()?.dealMin ?? NUMBER_RANGE.MIN;
-    }
-
-    /**
-     * 闯关发牌数字上限（缺省9，仅闯关模式生效）
-     * @returns 数字上限
-     * @private
-     */
-    private _dealMax(): number {
-        return this._levelRoundConfig()?.dealMax ?? NUMBER_RANGE.MAX;
     }
 
     /**

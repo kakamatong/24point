@@ -10,9 +10,8 @@ import { LogColors } from "@frameworks/Framework";
 import { AuthGame } from "./AuthGame";
 import { BaseModule } from "@frameworks/base/BaseModule";
 import { Logger } from "@frameworks/utils/Utils";
-import { LocalSvr, LOCAL_SVR_MODE } from "@localGame/LocalSvr";
+import { LocalSvr } from "@localGame/LocalSvr";
 import { GameSocketManager } from "@frameworks/GameSocketManager";
-import { MAP_LEVEL_CONFIG } from "@datacenter/ChallengeData";
 
 /**
  * @class ConnectGameSvr
@@ -46,18 +45,13 @@ export class ConnectGameSvr extends BaseModule {
         AuthGame.instance.req(data.addr, data.gatewayUrl, data.gameid, data.roomid, authCallBack);
     }
 
-    connectLocalGame(data: { gameid: number; challengeConfig?: MAP_LEVEL_CONFIG }, callBack?: (success: boolean, data?: any) => void) {
+    connectLocalGame(data: { gameid: number }, callBack?: (success: boolean, data?: any) => void) {
         Logger.log(LogColors.green("连接本地游戏服务器"));
         const authCallBack = (success: boolean) => {
             callBack && callBack(success);
         };
 
-        if (data.challengeConfig) {
-            LocalSvr.instance.setMode(LOCAL_SVR_MODE.CHALLENGE);
-            LocalSvr.instance.setChallengeConfig(data.challengeConfig);
-        } else {
-            LocalSvr.instance.setMode(LOCAL_SVR_MODE.STANDALONE);
-        }
+        // 24point 无闯关模式，本地一律以单机模式启动（LocalSvr 已收敛为纯单机）
         LocalSvr.instance.start();
         DataCenter.instance.shortRoomid = 0
         GameSocketManager.instance.start(true);

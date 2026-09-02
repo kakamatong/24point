@@ -72,12 +72,6 @@ export const DEAL_COUNT: number = 4;
 export const DEFAULT_ROUND_TIME: number = 30;
 
 /**
- * @property {number} DEFAULT_CHALLENGE_ROUND_COUNT - 闯关关卡缺省局数3（来源：config.lua config.PRIVATE_ROOM_MODE
- *              白名单外默认取3局；规格§8.4 闯关 roundCount 缺省3 与此呼应）
- */
-export const DEFAULT_CHALLENGE_ROUND_COUNT: number = 3;
-
-/**
  * @property {Record<number, number>} STEP_TIME_LEN - 各阶段时长（秒，来源：configLogic.lua config.STEP_TIME_LEN；
  *              START=1 固定；PLAYING 此处为默认值30，单局实际时限在开局时按 rule.maxTime 覆盖；END=0 不触发超时）
  */
