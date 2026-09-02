@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "diagram_type": "sequence",
+  "meta": {
+    "title": "24点进房流程 · 快速匹配（大厅侧）",
+    "locale": "zh-CN",
+    "quality_profile": "showcase",
+    "column_fit": "spread",
+    "viewBox": [945, 1000]
+  },
+  "participants": [
+    { "id": "ui", "type": "frontend", "label": "客户端UI", "sublabel": "MatchView / LobbyMain" },
+    { "id": "lobby", "type": "frontend", "label": "大厅网络", "sublabel": "ConnectSvr / Match" },
+    { "id": "gate", "type": "backend", "label": "大厅网关", "sublabel": "wsGate.lua → agent.lua" },
+    { "id": "match", "type": "backend", "label": "匹配服务", "sublabel": "match + matchOnSure.lua" },
+    { "id": "user", "type": "backend", "label": "用户服务", "sublabel": "user/server.lua" },
+    { "id": "games", "type": "backend", "label": "游戏管理器", "sublabel": "games/server.lua" },
+    { "id": "room", "type": "backend", "label": "10003房间", "sublabel": "room.lua ← privateRoom" }
+  ],
+  "segments": [
+    { "from": 156, "to": 458, "label": "匹配入队" },
+    { "from": 462, "to": 620, "label": "匹配确认" },
+    { "from": 624, "to": 844, "label": "建房与推送" }
+  ],
+  "messages": [
+    { "from": "ui", "to": "lobby", "y": 180, "label": "点击「开始匹配」→ Match.req(0)", "note": "CompLobbyMain.onBtnMatchRoom" },
+    { "from": "lobby", "to": "gate", "y": 218, "label": "（若大厅Socket未连接）loginLobby → checkAutoLogin → WS建连", "note": "Match.req 判断 LobbySocketManager.isOpen()；登录走 wsGate CMD.auth" },
+    { "from": "gate", "to": "lobby", "y": 256, "label": "s2c agentReady {time}", "variant": "return", "note": "lobby s2c 协议号6；agent CMD.start 推送" },
+    { "from": "lobby", "to": "gate", "y": 294, "label": "c2s matchJoin {gameid:10003, queueid:1}", "variant": "emphasis", "note": "lobby c2s 协议号5 SprotoMatchJoin；MainGameID=10003" },
+    { "from": "gate", "to": "match", "y": 332, "label": "REQUEST:matchJoin → cluster call svrMatch.matchJoin", "variant": "emphasis", "note": "agent 先查 userStatus：已在游戏中则直接返回游戏信息，客户端弹「是否返回」" },
+    { "from": "match", "to": "user", "y": 370, "label": "svrUser.userStatus + setUserStatus(MATCHING)", "note": "另经 db.getUserRichesByType(COMBAT_POWER) 取战力作为匹配 rate" },
+    { "from": "match", "to": "gate", "y": 408, "label": "返回 {code:1, \"加入匹配队列成功\"}", "variant": "return" },
+    { "from": "gate", "to": "lobby", "y": 446, "label": "RESPONSE code=1 → Match.resp → UserStatus.req → MatchView.showView()", "note": "进入匹配等待动画" },
+    { "from": "match", "to": "gate", "y": 484, "label": "tick→checkQueue 匹配成功→startOnSure→推送 s2c matchOnSure", "variant": "emphasis", "note": "固定/动态模式；失败过多(robotAfterFails)时 getRobots 机器人补位" },
+    { "from": "gate", "to": "lobby", "y": 522, "label": "s2c matchOnSure {id, playerids, readys, endTime}", "variant": "emphasis", "note": "lobby s2c 协议号3；MatchView.onSvrMatchOnSure 显示确认与倒计时" },
+    { "from": "lobby", "to": "gate", "y": 560, "label": "c2s matchOnSure {id, sure:true}", "variant": "emphasis", "note": "lobby c2s 协议号7；勾选「自动加入」自动发送；取消 sure:false；退出走 matchLeave(6)" },
+    { "from": "gate", "to": "match", "y": 598, "label": "REQUEST:matchOnSure → matchOnSure.onSure → readys+1", "variant": "emphasis", "note": "sure=false 或超时→destroyOnSureItem→s2c matchOnSureFail(协议号2)" },
+    { "from": "match", "to": "games", "y": 636, "label": "全员确认: onSureSuccess → call(svrGame, \"createMatchGameRoom\")", "variant": "emphasis" },
+    { "from": "games", "to": "room", "y": 674, "label": "newservice(\"games/10003/room\") → lua \"start\" {roomType=MATCH}", "variant": "emphasis", "note": "roomid 雪花算法生成；匹配房无 shortRoomid" },
+    { "from": "room", "to": "user", "y": 712, "label": "setUserStatus(GAMEING, gameid, roomid, addr, gatewayUrl)", "note": "每个真人玩家；机器人直接置 READY" },
+    { "from": "games", "to": "match", "y": 750, "label": "返回 roomid, addr, shortRoomid, gatewayUrl", "variant": "return" },
+    { "from": "match", "to": "gate", "y": 788, "label": "sendSvrMsg(\"gameRoomReady\") → 经 gate CMD.sendSvrMsg", "variant": "emphasis", "note": "按 redis KEY_REDIS.GATE_AGENT 找到玩家所在 gate" },
+    { "from": "gate", "to": "lobby", "y": 826, "label": "s2c gameRoomReady {gameid, roomid, addr, gatewayUrl}", "variant": "emphasis", "note": "lobby s2c 协议号4；CompLobbyMain.onSvrGameRoomReady → connectGame；后续见「快速匹配·游戏侧」图" }
+  ],
+  "activations": [
+    { "participant": "gate", "from": 218, "to": 462, "type": "backend" },
+    { "participant": "match", "from": 332, "to": 636, "type": "backend" },
+    { "participant": "user", "from": 370, "to": 416, "type": "backend" },
+    { "participant": "games", "from": 674, "to": 762, "type": "backend" },
+    { "participant": "room", "from": 712, "to": 800, "type": "backend" }
+  ],
+  "cards": [
+    { "dot": "cyan", "title": "大厅侧关键协议", "items": ["matchJoin(5) → matchOnSure(7/3) → gameRoomReady(4)", "推送路径：matchOnSure.lua sendSvrMsg → wsGate CMD.sendSvrMsg", "连接参数（下一图）：gatewayUrl?ver=1&userid&gameid&roomid&token(DES)"] },
+    { "dot": "orange", "title": "分支与异常", "items": ["已在游戏中：matchJoin 返回游戏信息，弹「是否返回」", "确认超时/拒绝：matchOnSureFail(2)，destroyOnSureItem 归还机器人", "匹配失败过多：robotAfterFails 触发 getRobots 机器人补位"] },
+    { "dot": "emerald", "title": "状态机要点", "items": ["用户：ONLINE→MATCHING→GAMEING", "匹配房：WAITTING_CONNECT→START；roomStatus 由房间服务维护"] }
+  ]
+}

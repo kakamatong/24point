@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "diagram_type": "sequence",
+  "meta": {
+    "title": "24点进房流程 · 快速匹配（游戏侧）",
+    "locale": "zh-CN",
+    "quality_profile": "showcase",
+    "column_fit": "spread",
+    "viewBox": [945, 900]
+  },
+  "participants": [
+    { "id": "lobby", "type": "frontend", "label": "大厅网络", "sublabel": "ConnectGameSvr / Lobby" },
+    { "id": "game", "type": "frontend", "label": "游戏网络", "sublabel": "AuthGame / GameSock" },
+    { "id": "ui", "type": "frontend", "label": "客户端UI", "sublabel": "GameScene / GameMain" },
+    { "id": "ggate", "type": "security", "label": "游戏网关", "sublabel": "wsGameGate.lua" },
+    { "id": "games", "type": "backend", "label": "游戏管理器", "sublabel": "games/server.lua" },
+    { "id": "room", "type": "backend", "label": "10003房间", "sublabel": "room.lua ← privateRoom" },
+    { "id": "auth", "type": "security", "label": "认证服务", "sublabel": "auth/server.lua" }
+  ],
+  "segments": [
+    { "from": 156, "to": 444, "label": "连接游戏网关" },
+    { "from": 448, "to": 740, "label": "进房初始化" }
+  ],
+  "messages": [
+    { "from": "lobby", "to": "game", "y": 180, "label": "ConnectGameSvr.connectGame(data) → AuthGame.req(addr, gatewayUrl, gameid, roomid)", "note": "承接大厅侧 s2c gameRoomReady；DataCenter 记录 gameid/roomid/gameAddr" },
+    { "from": "game", "to": "ggate", "y": 218, "label": "WS连接: gatewayUrl?ver=1&userid&gameid&roomid&token(DES加密)", "variant": "emphasis", "note": "AuthGame 用 token 做 DES 加密登录串；先 loadProtocol(\"game10003\")" },
+    { "from": "ggate", "to": "games", "y": 256, "label": "handshake→getGame(gameid, roomid)；auth前 connectGame(userid, gameid, roomid, client_fd)", "note": "先建房内 fd 绑定，再认证" },
+    { "from": "games", "to": "room", "y": 294, "label": "CMD.connectGame → room:connectGame(userid, fd) 绑定客户端fd", "note": "BaseRoom.connectGame" },
+    { "from": "ggate", "to": "auth", "y": 332, "label": "call(auth, \"authGame\", data) 校验 token", "variant": "security" },
+    { "from": "auth", "to": "ggate", "y": 370, "label": "true（subid+1）", "variant": "return" },
+    { "from": "ggate", "to": "game", "y": 408, "label": "连接成功 onOpen → agentReady(null) → AuthGame.resp(true)", "variant": "return" },
+    { "from": "game", "to": "ui", "y": 446, "label": "changeToGameScene() → GameScene → GameView / CompGameMain.onConstruct" },
+    { "from": "ui", "to": "game", "y": 484, "label": "sendClientReady() → c2s clientReady {}", "variant": "emphasis", "note": "game10003 c2s 协议号4；onConstruct 后延迟发送" },
+    { "from": "game", "to": "ggate", "y": 522, "label": "clientReady 消息体 → redirect(c.room)" },
+    { "from": "ggate", "to": "room", "y": 560, "label": "REQUEST:clientReady(userid) → 状态 LOADING→READY", "variant": "emphasis", "note": "匹配房 clientReady 即置 READY；房间未开始时 testStart" },
+    { "from": "room", "to": "game", "y": 598, "label": "s2c roomInfo {gameid, roomid, playerids, gameData, owner}", "note": "game10003 s2c 协议号2" },
+    { "from": "room", "to": "game", "y": 636, "label": "s2c playerInfos {infos}", "note": "协议号4；含昵称/头像/战力/状态" },
+    { "from": "room", "to": "game", "y": 674, "label": "s2c playerEnter {userid, seat}", "note": "协议号5；自己与其他玩家进入" },
+    { "from": "room", "to": "game", "y": 712, "label": "全员READY → testStart → startGame → s2c gameStart(31)/stepId(32)/dealCards(33)", "variant": "emphasis", "note": "进房完成，本局开始" }
+  ],
+  "activations": [
+    { "participant": "ggate", "from": 218, "to": 416, "type": "security" },
+    { "participant": "games", "from": 256, "to": 302, "type": "backend" },
+    { "participant": "room", "from": 294, "to": 740, "type": "backend" },
+    { "participant": "auth", "from": 332, "to": 378, "type": "security" }
+  ],
+  "cards": [
+    { "dot": "cyan", "title": "游戏侧关键协议", "items": ["连接：gatewayUrl?ver=1&userid&gameid&roomid&token(DES)", "初始化：clientReady(4) → roomInfo(2)/playerInfos(4)/playerEnter(5)", "开局：gameStart(31)/stepId(32)/dealCards(33)"] },
+    { "dot": "orange", "title": "分支与异常", "items": ["认证失败：wsGameGate auth 返回 false，连接被拒", "断线重连：GAME_SOCKET_DISCONNECT → 弹窗回大厅", "重连恢复：clientReady → room:relink(userid)（见「私房与重连」图）"] },
+    { "dot": "emerald", "title": "状态机要点", "items": ["房内玩家：LOADING→READY→PLAYING", "匹配房全员 READY 才 startGame；房间超时 8s(等待连接)/300s(对局)"] }
+  ]
+}
