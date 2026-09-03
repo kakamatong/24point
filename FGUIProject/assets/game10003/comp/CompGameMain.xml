@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <component size="776,1688">
-  <controller name="ctrl_roomtype" pages="0,,1," selected="0">
+  <controller name="ctrl_roomtype" pages="0,,1,,2," selected="1">
     <remark page="0" value="普通房"/>
     <remark page="1" value="私人房"/>
+    <remark page="2" value="单机房"/>
   </controller>
   <displayList>
     <component id="n0_h3uk" name="n0" src="h3uk1c" fileName="comp/CompDisband.xml" xy="13,0" visible="false"/>
@@ -27,6 +28,7 @@
       <relation target="" sidePair="center-center,middle-middle"/>
     </component>
     <component id="n15_ifzr" name="UI_COMP_PLAYERS" src="ifzr1v" fileName="comp/CompPlayers.xml" xy="9,0">
+      <gearDisplay controller="ctrl_roomtype" pages="0,1"/>
       <relation target="" sidePair="width-width,top-top"/>
     </component>
     <component id="n16_ifzr" name="UI_COMP_SELFPLAYER" src="ifzr1u" fileName="comp/CompPlayerHead.xml" xy="23,1499" group="n18_ifzr">

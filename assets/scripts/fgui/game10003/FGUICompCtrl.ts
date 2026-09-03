@@ -18,6 +18,7 @@ export default class FGUICompCtrl extends fgui.GComponent {
 	public UI_BTN_SYMBOL_1:fgui.GButton;
 	public UI_BTN_SYMBOL_2:fgui.GButton;
 	public UI_BTN_SYMBOL_3:fgui.GButton;
+	public UI_BTN_RESET:fgui.GButton;
 	public static URL:string = "ui://2zsfe53xh3uk1r";
 
 	public static packageName:string = "game10003";
@@ -99,6 +100,8 @@ export default class FGUICompCtrl extends fgui.GComponent {
 		this.UI_BTN_SYMBOL_2.onClick(this.onBtnSymbol2, this);
 		this.UI_BTN_SYMBOL_3 = <fgui.GButton>(this.getChildAt(7));
 		this.UI_BTN_SYMBOL_3.onClick(this.onBtnSymbol3, this);
+		this.UI_BTN_RESET = <fgui.GButton>(this.getChildAt(8));
+		this.UI_BTN_RESET.onClick(this.onBtnReset, this);
 		if (this.enableAnimation) this.enterAnimation();
 	}
 	scheduleOnce(callback: () => void, delay: number):void{};
@@ -113,5 +116,6 @@ export default class FGUICompCtrl extends fgui.GComponent {
 	onBtnSymbol1():void{};
 	onBtnSymbol2():void{};
 	onBtnSymbol3():void{};
+	onBtnReset():void{};
 }
 fgui.UIObjectFactory.setExtension(FGUICompCtrl.URL, FGUICompCtrl);
