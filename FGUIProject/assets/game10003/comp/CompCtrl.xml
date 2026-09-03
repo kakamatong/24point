@@ -41,7 +41,7 @@
       <Button title="÷" controller="ctrl_symbol" page="3"/>
     </component>
     <component id="n10_kv80" name="UI_BTN_RESET" src="h3uk1q" fileName="comp/BtnSymbol.xml" xy="290,788" group="n9_h3uk">
-      <Button controller="ctrl_symbol" page="3"/>
+      <Button title=" " icon="ui://2zsfe53xkv8023" controller="ctrl_symbol" page="3"/>
     </component>
     <group id="n9_h3uk" name="n9" xy="57,654" size="585,254"/>
   </displayList>

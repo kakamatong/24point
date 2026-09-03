@@ -24,6 +24,7 @@
     <image id="vg6220" name="ready.png" path="/imgs/"/>
     <component id="vg6221" name="CompOffline.xml" path="/comp/"/>
     <image id="vg6222" name="offline.png" path="/imgs/"/>
+    <image id="kv8023" name="quan.png" path="/imgs/"/>
   </resources>
   <publish name="" genCode="true"/>
 </packageDescription>
