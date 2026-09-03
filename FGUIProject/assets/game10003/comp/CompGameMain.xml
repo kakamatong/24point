@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <component size="776,1688">
-  <controller name="ctrl_roomtype" pages="0,,1,,2," selected="1">
+  <controller name="ctrl_roomtype" pages="0,,1,,2," selected="0">
     <remark page="0" value="普通房"/>
     <remark page="1" value="私人房"/>
     <remark page="2" value="单机房"/>
   </controller>
   <displayList>
     <component id="n0_h3uk" name="n0" src="h3uk1c" fileName="comp/CompDisband.xml" xy="13,0" visible="false"/>
-    <component id="n10_h3uk" name="UI_COMP_CTRL" src="h3uk1r" fileName="comp/CompCtrl.xml" xy="38,506">
+    <component id="n10_h3uk" name="UI_COMP_CTRL" src="h3uk1r" fileName="comp/CompCtrl.xml" xy="38,391">
       <relation target="" sidePair="center-center,middle-middle"/>
     </component>
     <component id="n11_ifzr" name="UI_BTN_INVITE" src="is91n" fileName="comp/CompBtnCommon.xml" pkg="gj0r6g5i" xy="272,1124" size="230,98" group="n13_ifzr" controller="ctrl_color,2">
