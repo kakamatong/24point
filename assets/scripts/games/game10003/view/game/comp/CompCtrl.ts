@@ -271,16 +271,35 @@ export class CompCtrl extends FGUICompCtrl {
     }
 
     /**
-     * @description 撤销整局操作（公开接口，暂无调用入口）：恢复到发牌初始状态
+     * @description 点击重置按钮：恢复到本局发牌初始状态（清空全部运算/选中，重新铺开四个数字）
+     * @public 由 FGUI 基类 onClick 绑定调用（UI_BTN_RESET）
+     */
+    public onBtnReset(): void {
+        if (this._busy || this._dealNumbers.length === 0) {
+            return;
+        }
+        this.restoreToDeal();
+    }
+
+    /**
+     * @description 恢复到发牌初始状态：终止动画、清空运算与选中后重新铺开本局数字
+     * @private
+     */
+    private restoreToDeal(): void {
+        this._flyTween && this._flyTween.kill();
+        this._flyTween = null;
+        this.resetRound();
+        this.applyDealNumbers(this._dealNumbers);
+    }
+
+    /**
+     * @description 撤销整局操作（公开接口，供程序调用）：恢复到发牌初始状态
      */
     public undo(): void {
         if (this._busy || this._opCount === 0) {
             return;
         }
-        this._flyTween && this._flyTween.kill();
-        this._flyTween = null;
-        this.resetRound();
-        this.applyDealNumbers(this._dealNumbers);
+        this.restoreToDeal();
     }
 
     /**
