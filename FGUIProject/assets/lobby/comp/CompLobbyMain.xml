@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <component size="776,1688">
   <displayList>
-    <component id="n7_gtlg" name="UI_BTN_MATCH_ROOM" src="gtlg9" fileName="comp/CompLobbyBtn.xml" xy="88,576" size="600,209">
+    <component id="n7_gtlg" name="UI_BTN_MATCH_ROOM" src="gtlg9" fileName="comp/CompLobbyBtn.xml" xy="88,380" size="600,209">
       <relation target="" sidePair="center-center,middle-middle"/>
       <Button icon="ui://gv22rev3jorfm"/>
     </component>
-    <component id="n8_gtlg" name="UI_BTN_PRIVATE_ROOM" src="gtlg9" fileName="comp/CompLobbyBtn.xml" xy="88,815" size="600,207">
+    <component id="n8_gtlg" name="UI_BTN_PRIVATE_ROOM" src="gtlg9" fileName="comp/CompLobbyBtn.xml" xy="88,619" size="600,207">
       <relation target="" sidePair="center-center,middle-middle"/>
       <property target="icon" propertyId="1" value="ui://gv22rev3jorfn"/>
     </component>
-    <component id="n26_djnj" name="UI_BTN_LOCALGAME" src="gtlg9" fileName="comp/CompLobbyBtn.xml" xy="88,1052" size="600,207">
+    <component id="n26_djnj" name="UI_BTN_LOCALGAME" src="gtlg9" fileName="comp/CompLobbyBtn.xml" xy="88,856" size="600,207">
       <relation target="" sidePair="center-center,middle-middle"/>
       <property target="icon" propertyId="1" value="ui://gv22rev3djnjy"/>
     </component>
@@ -28,11 +28,11 @@
       <relation target="" sidePair="right-right,bottom-bottom"/>
       <Button icon="ui://gv22rev3oottr"/>
     </component>
-    <component id="n22_oott" name="UI_BTN_SIGN_IN" src="is91n" fileName="comp/CompBtnCommon.xml" pkg="gj0r6g5i" xy="633,1395" size="120,108">
+    <component id="n22_oott" name="UI_BTN_SIGN_IN" src="is91n" fileName="comp/CompBtnCommon.xml" pkg="gj0r6g5i" xy="633,1395" size="120,108" visible="false">
       <relation target="" sidePair="right-right,bottom-bottom"/>
       <Button icon="ui://gv22rev3oottu"/>
     </component>
-    <component id="n23_oott" name="UI_BTN_AD" src="is91n" fileName="comp/CompBtnCommon.xml" pkg="gj0r6g5i" xy="494,1395" size="120,108">
+    <component id="n23_oott" name="UI_BTN_AD" src="is91n" fileName="comp/CompBtnCommon.xml" pkg="gj0r6g5i" xy="494,1395" size="120,108" visible="false">
       <relation target="" sidePair="right-right,bottom-bottom"/>
       <Button icon="ui://gv22rev3dr1xx"/>
     </component>
@@ -42,10 +42,6 @@
     <component id="n24_rgj1" name="UI_BTN_BAG" src="is91n" fileName="comp/CompBtnCommon.xml" pkg="gj0r6g5i" xy="586,1523" size="180,67">
       <relation target="" sidePair="right-right,bottom-bottom"/>
       <Button icon="ui://gv22rev3bj8qw"/>
-    </component>
-    <component id="n28_gnq2" name="UI_BTN_CHALLENGE" src="gtlg9" fileName="comp/CompLobbyBtn.xml" xy="88,337" size="600,209">
-      <relation target="" sidePair="center-center,middle-middle"/>
-      <Button icon="ui://gv22rev3gnq2z"/>
     </component>
   </displayList>
 </component>
