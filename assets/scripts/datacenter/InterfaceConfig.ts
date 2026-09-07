@@ -86,8 +86,6 @@ export enum LOCAL_KEY {
     PRIVATE_RULE = "privateRule",
     AUTO_SHOW_SIGNIN = "autoShowSignIn",
     AD_NOTICE_DATE = "adNoticeDate",
-    /** 闯关章节缓存前缀，拼接章节 index 组成完整 key */
-    CHALLENGE_CHAPTER_PREFIX = "challengeChapter_",
 }
 
 /**

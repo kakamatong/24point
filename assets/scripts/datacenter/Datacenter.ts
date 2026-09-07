@@ -163,12 +163,6 @@ export class DataCenter {
     private _adRewardInfoMap: Record<number, AD_REWARD_INFO> = {};
 
     /**
-     * @property {boolean} _shouldGotoChallenge - 从游戏场景返回后是否需要跳转到闯关页面
-     * @private
-     */
-    private _shouldGotoChallenge: boolean = false;
-
-    /**
      * @property {DataCenter} _instance - 单例实例
      * @private
      * @static
@@ -709,15 +703,5 @@ export class DataCenter {
      */
     getAdRewardInfo(cfgId: number): AD_REWARD_INFO | undefined {
         return this._adRewardInfoMap[cfgId];
-    }
-
-    /**
-     * @property {boolean} shouldGotoChallenge - 从游戏场景返回后是否需要跳转到闯关页面
-     */
-    get shouldGotoChallenge(): boolean {
-        return this._shouldGotoChallenge;
-    }
-    set shouldGotoChallenge(v: boolean) {
-        this._shouldGotoChallenge = v;
     }
 }

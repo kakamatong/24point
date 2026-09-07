@@ -62,9 +62,7 @@ export class CompGameMain extends FGUICompGameMain {
         this.initListeners();
 
         // 客户端进入完成
-        if (GameData.instance.isChallengeMode) {
-            this.ctrl_roomtype.selectedIndex = ROOM_TYPE.CHALLENGE;
-        } else if (GameData.instance.isPrivateRoom) {
+        if (GameData.instance.isPrivateRoom) {
             this.ctrl_roomtype.selectedIndex = ROOM_TYPE.PRIVATE;
         } else if (GameData.instance.isLocalGame) {
             this.ctrl_roomtype.selectedIndex = ROOM_TYPE.LOCAL;
@@ -82,7 +80,7 @@ export class CompGameMain extends FGUICompGameMain {
     protected onDestroy(): void {
         super.onDestroy();
         this.removeListeners();
-        if (GameData.instance.isLocalGame || GameData.instance.isChallengeMode) {
+        if (GameData.instance.isLocalGame) {
             LocalSvr.instance.destroy();
         }
         if (GameSocketManager.instance.isOpen()) {
@@ -216,11 +214,8 @@ export class CompGameMain extends FGUICompGameMain {
      */
     changeToLobbyScene(): void {
         // 单机模式：清理本地服务器
-        if (GameData.instance.isLocalGame || GameData.instance.isChallengeMode) {
+        if (GameData.instance.isLocalGame) {
             LocalSvr.instance.destroy();
-        }
-        if (GameData.instance.isChallengeMode) {
-            DataCenter.instance.shouldGotoChallenge = true;
         }
         if (GameSocketManager.instance.isOpen()) {
             GameSocketManager.instance.close();
@@ -842,18 +837,6 @@ export class CompGameMain extends FGUICompGameMain {
      * 返回按钮处理
      */
     onBtnBack(): void {
-        // 闯关模式：游戏开始状态下退出增加二级确认弹窗
-        if (GameData.instance.isChallengeMode && GameData.instance.gameStart) {
-            PopMessageView.showView({
-                title: "温馨提示",
-                content: "退出将放弃本局进度",
-                type: ENUM_POP_MESSAGE_TYPE.NUM2,
-                sureBack: () => {
-                    this.changeToLobbyScene();
-                },
-            });
-            return;
-        }
         // 如果房间的socket已经断开，直接退出
         if (!GameSocketManager.instance.isOpen()) {
             return this.changeToLobbyScene();

@@ -32,12 +32,6 @@ export class GameData {
     /** 是否是本地游戏 */
     private _isLocalGame: boolean = false;
 
-    /**
-     * @description 是否是闯关模式
-     * @returns {boolean} 是否是闯关模式
-     */
-    private _isChallengeMode: boolean = false;
-
     /** 单例实例 */
     private static _instance: GameData;
 
@@ -69,7 +63,6 @@ export class GameData {
         this._owner = 0;
         this._privateNowCnt = 0;
         this._isLocalGame = false;
-        this._isChallengeMode = false;
     }
 
     get gameStep(): ENUM_GAME_STEP {
@@ -276,13 +269,5 @@ export class GameData {
 
     get isLocalGame(): boolean {
         return this._isLocalGame;
-    }
-
-    set isChallengeMode(flag: boolean) {
-        this._isChallengeMode = flag;
-    }
-
-    get isChallengeMode(): boolean {
-        return this._isChallengeMode;
     }
 }
