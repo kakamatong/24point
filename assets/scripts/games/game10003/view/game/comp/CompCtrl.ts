@@ -253,7 +253,7 @@ export class CompCtrl extends FGUICompCtrl {
     }
 
     /**
-     * @description 结算：本地判定结果是否等于24，并调用提交算式协议上抛服务器
+     * @description 结算：本地判定结果是否等于24，并调用提交算式协议上抛服务器；核实不等于24时提示并自动重置本局
      * @private
      */
     private finishRound(): void {
@@ -266,6 +266,10 @@ export class CompCtrl extends FGUICompCtrl {
                 TipsView.showView({ content: "回答正确" });
             } else {
                 TipsView.showView({ content: result.msg || "回答错误" });
+                // 本地预校验未通过（核实结果不等于24等）：自动执行重置接口，恢复发牌初始状态以便重新作答
+                if (result.localValid) {
+                    this.onBtnReset();
+                }
             }
         });
     }
