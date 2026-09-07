@@ -42,6 +42,15 @@ export class CompCtrl extends FGUICompCtrl {
     private _dealNumbers: number[] = [];
     /** 当前飞行 tween 引用 */
     private _flyTween: fgui.GTweener | null = null;
+    /** 进行中的发牌入场动画 tween 列表（新发牌/重置/销毁时清理） */
+    private _dealTweens: fgui.GTweener[] = [];
+    /** 发牌入场动画：尚未完成的卡片数（全部完成才解除输入锁） */
+    private _dealAnimCount: number = 0;
+
+    /** 发牌入场动画：单卡动画时长(秒) */
+    private static readonly _DEAL_ANIM_DUR: number = 0.35;
+    /** 发牌入场动画：相邻卡片错峰延迟(秒) */
+    private static readonly _DEAL_ANIM_STAGGER: number = 0.08;
 
     /**
      * @description 组件初始化：缓存按钮/布局位置、默认不选中、监听发牌协议
@@ -62,6 +71,7 @@ export class CompCtrl extends FGUICompCtrl {
      */
     protected onDestroy(): void {
         super.onDestroy();
+        this.clearDealTweens();
         this._flyTween && this._flyTween.kill();
         this._flyTween = null;
         GameSocketManager.instance.removeServerListen(SprotoDealCards);
@@ -101,6 +111,103 @@ export class CompCtrl extends FGUICompCtrl {
             this._numBtns[i].visible = true;
             this._numBtns[i].title = this.formatFraction(this._slots[i] as FRACTION);
         }
+        // 发牌/重置统一在此触发四卡入场动画
+        this.playDealAnim();
+    }
+
+    /**
+     * @description 发牌/重置后的四卡入场动画：卡片从四格中心原点散开飞向各自卡位，
+     *              伴随缩放回弹(BackOut)与淡入，按序错峰播放；动画期间锁定输入防误触
+     * @private
+     */
+    private playDealAnim(): void {
+        this.clearDealTweens();
+        const targets: { btn: fgui.GButton; x: number; y: number }[] = [];
+        let minX = Number.MAX_VALUE;
+        let minY = Number.MAX_VALUE;
+        let maxX = -Number.MAX_VALUE;
+        let maxY = -Number.MAX_VALUE;
+        for (let i = 0; i < this._numBtns.length; i++) {
+            const btn = this._numBtns[i];
+            if (!btn.visible) {
+                continue;
+            }
+            const x = this._numBtnPos[i].x;
+            const y = this._numBtnPos[i].y;
+            targets.push({ btn, x, y });
+            minX = Math.min(minX, x);
+            maxX = Math.max(maxX, x);
+            minY = Math.min(minY, y);
+            maxY = Math.max(maxY, y);
+        }
+        if (targets.length === 0) {
+            return;
+        }
+        // 四格中心作为发牌原点
+        const cx = (minX + maxX) / 2;
+        const cy = (minY + maxY) / 2;
+        const dur = CompCtrl._DEAL_ANIM_DUR;
+        const stagger = CompCtrl._DEAL_ANIM_STAGGER;
+        this._dealAnimCount = targets.length;
+        this._busy = true;
+        for (let k = 0; k < targets.length; k++) {
+            const target = targets[k];
+            const btn = target.btn;
+            const delay = k * stagger;
+            // 初始：置于原点、隐藏（缩为0、透明）
+            btn.setPosition(cx, cy);
+            btn.setScale(0, 0);
+            btn.alpha = 0;
+            // 位移：从中心原点飞向各自卡位（QuartOut 缓出）
+            const posTween = fgui.GTween.to2(cx, cy, target.x, target.y, dur)
+                .setDelay(delay)
+                .setEase(fgui.EaseType.QuartOut)
+                .onUpdate((tween) => {
+                    btn.setPosition(tween.value.x, tween.value.y);
+                })
+                .onComplete(() => {
+                    this.onDealAnimCardDone();
+                });
+            // 缩放：0→1 BackOut 轻微回弹放大
+            const scaleTween = fgui.GTween.to2(0, 0, 1, 1, dur)
+                .setDelay(delay)
+                .setEase(fgui.EaseType.BackOut)
+                .onUpdate((tween) => {
+                    btn.setScale(tween.value.x, tween.value.y);
+                });
+            // 淡入（QuadOut，alpha 不超过1）
+            const alphaTween = fgui.GTween.to2(0, 0, 1, 1, dur)
+                .setDelay(delay)
+                .setEase(fgui.EaseType.QuadOut)
+                .onUpdate((tween) => {
+                    btn.alpha = tween.value.x;
+                });
+            this._dealTweens.push(posTween, scaleTween, alphaTween);
+        }
+    }
+
+    /**
+     * @description 单张卡片入场动画结束回调：全部卡片完成（含错峰）后解除输入锁定
+     * @private
+     */
+    private onDealAnimCardDone(): void {
+        this._dealAnimCount--;
+        if (this._dealAnimCount <= 0) {
+            this._dealAnimCount = 0;
+            this._busy = false;
+        }
+    }
+
+    /**
+     * @description 清理全部进行中的入场动画（新发牌/重置/销毁时调用）
+     * @private
+     */
+    private clearDealTweens(): void {
+        for (const t of this._dealTweens) {
+            t.kill();
+        }
+        this._dealTweens = [];
+        this._dealAnimCount = 0;
     }
 
     /**
@@ -311,6 +418,7 @@ export class CompCtrl extends FGUICompCtrl {
      * @private
      */
     private resetRound(): void {
+        this.clearDealTweens();
         this._flyTween && this._flyTween.kill();
         this._flyTween = null;
         this._busy = false;
