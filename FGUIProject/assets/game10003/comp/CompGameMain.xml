@@ -7,7 +7,7 @@
   </controller>
   <displayList>
     <component id="n0_h3uk" name="n0" src="h3uk1c" fileName="comp/CompDisband.xml" xy="13,0" visible="false"/>
-    <component id="n10_h3uk" name="UI_COMP_CTRL" src="h3uk1r" fileName="comp/CompCtrl.xml" xy="38,391">
+    <component id="n10_h3uk" name="UI_COMP_CTRL" src="h3uk1r" fileName="comp/CompCtrl.xml" xy="38,418">
       <relation target="" sidePair="center-center,middle-middle"/>
     </component>
     <component id="n11_ifzr" name="UI_BTN_INVITE" src="is91n" fileName="comp/CompBtnCommon.xml" pkg="gj0r6g5i" xy="272,1124" size="230,98" group="n13_ifzr" controller="ctrl_color,2">
@@ -48,6 +48,10 @@
     <component id="n23_z8r5" name="UI_BTN_BACK" src="is91n" fileName="comp/CompBtnCommon.xml" pkg="gj0r6g5i" xy="7,10" size="119,75">
       <relation target="" sidePair="left-left,top-top"/>
       <Button icon="ui://gj0r6g5ioott1p"/>
+    </component>
+    <component id="n24_c826" name="UI_COMP_CLOCK" src="c82627" fileName="comp/CompTimeLeft.xml" xy="63,367">
+      <gearDisplay controller="ctrl_roomtype" pages="0,1"/>
+      <relation target="" sidePair="center-center,middle-middle"/>
     </component>
   </displayList>
 </component>

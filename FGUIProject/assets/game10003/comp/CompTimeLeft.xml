@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component size="650,80">
+  <controller name="ctrl_warn" pages="0,,1," selected="0">
+    <remark page="0" value="普通"/>
+    <remark page="1" value="告警"/>
+    <action type="play_transition" fromPage="0" toPage="1" transition="act" repeat="-1" stopOnExit="true"/>
+    <action type="play_transition" fromPage="1" toPage="0" transition=""/>
+  </controller>
+  <controller name="ctrl_type" pages="0,,1," selected="0">
+    <remark page="0" value="普通"/>
+    <remark page="1" value="闯关时间"/>
+  </controller>
+  <displayList>
+    <image id="n17_c826" name="n17" src="c82626" fileName="imgs/clockBG.png" xy="0,0" size="650,80"/>
+    <image id="n18_c826" name="UI_IMG_BAR" src="k50f24" fileName="imgs/clockIn.png" xy="3,4" fillMethod="hz"/>
+    <text id="n9_mnt1" name="UI_TXT_TIME_MSG" xy="270,11" pivot="0.5,0.5" size="109,64" fontSize="48" color="#ffffff" align="center" vAlign="middle" bold="true" strokeColor="#5ca48e" strokeSize="2" text="50秒">
+      <gearColor controller="ctrl_warn" pages="0,1" values="#ffffff,#5ca48e|#ff0000,#6699cc"/>
+    </text>
+  </displayList>
+  <transition name="act" options="4">
+    <item time="0" type="Rotation" target="n9_mnt1" tween="true" startValue="0" endValue="10" duration="3"/>
+    <item time="3" type="Rotation" target="n9_mnt1" tween="true" startValue="10" endValue="0" duration="3"/>
+    <item time="6" type="Rotation" target="n9_mnt1" tween="true" startValue="0" endValue="-10" duration="3"/>
+    <item time="9" type="Rotation" target="n9_mnt1" tween="true" startValue="-10" endValue="0" duration="3"/>
+  </transition>
+</component>

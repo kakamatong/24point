@@ -6,6 +6,7 @@ import FGUICompCtrl from "./FGUICompCtrl";
 import FGUICompPirvateInfo from "./FGUICompPirvateInfo";
 import FGUICompPlayers from "./FGUICompPlayers";
 import FGUICompPlayerHead from "./FGUICompPlayerHead";
+import FGUICompTimeLeft from "./FGUICompTimeLeft";
 
 import { PackageManager } from "@frameworks/PackageManager";
 import { Logger } from "@frameworks/utils/Utils";
@@ -23,6 +24,7 @@ export default class FGUICompGameMain extends fgui.GComponent {
 	public UI_COMP_SELF_MEDAL:fgui.GComponent;
 	public UI_TXT_PROGRESS:fgui.GTextField;
 	public UI_BTN_BACK:fgui.GButton;
+	public UI_COMP_CLOCK:FGUICompTimeLeft;
 	public static URL:string = "ui://2zsfe53xh3uk1d";
 
 	public static packageName:string = "game10003";
@@ -101,6 +103,7 @@ export default class FGUICompGameMain extends fgui.GComponent {
 		this.UI_TXT_PROGRESS = <fgui.GTextField>(this.getChildAt(11));
 		this.UI_BTN_BACK = <fgui.GButton>(this.getChildAt(13));
 		this.UI_BTN_BACK.onClick(this.onBtnBack, this);
+		this.UI_COMP_CLOCK = <FGUICompTimeLeft>(this.getChildAt(14));
 		if (this.enableAnimation) this.enterAnimation();
 	}
 	scheduleOnce(callback: () => void, delay: number):void{};

@@ -25,6 +25,9 @@
     <component id="vg6221" name="CompOffline.xml" path="/comp/"/>
     <image id="vg6222" name="offline.png" path="/imgs/"/>
     <image id="kv8023" name="quan.png" path="/imgs/"/>
+    <image id="k50f24" name="clockIn.png" path="/imgs/"/>
+    <image id="c82626" name="clockBG.png" path="/imgs/" scale="9grid" scale9grid="23,20,21,21"/>
+    <component id="c82627" name="CompTimeLeft.xml" path="/comp/"/>
   </resources>
   <publish name="" genCode="true"/>
 </packageDescription>
