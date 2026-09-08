@@ -38,6 +38,7 @@ import { PopMessageView } from "@view/common/PopMessageView";
 import { ENUM_POP_MESSAGE_TYPE } from "@datacenter/InterfaceConfig";
 import { CompPlayers } from "./CompPlayers";
 import { CompPlayerHead } from "./CompPlayerHead";
+import { CompTimeLeft } from "./CompTimeLeft";
 import { FORWARD_MESSAGE_TYPE, GAME_PLAYER_INFO, PLAYER_STATUS, ROOM_END_FLAG, ROOM_TYPE } from "@game10003/data/InterfaceGameConfig";
 import { SoundManager } from "@frameworks/SoundManager";
 import FGUICompMedal from "@fgui/gameCommon/FGUICompMedal";
@@ -67,6 +68,9 @@ export class CompGameMain extends FGUICompGameMain {
         } else if (GameData.instance.isLocalGame) {
             this.ctrl_roomtype.selectedIndex = ROOM_TYPE.LOCAL;
         }
+
+        // 倒计时初始隐藏，收到 gameClock 后才显示
+        this.showClock(false);
 
         // 延迟发送客户端进入完成
         this.scheduleOnce(() => {
@@ -573,6 +577,8 @@ export class CompGameMain extends FGUICompGameMain {
      */
     onSvrGameEnd(data: SprotoGameEnd.Request): void {
         GameData.instance.gameStart = false;
+        // 本局结束：停止并隐藏倒计时
+        this.showClock(false);
 
         UserStatus.instance.req();
     }
@@ -686,9 +692,21 @@ export class CompGameMain extends FGUICompGameMain {
     /**
      * 显示或隐藏倒计时
      * @param bshow 是否显示
-     * @param clock 倒计时时间
+     * @param clock 倒计时时间（gameClock.time：剩余秒数）
      */
-    showClock(bshow: boolean, clock?: number): void {}
+    showClock(bshow: boolean, clock?: number): void {
+        const clockComp = this.UI_COMP_CLOCK as CompTimeLeft;
+        if (!clockComp) {
+            return;
+        }
+        if (bshow && clock && clock > 0) {
+            clockComp.visible = true;
+            clockComp.start(clock);
+        } else {
+            clockComp.stopClock();
+            clockComp.visible = false;
+        }
+    }
 
     /**
      * 私人房信息处理
