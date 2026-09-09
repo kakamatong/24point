@@ -352,15 +352,46 @@ export class CompCtrl extends FGUICompCtrl {
                 // 选中计算结果卡片（第二格）
                 this._selFirst = second;
                 this.ctrl_nums.selectedIndex = second;
-                // 三次运算后只剩一个数字，进入结算
+                // 三次运算后只剩一个数字；仅最终值为24时将结果牌移动到牌区中心
                 if (this._opCount >= 3) {
+                    if (this._slots.filter((slot) => slot !== null).length === 1 && result.n === 24 && result.d === 1) {
+                        this.moveFinalCardToCenter(second);
+                    }
                     this.finishRound();
                 }
             });
     }
 
     /**
-     * @description 结算：本地判定结果是否等于24，并调用提交算式协议上抛服务器；核实不等于24时提示并自动重置本局
+     * @description 最终结果为24且只剩一张牌时，将结果牌平滑移动到四格牌区中心
+     * @param {number} index - 最终结果牌所在格索引
+     * @private
+     */
+    private moveFinalCardToCenter(index: number): void {
+        const btn = this._numBtns[index];
+        if (!btn || !btn.visible || this._numBtnPos.length === 0) {
+            return;
+        }
+        const center = this._numBtnPos.reduce(
+            (sum, pos) => ({ x: sum.x + pos.x, y: sum.y + pos.y }),
+            { x: 0, y: 0 },
+        );
+        center.x /= this._numBtnPos.length;
+        center.y /= this._numBtnPos.length;
+        this._busy = true;
+        this._flyTween = fgui.GTween.to2(btn.x, btn.y, center.x, center.y, 0.35)
+            .setEase(fgui.EaseType.QuartOut)
+            .onUpdate((tween) => {
+                btn.setPosition(tween.value.x, tween.value.y);
+            })
+            .onComplete(() => {
+                this._flyTween = null;
+                this._busy = false;
+            });
+    }
+
+    /**
+     * @description 结算：本地判定结果是否等于24，并调用提交算式协议上抛服务器判定；核实不等于24时提示并自动重置本局
      * @private
      */
     private finishRound(): void {
