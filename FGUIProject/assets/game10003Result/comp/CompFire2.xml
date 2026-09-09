@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component size="400,600">
+  <displayList>
+    <component id="n0_9kqj" name="n0" src="9kqj14" fileName="comp/CompF1.xml" xy="-1,572"/>
+    <component id="n1_9kqj" name="n1" src="9kqj15" fileName="comp/CompF2.xml" xy="7,578"/>
+    <component id="n2_9kqj" name="n2" src="9kqj16" fileName="comp/CompF3.xml" xy="-5,554"/>
+    <component id="n3_9kqj" name="n3" src="9kqj17" fileName="comp/CompF4.xml" xy="6,562"/>
+    <component id="n4_9kqj" name="n4" src="9kqj18" fileName="comp/CompF5.xml" xy="25,579"/>
+    <component id="n5_9kqj" name="n5" src="9kqj19" fileName="comp/CompF6.xml" xy="0,559"/>
+    <component id="n6_9kqj" name="n6" src="9kqj1a" fileName="comp/CompF7.xml" xy="11,554"/>
+    <component id="n7_9kqj" name="n7" src="9kqj19" fileName="comp/CompF6.xml" xy="16,566"/>
+    <component id="n8_9kqj" name="n8" src="9kqj14" fileName="comp/CompF1.xml" xy="13,567"/>
+    <component id="n9_9kqj" name="n9" src="9kqj17" fileName="comp/CompF4.xml" xy="9,566"/>
+  </displayList>
+  <transition name="act" autoPlay="true">
+    <item time="0" type="XY" target="n0_9kqj" tween="true" startValue="-1,572" endValue="397,342" duration="30" path="2,0,0,5,-22,110,-495,1,2,398,-230,696.8376,44.97214,0,0,1"/>
+    <item time="0" type="XY" target="n1_9kqj" tween="true" startValue="7,578.5" endValue="388,368.5" duration="36" path="2,0,0,5,-55,102,-483,1,2,381,-210,662.3875,65.33612,0,0,1"/>
+    <item time="0" type="XY" target="n2_9kqj" tween="true" startValue="-10,552" endValue="409,262" duration="26" path="2,0,0,29,-55,233,-362,1,2,419,-290,852.67,-162.3748,0,0,1"/>
+    <item time="0" type="XY" target="n3_9kqj" tween="true" startValue="6,562" endValue="321,354" duration="42" path="2,0,0,14,-37,180,-267,1,2,315,-208,660.887,-56.83461,0,0,1"/>
+    <item time="0" type="XY" target="n4_9kqj" tween="true" startValue="0,575" endValue="371,395" duration="37" path="2,0,0,4,-38,277,-258,1,2,371,-180,674.9371,72.20311,0,0,1"/>
+    <item time="0" type="XY" target="n5_9kqj" tween="true" startValue="0.5,559.5" endValue="478.5,303.5" duration="31" path="2,0,0,-9,-54,320,-252,1,2,478,-256,0,0,0,0,1"/>
+    <item time="0" type="XY" target="n6_9kqj" tween="true" startValue="11,554.5" endValue="373,310.5" duration="39" path="2,0,0,-5,-33,129,-432,1,2,362,-244,701.7505,30.13348,0,0,1"/>
+    <item time="0" type="XY" target="n7_9kqj" tween="true" startValue="16,566" endValue="385,353" duration="34" path="2,0,0,-7,-33,207,-296,1,2,369,-213,724.8634,-30.6749,0,0,1"/>
+    <item time="0" type="XY" target="n8_9kqj" tween="true" startValue="13,567" endValue="388,360" duration="35" path="2,0,0,-3,-23,177,-317,1,2,375,-207,717.0104,-16.99419,0,0,1"/>
+    <item time="0" type="XY" target="n9_9kqj" tween="true" startValue="10,572" endValue="364,366" duration="38" path="2,0,0,-1,-59,248,-292,1,2,354,-206,672.0608,52.04929,0,0,1"/>
+  </transition>
+</component>

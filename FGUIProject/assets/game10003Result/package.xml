@@ -8,6 +8,24 @@
     <image id="kv65q" name="gameEnd.png" path="/imgs/"/>
     <component id="kv65r" name="CompTotalResultInfo.xml" path="/comp/"/>
     <image id="jqb6s" name="roundend.png" path="/imgs/"/>
+    <image id="9kqjt" name="tong.png" path="/imgs/"/>
+    <component id="9kqju" name="CompFireFlower.xml" path="/comp/"/>
+    <component id="9kqjv" name="CompFire1.xml" path="/comp/"/>
+    <component id="9kqjw" name="CompFire2.xml" path="/comp/"/>
+    <image id="9kqjx" name="f2.png" path="/imgs/"/>
+    <image id="9kqjy" name="f3.png" path="/imgs/"/>
+    <image id="9kqjz" name="f4.png" path="/imgs/"/>
+    <image id="9kqj10" name="f5.png" path="/imgs/"/>
+    <image id="9kqj11" name="f6.png" path="/imgs/"/>
+    <image id="9kqj12" name="f7.png" path="/imgs/"/>
+    <image id="9kqj13" name="f1.png" path="/imgs/"/>
+    <component id="9kqj14" name="CompF1.xml" path="/comp/"/>
+    <component id="9kqj15" name="CompF2.xml" path="/comp/"/>
+    <component id="9kqj16" name="CompF3.xml" path="/comp/"/>
+    <component id="9kqj17" name="CompF4.xml" path="/comp/"/>
+    <component id="9kqj18" name="CompF5.xml" path="/comp/"/>
+    <component id="9kqj19" name="CompF6.xml" path="/comp/"/>
+    <component id="9kqj1a" name="CompF7.xml" path="/comp/"/>
   </resources>
   <publish name="" genCode="true"/>
 </packageDescription>

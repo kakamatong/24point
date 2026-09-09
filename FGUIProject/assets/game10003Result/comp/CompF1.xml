@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component size="30,22">
+  <displayList>
+    <image id="n0_9kqj" name="n0" src="9kqj13" fileName="imgs/f1.png" xy="0,0" pivot="0.5,0.5"/>
+  </displayList>
+  <transition name="t0" autoPlay="true" autoPlayRepeat="-1">
+    <item time="0" type="Rotation" target="n0_9kqj" tween="true" startValue="0" endValue="360" duration="18"/>
+    <item time="0" type="Skew" target="n0_9kqj" tween="true" startValue="0,0" endValue="30.29,30.1" duration="18"/>
+  </transition>
+</component>

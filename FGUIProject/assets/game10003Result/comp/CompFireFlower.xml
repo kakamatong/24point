@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component size="800,600">
+  <displayList>
+    <component id="n0_9kqj" name="n0" src="9kqjv" fileName="comp/CompFire1.xml" xy="2,470"/>
+    <component id="n1_9kqj" name="n1" src="9kqjw" fileName="comp/CompFire2.xml" xy="83,-84"/>
+  </displayList>
+</component>

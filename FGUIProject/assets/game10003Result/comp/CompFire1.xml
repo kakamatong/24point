@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component size="120,125">
+  <displayList>
+    <image id="n0_9kqj" name="n0" src="9kqjt" fileName="imgs/tong.png" xy="0,0" pivot="0,1" size="120,125"/>
+  </displayList>
+  <transition name="act">
+    <item time="0" type="Size" target="n0_9kqj" tween="true" startValue="120,125" endValue="100,96" duration="6"/>
+    <item time="6" type="Size" target="n0_9kqj" tween="true" startValue="100,96" endValue="120,125" duration="4"/>
+    <item time="10" type="Size" target="n0_9kqj" tween="true" startValue="120,125" endValue="137,143" duration="3"/>
+    <item time="13" type="Size" target="n0_9kqj" tween="true" startValue="137,143" endValue="120,125" duration="3"/>
+  </transition>
+</component>
