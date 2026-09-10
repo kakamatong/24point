@@ -37,6 +37,12 @@
     <image id="n15_jqb6" name="n15" src="jqb6s" fileName="imgs/roundend.png" xy="88,700">
       <relation target="" sidePair="center-center,middle-middle"/>
     </image>
+    <component id="n20_ffwu" name="n20" src="9kqju" fileName="comp/CompFireFlower.xml" xy="-3,696">
+      <relation target="" sidePair="center-center,middle-middle"/>
+    </component>
+    <component id="n21_ffwu" name="n21" src="9kqju" fileName="comp/CompFireFlower.xml" xy="162,1280" rotation="270">
+      <relation target="" sidePair="center-center,middle-middle"/>
+    </component>
   </displayList>
   <transition name="act" options="4">
     <item time="0" type="Alpha" target="n19_oott" value="0"/>

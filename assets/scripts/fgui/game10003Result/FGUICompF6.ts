@@ -2,17 +2,14 @@
 
 import { assetManager, AssetManager } from "cc";
 import * as fgui from "fairygui-cc";
-import FGUICompFire1 from "./FGUICompFire1";
-import FGUICompFire2 from "./FGUICompFire2";
 
 import { PackageManager } from "@frameworks/PackageManager";
 import { Logger } from "@frameworks/utils/Utils";
 
-export default class FGUICompFireFlower extends fgui.GComponent {
+export default class FGUICompF6 extends fgui.GComponent {
 
-	public UI_COMP_BUCKET:FGUICompFire1;
-	public UI_COMP_RIBBONS:FGUICompFire2;
-	public static URL:string = "ui://5x18e99v9kqju";
+	public t0:fgui.Transition;
+	public static URL:string = "ui://5x18e99v9kqj19";
 
 	public static packageName:string = "game10003Result";
 
@@ -21,17 +18,17 @@ export default class FGUICompFireFlower extends fgui.GComponent {
 	public enableAnimation: boolean = false;
 
 	public static showView(params?:any, callBack?:(b:boolean)=>void):void {
-		if(FGUICompFireFlower.instance) {
+		if(FGUICompF6.instance) {
 			console.log("allready show");
 			callBack&&callBack(false);
 			return;
 		}
 		PackageManager.instance.loadPackage("fgui", this.packageName).then(()=> {
 
-			const view = fgui.UIPackage.createObject("game10003Result", "CompFireFlower") as FGUICompFireFlower;
+			const view = fgui.UIPackage.createObject("game10003Result", "CompF6") as FGUICompF6;
 
 			view.makeFullScreen();
-			FGUICompFireFlower.instance = view;
+			FGUICompF6.instance = view;
 			fgui.GRoot.inst.addChild(view);
 			view.show && view.show(params);
 			callBack&&callBack(true);
@@ -41,10 +38,10 @@ export default class FGUICompFireFlower extends fgui.GComponent {
 
 	protected onDestroy():void {
 		super.onDestroy();
-		FGUICompFireFlower.instance = null;
+		FGUICompF6.instance = null;
 	}
 	public static hideView():void {
-		FGUICompFireFlower.instance && FGUICompFireFlower.instance.dispose();
+		FGUICompF6.instance && FGUICompF6.instance.dispose();
 	}
 
 	show(data?:any):void{};
@@ -70,13 +67,12 @@ export default class FGUICompFireFlower extends fgui.GComponent {
 		    });
 	}
 
-	public static createInstance():FGUICompFireFlower {
-		return <FGUICompFireFlower>(fgui.UIPackage.createObject("game10003Result", "CompFireFlower"));
+	public static createInstance():FGUICompF6 {
+		return <FGUICompF6>(fgui.UIPackage.createObject("game10003Result", "CompF6"));
 	}
 
 	protected onConstruct():void {
-		this.UI_COMP_BUCKET = <FGUICompFire1>(this.getChildAt(0));
-		this.UI_COMP_RIBBONS = <FGUICompFire2>(this.getChildAt(1));
+		this.t0 = this.getTransitionAt(0);
 		if (this.enableAnimation) this.enterAnimation();
 	}
 	scheduleOnce(callback: () => void, delay: number):void{};
@@ -84,4 +80,4 @@ export default class FGUICompFireFlower extends fgui.GComponent {
 	unschedule(callback: () => void):void{};
 	schedule(callback: () => void, interval: number):void{};
 }
-fgui.UIObjectFactory.setExtension(FGUICompFireFlower.URL, FGUICompFireFlower);
+fgui.UIObjectFactory.setExtension(FGUICompF6.URL, FGUICompF6);
