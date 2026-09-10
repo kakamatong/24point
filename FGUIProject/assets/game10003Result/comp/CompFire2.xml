@@ -12,7 +12,7 @@
     <component id="n8_9kqj" name="n8" src="9kqj14" fileName="comp/CompF1.xml" xy="13,567"/>
     <component id="n9_9kqj" name="n9" src="9kqj17" fileName="comp/CompF4.xml" xy="9,566"/>
   </displayList>
-  <transition name="act" autoPlay="true">
+  <transition name="act" autoPlayDelay="0.27">
     <item time="0" type="XY" target="n0_9kqj" tween="true" startValue="-1,572" endValue="397,342" duration="30" path="2,0,0,5,-22,110,-495,1,2,398,-230,696.8376,44.97214,0,0,1"/>
     <item time="0" type="XY" target="n1_9kqj" tween="true" startValue="7,578.5" endValue="388,368.5" duration="36" path="2,0,0,5,-55,102,-483,1,2,381,-210,662.3875,65.33612,0,0,1"/>
     <item time="0" type="XY" target="n2_9kqj" tween="true" startValue="-10,552" endValue="409,262" duration="26" path="2,0,0,29,-55,233,-362,1,2,419,-290,852.67,-162.3748,0,0,1"/>
