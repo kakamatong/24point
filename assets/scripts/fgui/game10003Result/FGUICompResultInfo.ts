@@ -15,9 +15,7 @@ export default class FGUICompResultInfo extends fgui.GComponent {
 	public UI_TXT_NICKNAME:fgui.GTextField;
 	public UI_COMP_MEDAL:fgui.GComponent;
 	public UI_TXT_USE_TIME:fgui.GTextField;
-	public UI_TXT_SCORE:fgui.GTextField;
-	public UI_TXT_MAX_COMB:fgui.GTextField;
-	public UI_TXT_TOTALSCORE:fgui.GTextField;
+	public UI_TXT_FUNC:fgui.GTextField;
 	public static URL:string = "ui://5x18e99vfnug1";
 
 	public static packageName:string = "game10003Result";
@@ -88,9 +86,7 @@ export default class FGUICompResultInfo extends fgui.GComponent {
 		this.UI_TXT_NICKNAME = <fgui.GTextField>(this.getChildAt(2));
 		this.UI_COMP_MEDAL = <fgui.GComponent>(this.getChildAt(3));
 		this.UI_TXT_USE_TIME = <fgui.GTextField>(this.getChildAt(4));
-		this.UI_TXT_SCORE = <fgui.GTextField>(this.getChildAt(6));
-		this.UI_TXT_MAX_COMB = <fgui.GTextField>(this.getChildAt(7));
-		this.UI_TXT_TOTALSCORE = <fgui.GTextField>(this.getChildAt(8));
+		this.UI_TXT_FUNC = <fgui.GTextField>(this.getChildAt(6));
 		if (this.enableAnimation) this.enterAnimation();
 	}
 	scheduleOnce(callback: () => void, delay: number):void{};

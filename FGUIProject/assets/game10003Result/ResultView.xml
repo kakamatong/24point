@@ -27,20 +27,18 @@
       <item title="3" name="3"/>
       <item title="4" name="4"/>
     </list>
-    <text id="n13_rei5" name="n13" xy="219,508" size="80,52" group="n19_oott" fontSize="38" color="#cc6600" text="用时"/>
-    <text id="n14_rei5" name="n14" xy="605,508" size="80,52" group="n19_oott" fontSize="38" color="#cc6600" text="总分"/>
-    <text id="n16_jqb6" name="n16" xy="486,508" size="80,52" group="n19_oott" fontSize="38" color="#cc6600" text="分数"/>
-    <text id="n17_coh5" name="n17" xy="357,508" size="80,52" group="n19_oott" fontSize="38" color="#cc6600" text="连击"/>
+    <text id="n13_rei5" name="n13" xy="263,508" size="80,52" group="n19_oott" fontSize="38" color="#cc6600" text="用时"/>
+    <text id="n14_rei5" name="n14" xy="521,508" size="80,52" group="n19_oott" fontSize="38" color="#cc6600" text="公式"/>
     <group id="n19_oott" name="UI_GROP_RESULT" xy="58,363" size="660,860" advanced="true">
       <relation target="" sidePair="center-center,middle-middle"/>
     </group>
     <image id="n15_jqb6" name="n15" src="jqb6s" fileName="imgs/roundend.png" xy="88,700">
       <relation target="" sidePair="center-center,middle-middle"/>
     </image>
-    <component id="n20_ffwu" name="n20" src="9kqju" fileName="comp/CompFireFlower.xml" xy="-3,709">
+    <component id="n20_ffwu" name="UI_COMP_LHT_LEFT" src="9kqju" fileName="comp/CompFireFlower.xml" xy="-3,709">
       <relation target="" sidePair="center-center,middle-middle"/>
     </component>
-    <component id="n21_ffwu" name="n21" src="9kqju" fileName="comp/CompFireFlower.xml" xy="773,709" skew="0,180">
+    <component id="n21_ffwu" name="UI_COMP_LHT_RIGHT" src="9kqju" fileName="comp/CompFireFlower.xml" xy="773,709" skew="0,180">
       <relation target="" sidePair="center-center,middle-middle"/>
     </component>
   </displayList>

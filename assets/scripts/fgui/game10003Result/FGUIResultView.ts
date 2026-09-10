@@ -2,6 +2,7 @@
 
 import { assetManager, AssetManager } from "cc";
 import * as fgui from "fairygui-cc";
+import FGUICompFireFlower from "./FGUICompFireFlower";
 
 import { PackageManager } from "@frameworks/PackageManager";
 import { Logger } from "@frameworks/utils/Utils";
@@ -14,6 +15,8 @@ export default class FGUIResultView extends fgui.GComponent {
 	public UI_BTN_BACK:fgui.GButton;
 	public UI_LV_GAME_INFO:fgui.GList;
 	public UI_GROP_RESULT:fgui.GGroup;
+	public UI_COMP_LHT_LEFT:FGUICompFireFlower;
+	public UI_COMP_LHT_RIGHT:FGUICompFireFlower;
 	public act:fgui.Transition;
 	public static URL:string = "ui://5x18e99vfnug0";
 
@@ -85,7 +88,9 @@ export default class FGUIResultView extends fgui.GComponent {
 		this.UI_BTN_BACK = <fgui.GButton>(this.getChildAt(3));
 		this.UI_BTN_BACK.onClick(this.onBtnBack, this);
 		this.UI_LV_GAME_INFO = <fgui.GList>(this.getChildAt(5));
-		this.UI_GROP_RESULT = <fgui.GGroup>(this.getChildAt(10));
+		this.UI_GROP_RESULT = <fgui.GGroup>(this.getChildAt(8));
+		this.UI_COMP_LHT_LEFT = <FGUICompFireFlower>(this.getChildAt(10));
+		this.UI_COMP_LHT_RIGHT = <FGUICompFireFlower>(this.getChildAt(11));
 		this.act = this.getTransitionAt(0);
 		if (this.enableAnimation) this.enterAnimation();
 	}
