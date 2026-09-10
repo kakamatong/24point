@@ -12,6 +12,7 @@ import { DataCenter } from "@datacenter/Datacenter";
 import { GameSocketManager } from "@frameworks/GameSocketManager";
 import { LocalSvr } from "@localGame/LocalSvr";
 import {
+    SprotoAnswerResult,
     SprotoForwardMessage,
     SprotoGameClock,
     SprotoGameEnd,
@@ -33,7 +34,7 @@ import { SprotoGameRoomReady } from "../../../../../../types/protocol/lobby/s2c"
 import { Logger } from "@frameworks/utils/Utils";
 import { MatchView } from "@view/match/MatchView";
 import { AuthGame } from "@modules/AuthGame";
-import { SprotoClientReady, SprotoLeaveRoom } from "../../../../../../types/protocol/game10003/c2s";
+import { SprotoClientReady, SprotoGameReady, SprotoLeaveRoom } from "../../../../../../types/protocol/game10003/c2s";
 import { PopMessageView } from "@view/common/PopMessageView";
 import { ENUM_POP_MESSAGE_TYPE } from "@datacenter/InterfaceConfig";
 import { CompPlayers } from "./CompPlayers";
@@ -44,6 +45,8 @@ import { SoundManager } from "@frameworks/SoundManager";
 import FGUICompMedal from "@fgui/gameCommon/FGUICompMedal";
 import { UserStatus } from "@modules/UserStatus";
 import { TALK_LIST } from "@game10003/view/talk/TalkConfig";
+import { ResultView } from "@game10003/view/result/ResultView";
+import { CompFireFlower } from "@game10003/view/result/comp/CompFireFlower";
 
 /**
  * @class CompGameMain
@@ -54,6 +57,8 @@ import { TALK_LIST } from "@game10003/view/talk/TalkConfig";
 export class CompGameMain extends FGUICompGameMain {
     public UI_COMP_SELF_MEDAL: FGUICompMedal;
     public UI_COMP_SELFPLAYER: CompPlayerHead;
+    public UI_COMP_LHT_LEFT: CompFireFlower;
+    public UI_COMP_LHT_RIGHT: CompFireFlower;
     /**
      * @description 组件构造：调用基类初始化 UI_COMP_CTRL 等子组件引用
      */
@@ -83,6 +88,7 @@ export class CompGameMain extends FGUICompGameMain {
      */
     protected onDestroy(): void {
         super.onDestroy();
+        ResultView.hideView();
         this.removeListeners();
         if (GameData.instance.isLocalGame) {
             LocalSvr.instance.destroy();
@@ -117,6 +123,7 @@ export class CompGameMain extends FGUICompGameMain {
         GameSocketManager.instance.addServerListen(SprotoRoomEnd, this.onRoomEnd.bind(this));
         GameSocketManager.instance.addServerListen(SprotoPlayerInfos, this.onSvrPlayerInfos.bind(this));
         GameSocketManager.instance.addServerListen(SprotoGameStart, this.onSvrGameStart.bind(this));
+        GameSocketManager.instance.addServerListen(SprotoAnswerResult, this.onSvrAnswerResult.bind(this));
         GameSocketManager.instance.addServerListen(SprotoGameEnd, this.onSvrGameEnd.bind(this));
         GameSocketManager.instance.addServerListen(SprotoPlayerEnter, this.onSvrPlayerEnter.bind(this));
         GameSocketManager.instance.addServerListen(SprotoPlayerStatusUpdate, this.onSvrPlayerStatusUpdate.bind(this));
@@ -140,6 +147,7 @@ export class CompGameMain extends FGUICompGameMain {
         GameSocketManager.instance.removeServerListen(SprotoRoomEnd);
         GameSocketManager.instance.removeServerListen(SprotoPlayerInfos);
         GameSocketManager.instance.removeServerListen(SprotoGameStart);
+        GameSocketManager.instance.removeServerListen(SprotoAnswerResult);
         GameSocketManager.instance.removeServerListen(SprotoGameEnd);
         GameSocketManager.instance.removeServerListen(SprotoPlayerEnter);
         GameSocketManager.instance.removeServerListen(SprotoPlayerStatusUpdate);
@@ -217,6 +225,7 @@ export class CompGameMain extends FGUICompGameMain {
      * 切换到大厅场景
      */
     changeToLobbyScene(): void {
+        ResultView.hideView();
         // 单机模式：清理本地服务器
         if (GameData.instance.isLocalGame) {
             LocalSvr.instance.destroy();
@@ -507,6 +516,10 @@ export class CompGameMain extends FGUICompGameMain {
      */
     onSvrGameStart(data: any): void {
         GameData.instance.gameStart = true;
+        // 新一局开始时关闭上一局结算弹窗，并停止可能仍在播放的礼花
+        ResultView.hideView();
+        this.UI_COMP_LHT_LEFT?.stop();
+        this.UI_COMP_LHT_RIGHT?.stop();
 
         // 隐藏开始,邀请游戏按钮
         if (GameData.instance.isPrivateRoom) {
@@ -580,7 +593,105 @@ export class CompGameMain extends FGUICompGameMain {
         // 本局结束：停止并隐藏倒计时
         this.showClock(false);
 
+        // 先刷新本局名次/完成状态，再展示结算弹窗
+        this.updateRoundRank(data);
+        ResultView.showView({
+            ...data,
+            continueFunc: () => this.onRoundResultContinue(),
+            backFunc: () => this.onBtnBack(),
+            resultEffectFunc: (resultFlag: number) => this.playRoundResultSound(resultFlag),
+        });
+
         UserStatus.instance.req();
+    }
+
+    /**
+     * @method updateRoundRank
+     * @description 根据 gameEnd.rankings 更新自己和其他玩家的名次/完成状态
+     * @param {SprotoGameEnd.Request} data - 本局结算数据
+     * @private
+     */
+    private updateRoundRank(data: SprotoGameEnd.Request): void {
+        const rankings = data?.rankings ?? [];
+        const selfSeat = GameData.instance.getSelfSeat();
+        const compPlayers = this.UI_COMP_PLAYERS as CompPlayers;
+
+        for (const ranking of rankings) {
+            const seat = ranking.seat;
+            const rank = ranking.rank ?? 0;
+            const usedTime = ranking.usedTime ?? -1;
+            if (seat === selfSeat) {
+                if (this.UI_COMP_SELF_MEDAL) {
+                    this.UI_COMP_SELF_MEDAL.ctrl_rank.selectedIndex = Math.max(0, Math.min(6, rank));
+                }
+                continue;
+            }
+
+            compPlayers?.setOtherPlayerRank(seat, rank);
+            if (usedTime >= 0) {
+                compPlayers?.setOtherPlayerComplete(seat, true);
+            } else {
+                compPlayers?.setOtherPlayerIncomplete(seat);
+            }
+        }
+    }
+
+    /**
+     * @method playRoundResultSound
+     * @description 根据结算胜负标记播放胜负音效：胜利 win、失败 lose，平局不播放
+     * @param {number} resultFlag - 0失败 1胜利 2平局
+     * @private
+     */
+    private playRoundResultSound(resultFlag: number): void {
+        if (resultFlag === 1) {
+            SoundManager.instance.playSoundEffect("game10003/win");
+        } else if (resultFlag === 0) {
+            SoundManager.instance.playSoundEffect("game10003/lose");
+        }
+    }
+
+    /**
+     * @method playAnswerCorrectEffect
+     * @description 自己答对并得到服务器确认后播放左右礼花（礼花只在算出24点时播放，结算不再播放）
+     * @private
+     */
+    private playAnswerCorrectEffect(): void {
+        this.UI_COMP_LHT_LEFT?.stop();
+        this.UI_COMP_LHT_RIGHT?.stop();
+        this.UI_COMP_LHT_LEFT?.play();
+        this.UI_COMP_LHT_RIGHT?.play();
+    }
+
+    /**
+     * @method onSvrAnswerResult
+     * @description 提交结果广播处理：仅自己 correct=1 时播放礼花
+     * @param {SprotoAnswerResult.Request} data - 提交结果数据
+     * @private
+     */
+    private onSvrAnswerResult(data: SprotoAnswerResult.Request): void {
+        if (data?.correct !== 1 || data.seat !== GameData.instance.getSelfSeat()) {
+            return;
+        }
+        this.playAnswerCorrectEffect();
+    }
+
+    /**
+     * @method onRoundResultContinue
+     * @description 结算弹窗点击继续游戏：单机重新发送 clientReady 开下一局，私人房发送 gameReady 准备，匹配房由服务器自动开局
+     * @private
+     */
+    private onRoundResultContinue(): void {
+        if (GameData.instance.isLocalGame) {
+            GameSocketManager.instance.sendToServer(SprotoClientReady, {});
+            return;
+        }
+        if (!GameSocketManager.instance.isOpen()) {
+            this.changeToLobbyScene();
+            return;
+        }
+        if (GameData.instance.isPrivateRoom) {
+            GameSocketManager.instance.sendToServer(SprotoGameReady, { ready: 1 });
+        }
     }
 
     /**

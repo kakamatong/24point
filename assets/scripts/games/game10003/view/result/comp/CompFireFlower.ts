@@ -7,7 +7,7 @@
 import * as fgui from "fairygui-cc";
 import { Logger } from "@frameworks/utils/Utils";
 import { ViewClass } from "@frameworks/Framework";
-import FGUICompFireFlower from "@fgui/game10003Result/FGUICompFireFlower";
+import FGUICompFireFlower from "@fgui/game10003/FGUICompFireFlower";
 
 /** UI_COMP_BUCKET 转场中飞行动画的帧事件标签 */
 const FRAME_EVENT_FLY = "fly";
