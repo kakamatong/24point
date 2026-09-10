@@ -6,29 +6,29 @@ import * as fgui from "fairygui-cc";
 import { PackageManager } from "@frameworks/PackageManager";
 import { Logger } from "@frameworks/utils/Utils";
 
-export default class FGUICompF2 extends fgui.GComponent {
+export default class FGUICompF6 extends fgui.GComponent {
 
 	public t0:fgui.Transition;
-	public static URL:string = "ui://5x18e99v9kqj15";
+	public static URL:string = "ui://2zsfe53xffwu2m";
 
-	public static packageName:string = "game10003Result";
+	public static packageName:string = "game10003";
 
 	public static instance:any | null = null;
 
 	public enableAnimation: boolean = false;
 
 	public static showView(params?:any, callBack?:(b:boolean)=>void):void {
-		if(FGUICompF2.instance) {
+		if(FGUICompF6.instance) {
 			console.log("allready show");
 			callBack&&callBack(false);
 			return;
 		}
 		PackageManager.instance.loadPackage("fgui", this.packageName).then(()=> {
 
-			const view = fgui.UIPackage.createObject("game10003Result", "CompF2") as FGUICompF2;
+			const view = fgui.UIPackage.createObject("game10003", "CompF6") as FGUICompF6;
 
 			view.makeFullScreen();
-			FGUICompF2.instance = view;
+			FGUICompF6.instance = view;
 			fgui.GRoot.inst.addChild(view);
 			view.show && view.show(params);
 			callBack&&callBack(true);
@@ -38,10 +38,10 @@ export default class FGUICompF2 extends fgui.GComponent {
 
 	protected onDestroy():void {
 		super.onDestroy();
-		FGUICompF2.instance = null;
+		FGUICompF6.instance = null;
 	}
 	public static hideView():void {
-		FGUICompF2.instance && FGUICompF2.instance.dispose();
+		FGUICompF6.instance && FGUICompF6.instance.dispose();
 	}
 
 	show(data?:any):void{};
@@ -67,8 +67,8 @@ export default class FGUICompF2 extends fgui.GComponent {
 		    });
 	}
 
-	public static createInstance():FGUICompF2 {
-		return <FGUICompF2>(fgui.UIPackage.createObject("game10003Result", "CompF2"));
+	public static createInstance():FGUICompF6 {
+		return <FGUICompF6>(fgui.UIPackage.createObject("game10003", "CompF6"));
 	}
 
 	protected onConstruct():void {
@@ -80,4 +80,4 @@ export default class FGUICompF2 extends fgui.GComponent {
 	unschedule(callback: () => void):void{};
 	schedule(callback: () => void, interval: number):void{};
 }
-fgui.UIObjectFactory.setExtension(FGUICompF2.URL, FGUICompF2);
+fgui.UIObjectFactory.setExtension(FGUICompF6.URL, FGUICompF6);

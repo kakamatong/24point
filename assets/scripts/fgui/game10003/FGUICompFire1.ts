@@ -6,29 +6,29 @@ import * as fgui from "fairygui-cc";
 import { PackageManager } from "@frameworks/PackageManager";
 import { Logger } from "@frameworks/utils/Utils";
 
-export default class FGUICompF6 extends fgui.GComponent {
+export default class FGUICompFire1 extends fgui.GComponent {
 
-	public t0:fgui.Transition;
-	public static URL:string = "ui://5x18e99v9kqj19";
+	public act:fgui.Transition;
+	public static URL:string = "ui://2zsfe53xffwu29";
 
-	public static packageName:string = "game10003Result";
+	public static packageName:string = "game10003";
 
 	public static instance:any | null = null;
 
 	public enableAnimation: boolean = false;
 
 	public static showView(params?:any, callBack?:(b:boolean)=>void):void {
-		if(FGUICompF6.instance) {
+		if(FGUICompFire1.instance) {
 			console.log("allready show");
 			callBack&&callBack(false);
 			return;
 		}
 		PackageManager.instance.loadPackage("fgui", this.packageName).then(()=> {
 
-			const view = fgui.UIPackage.createObject("game10003Result", "CompF6") as FGUICompF6;
+			const view = fgui.UIPackage.createObject("game10003", "CompFire1") as FGUICompFire1;
 
 			view.makeFullScreen();
-			FGUICompF6.instance = view;
+			FGUICompFire1.instance = view;
 			fgui.GRoot.inst.addChild(view);
 			view.show && view.show(params);
 			callBack&&callBack(true);
@@ -38,10 +38,10 @@ export default class FGUICompF6 extends fgui.GComponent {
 
 	protected onDestroy():void {
 		super.onDestroy();
-		FGUICompF6.instance = null;
+		FGUICompFire1.instance = null;
 	}
 	public static hideView():void {
-		FGUICompF6.instance && FGUICompF6.instance.dispose();
+		FGUICompFire1.instance && FGUICompFire1.instance.dispose();
 	}
 
 	show(data?:any):void{};
@@ -67,12 +67,12 @@ export default class FGUICompF6 extends fgui.GComponent {
 		    });
 	}
 
-	public static createInstance():FGUICompF6 {
-		return <FGUICompF6>(fgui.UIPackage.createObject("game10003Result", "CompF6"));
+	public static createInstance():FGUICompFire1 {
+		return <FGUICompFire1>(fgui.UIPackage.createObject("game10003", "CompFire1"));
 	}
 
 	protected onConstruct():void {
-		this.t0 = this.getTransitionAt(0);
+		this.act = this.getTransitionAt(0);
 		if (this.enableAnimation) this.enterAnimation();
 	}
 	scheduleOnce(callback: () => void, delay: number):void{};
@@ -80,4 +80,4 @@ export default class FGUICompF6 extends fgui.GComponent {
 	unschedule(callback: () => void):void{};
 	schedule(callback: () => void, interval: number):void{};
 }
-fgui.UIObjectFactory.setExtension(FGUICompF6.URL, FGUICompF6);
+fgui.UIObjectFactory.setExtension(FGUICompFire1.URL, FGUICompFire1);

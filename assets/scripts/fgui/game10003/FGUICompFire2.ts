@@ -9,9 +9,9 @@ import { Logger } from "@frameworks/utils/Utils";
 export default class FGUICompFire2 extends fgui.GComponent {
 
 	public act:fgui.Transition;
-	public static URL:string = "ui://5x18e99v9kqjw";
+	public static URL:string = "ui://2zsfe53xffwu2b";
 
-	public static packageName:string = "game10003Result";
+	public static packageName:string = "game10003";
 
 	public static instance:any | null = null;
 
@@ -25,7 +25,7 @@ export default class FGUICompFire2 extends fgui.GComponent {
 		}
 		PackageManager.instance.loadPackage("fgui", this.packageName).then(()=> {
 
-			const view = fgui.UIPackage.createObject("game10003Result", "CompFire2") as FGUICompFire2;
+			const view = fgui.UIPackage.createObject("game10003", "CompFire2") as FGUICompFire2;
 
 			view.makeFullScreen();
 			FGUICompFire2.instance = view;
@@ -68,7 +68,7 @@ export default class FGUICompFire2 extends fgui.GComponent {
 	}
 
 	public static createInstance():FGUICompFire2 {
-		return <FGUICompFire2>(fgui.UIPackage.createObject("game10003Result", "CompFire2"));
+		return <FGUICompFire2>(fgui.UIPackage.createObject("game10003", "CompFire2"));
 	}
 
 	protected onConstruct():void {

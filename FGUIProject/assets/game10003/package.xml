@@ -28,6 +28,24 @@
     <image id="k50f24" name="clockIn.png" path="/imgs/"/>
     <image id="c82626" name="clockBG.png" path="/imgs/" scale="9grid" scale9grid="23,20,21,21"/>
     <component id="c82627" name="CompTimeLeft.xml" path="/comp/"/>
+    <component id="ffwu28" name="CompFireFlower.xml" path="/comp/"/>
+    <component id="ffwu29" name="CompFire1.xml" path="/comp/"/>
+    <image id="ffwu2a" name="tong.png" path="/imgs/"/>
+    <component id="ffwu2b" name="CompFire2.xml" path="/comp/"/>
+    <component id="ffwu2c" name="CompF1.xml" path="/comp/"/>
+    <image id="ffwu2d" name="f1.png" path="/imgs/"/>
+    <component id="ffwu2e" name="CompF2.xml" path="/comp/"/>
+    <image id="ffwu2f" name="f2.png" path="/imgs/"/>
+    <component id="ffwu2g" name="CompF3.xml" path="/comp/"/>
+    <image id="ffwu2h" name="f3.png" path="/imgs/"/>
+    <component id="ffwu2i" name="CompF4.xml" path="/comp/"/>
+    <image id="ffwu2j" name="f4.png" path="/imgs/"/>
+    <component id="ffwu2k" name="CompF5.xml" path="/comp/"/>
+    <image id="ffwu2l" name="f5.png" path="/imgs/"/>
+    <component id="ffwu2m" name="CompF6.xml" path="/comp/"/>
+    <image id="ffwu2n" name="f6.png" path="/imgs/"/>
+    <component id="ffwu2o" name="CompF7.xml" path="/comp/"/>
+    <image id="ffwu2p" name="f7.png" path="/imgs/"/>
   </resources>
   <publish name="" genCode="true"/>
 </packageDescription>
