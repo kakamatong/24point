@@ -37,10 +37,10 @@
     <image id="n15_jqb6" name="n15" src="jqb6s" fileName="imgs/roundend.png" xy="88,700">
       <relation target="" sidePair="center-center,middle-middle"/>
     </image>
-    <component id="n20_ffwu" name="n20" src="9kqju" fileName="comp/CompFireFlower.xml" xy="-3,696">
+    <component id="n20_ffwu" name="n20" src="9kqju" fileName="comp/CompFireFlower.xml" xy="-3,709">
       <relation target="" sidePair="center-center,middle-middle"/>
     </component>
-    <component id="n21_ffwu" name="n21" src="9kqju" fileName="comp/CompFireFlower.xml" xy="162,1280" rotation="270">
+    <component id="n21_ffwu" name="n21" src="9kqju" fileName="comp/CompFireFlower.xml" xy="773,709" skew="0,180">
       <relation target="" sidePair="center-center,middle-middle"/>
     </component>
   </displayList>
