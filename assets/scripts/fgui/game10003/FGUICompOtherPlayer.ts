@@ -77,7 +77,7 @@ export default class FGUICompOtherPlayer extends fgui.GComponent {
 	protected onConstruct():void {
 		this.ctrl_bComplate = this.getControllerAt(0);
 		this.UI_COMP_HEAD = <FGUICompPlayerHead>(this.getChildAt(0));
-		this.UI_COMP_MEDAL = <fgui.GComponent>(this.getChildAt(2));
+		this.UI_COMP_MEDAL = <fgui.GComponent>(this.getChildAt(1));
 		if (this.enableAnimation) this.enterAnimation();
 	}
 	scheduleOnce(callback: () => void, delay: number):void{};

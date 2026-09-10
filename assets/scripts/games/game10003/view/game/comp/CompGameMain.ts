@@ -60,6 +60,11 @@ export class CompGameMain extends FGUICompGameMain {
     public UI_COMP_LHT_LEFT: CompFireFlower;
     public UI_COMP_LHT_RIGHT: CompFireFlower;
     /**
+     * @property {(() => void) | null} _pendingResultShow - 单机延迟弹出结算的待执行回调
+     * @private
+     */
+    private _pendingResultShow: (() => void) | null = null;
+    /**
      * @description 组件构造：调用基类初始化 UI_COMP_CTRL 等子组件引用
      */
     onConstruct() {
@@ -88,6 +93,7 @@ export class CompGameMain extends FGUICompGameMain {
      */
     protected onDestroy(): void {
         super.onDestroy();
+        this.cancelPendingResultShow();
         ResultView.hideView();
         this.removeListeners();
         if (GameData.instance.isLocalGame) {
@@ -225,6 +231,7 @@ export class CompGameMain extends FGUICompGameMain {
      * 切换到大厅场景
      */
     changeToLobbyScene(): void {
+        this.cancelPendingResultShow();
         ResultView.hideView();
         // 单机模式：清理本地服务器
         if (GameData.instance.isLocalGame) {
@@ -516,7 +523,8 @@ export class CompGameMain extends FGUICompGameMain {
      */
     onSvrGameStart(data: any): void {
         GameData.instance.gameStart = true;
-        // 新一局开始时关闭上一局结算弹窗，并停止可能仍在播放的礼花
+        // 新一局开始时取消延迟结算、关闭上一局结算弹窗，并停止可能仍在播放的礼花
+        this.cancelPendingResultShow();
         ResultView.hideView();
         this.UI_COMP_LHT_LEFT?.stop();
         this.UI_COMP_LHT_RIGHT?.stop();
@@ -595,14 +603,38 @@ export class CompGameMain extends FGUICompGameMain {
 
         // 先刷新本局名次/完成状态，再展示结算弹窗
         this.updateRoundRank(data);
-        ResultView.showView({
-            ...data,
-            continueFunc: () => this.onRoundResultContinue(),
-            backFunc: () => this.onBtnBack(),
-            resultEffectFunc: (resultFlag: number) => this.playRoundResultSound(resultFlag),
-        });
+        const showResult = () => {
+            this._pendingResultShow = null;
+            ResultView.showView({
+                ...data,
+                continueFunc: () => this.onRoundResultContinue(),
+                backFunc: () => this.onBtnBack(),
+                resultEffectFunc: (resultFlag: number) => this.playRoundResultSound(resultFlag),
+            });
+        };
+
+        if (GameData.instance.isLocalGame) {
+            // 单机模式延迟 1 秒弹出，让答对礼花/提示先完整展示
+            this._pendingResultShow = showResult;
+            this.scheduleOnce(showResult, 1);
+        } else {
+            showResult();
+        }
 
         UserStatus.instance.req();
+    }
+
+    /**
+     * @method cancelPendingResultShow
+     * @description 取消单机延迟弹出结算的待执行回调（新一局/退出场景/销毁时调用）
+     * @private
+     */
+    private cancelPendingResultShow(): void {
+        if (!this._pendingResultShow) {
+            return;
+        }
+        this.unschedule(this._pendingResultShow);
+        this._pendingResultShow = null;
     }
 
     /**
