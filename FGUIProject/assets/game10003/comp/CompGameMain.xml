@@ -36,6 +36,7 @@
       <relation target="" sidePair="left-left,bottom-bottom"/>
     </component>
     <component id="n17_ifzr" name="UI_COMP_SELF_MEDAL" src="eijp1f" fileName="comp/CompMedal.xml" pkg="so20wr0w" xy="136,1495" group="n18_ifzr">
+      <gearDisplay controller="ctrl_roomtype" pages="0,1"/>
       <relation target="" sidePair="left-left,bottom-bottom"/>
     </component>
     <group id="n18_ifzr" name="n18" xy="23,1495" size="173,165"/>
@@ -53,11 +54,15 @@
       <gearDisplay controller="ctrl_roomtype" pages="0,1"/>
       <relation target="" sidePair="center-center,middle-middle"/>
     </component>
-    <component id="n27_p2bl" name="UI_COMP_LHT_LEFT" src="9kqju" fileName="comp/CompFireFlower.xml" pkg="so20wr0w" xy="23,961" pivot="0.5,0.5" visible="false">
+    <component id="n27_p2bl" name="UI_COMP_LHT_LEFT" src="9kqju" fileName="comp/CompFireFlower.xml" pkg="so20wr0w" xy="23,961" pivot="0.5,0.5" group="n29_p2bl" visible="false">
       <relation target="" sidePair="center-center,middle-middle"/>
     </component>
-    <component id="n28_p2bl" name="UI_COMP_LHT_RIGHT" src="9kqju" fileName="comp/CompFireFlower.xml" pkg="so20wr0w" xy="636,961" pivot="0.5,0.5" scale="-1,1" visible="false">
+    <component id="n28_p2bl" name="UI_COMP_LHT_RIGHT" src="9kqju" fileName="comp/CompFireFlower.xml" pkg="so20wr0w" xy="636,961" pivot="0.5,0.5" group="n29_p2bl" scale="-1,1" visible="false">
       <relation target="" sidePair="center-center,middle-middle"/>
     </component>
+    <group id="n29_p2bl" name="n29" xy="23,961" size="735,125"/>
+    <text id="n30_p2bl" name="UI_TXT_HINT" xy="236,459" pivot="0.5,0.5" size="304,66" visible="false" fontSize="50" color="#ffffff" text="等待其他玩家">
+      <relation target="" sidePair="center-center,middle-middle"/>
+    </text>
   </displayList>
 </component>

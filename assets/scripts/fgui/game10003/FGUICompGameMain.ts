@@ -27,6 +27,7 @@ export default class FGUICompGameMain extends fgui.GComponent {
 	public UI_COMP_CLOCK:FGUICompTimeLeft;
 	public UI_COMP_LHT_LEFT:fgui.GComponent;
 	public UI_COMP_LHT_RIGHT:fgui.GComponent;
+	public UI_TXT_HINT:fgui.GTextField;
 	public static URL:string = "ui://2zsfe53xh3uk1d";
 
 	public static packageName:string = "game10003";
@@ -108,6 +109,7 @@ export default class FGUICompGameMain extends fgui.GComponent {
 		this.UI_COMP_CLOCK = <FGUICompTimeLeft>(this.getChildAt(14));
 		this.UI_COMP_LHT_LEFT = <fgui.GComponent>(this.getChildAt(15));
 		this.UI_COMP_LHT_RIGHT = <fgui.GComponent>(this.getChildAt(16));
+		this.UI_TXT_HINT = <fgui.GTextField>(this.getChildAt(17));
 		if (this.enableAnimation) this.enterAnimation();
 	}
 	scheduleOnce(callback: () => void, delay: number):void{};
