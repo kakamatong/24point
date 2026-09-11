@@ -211,7 +211,6 @@ export class CompFireFlower extends FGUICompFireFlower {
         if (!ribbons) {
             return;
         }
-        (ribbons.content as sp.Skeleton | null)?.setCompleteListener(null);
         ribbons.visible = false;
     }
 
