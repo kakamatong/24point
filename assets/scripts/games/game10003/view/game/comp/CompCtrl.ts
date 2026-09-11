@@ -22,6 +22,10 @@ import { submitAnswer } from "../../../net/SubmitAnswer";
 export class CompCtrl extends FGUICompCtrl {
     /** 运算符字符映射：0加 1减 2乘 3除（提交算式用 ASCII 运算符） */
     private static readonly _OP_CHARS: string[] = ["+", "-", "*", "/"];
+    /** 运算符优先级：+ - 为 1，* / 为 2；叶子数字为 3（高于任何运算符，永不需括号） */
+    private static readonly _OP_PREC: Record<string, number> = { "+": 1, "-": 1, "*": 2, "/": 2 };
+    /** 叶子数字的算式优先级 */
+    private static readonly _NUM_PREC: number = 3;
     /** 四个数字按钮 */
     private _numBtns: fgui.GButton[] = [];
     /** 四个数字按钮的原始布局位置（飞行后恢复用） */
@@ -30,6 +34,8 @@ export class CompCtrl extends FGUICompCtrl {
     private _slots: (FRACTION | null)[] = [null, null, null, null];
     /** 当前四格累计算式字符串 */
     private _exprs: string[] = ["", "", "", ""];
+    /** 当前四格算式字符串的顶层优先级（0=空/未用；叶子数字为 _NUM_PREC；运算节点为 _OP_PREC[op]） */
+    private _precs: number[] = [0, 0, 0, 0];
     /** 第一操作数格索引，-1 未选中 */
     private _selFirst: number = -1;
     /** 选中符号索引（0加 1减 2乘 3除），-1 未选中 */
@@ -108,6 +114,7 @@ export class CompCtrl extends FGUICompCtrl {
             // 发牌数字均为正整数，直接构造最简分数 {n, d=1}
             this._slots[i] = { n: num, d: 1 };
             this._exprs[i] = `${num}`;
+            this._precs[i] = CompCtrl._NUM_PREC;
             this._numBtns[i].visible = true;
             this._numBtns[i].title = this.formatFraction(this._slots[i] as FRACTION);
         }
@@ -343,7 +350,16 @@ export class CompCtrl extends FGUICompCtrl {
                 fromBtn.visible = false;
                 this._slots[first] = null;
                 this._slots[second] = result;
-                this._exprs[second] = `(${this._exprs[first]})${opChar}(${this._exprs[second]})`;
+                // 按最小括号规则拼接：仅保留优先级/结合性必需的括号（不改变数值语义）
+                // 左子式：优先级低于父运算时加括号（左结合，同级不加）
+                // 右子式：优先级低于父运算、或同级且父运算为 - / 时加括号（右结合性）
+                const prec = CompCtrl._OP_PREC[opChar];
+                const leftExpr = this._precs[first] < prec ? `(${this._exprs[first]})` : this._exprs[first];
+                const rightNeedsParen = this._precs[second] < prec
+                    || (this._precs[second] === prec && (opChar === "-" || opChar === "/"));
+                const rightExpr = rightNeedsParen ? `(${this._exprs[second]})` : this._exprs[second];
+                this._exprs[second] = `${leftExpr}${opChar}${rightExpr}`;
+                this._precs[second] = prec;
                 toBtn.title = this.formatFraction(result);
                 this._opCount++;
                 // 只清理运算符号，保留数字选中状态
@@ -456,6 +472,7 @@ export class CompCtrl extends FGUICompCtrl {
         this._opCount = 0;
         this._slots = [null, null, null, null];
         this._exprs = ["", "", "", ""];
+        this._precs = [0, 0, 0, 0];
         for (let i = 0; i < this._numBtns.length; i++) {
             const btn = this._numBtns[i];
             btn.setPosition(this._numBtnPos[i].x, this._numBtnPos[i].y);
