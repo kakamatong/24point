@@ -8,10 +8,10 @@
   <displayList>
     <component id="n7_ifzr" name="UI_COMP_HEAD" src="ifzr1u" fileName="comp/CompPlayerHead.xml" xy="0,0"/>
     <component id="n5_eijp" name="UI_COMP_MEDAL" src="eijp1f" fileName="comp/CompMedal.xml" pkg="so20wr0w" xy="107,-2" controller="ctrl_rank,0"/>
-    <image id="n8_ifzr" name="n8" src="ifzr1w" fileName="imgs/comp.png" xy="0,191">
+    <image id="n8_ifzr" name="n8" src="ifzr1w" fileName="imgs/comp.png" xy="14,191" size="132,76" aspect="true">
       <gearDisplay controller="ctrl_bComplate" pages="1"/>
     </image>
-    <image id="n9_ifzr" name="n9" src="ifzr1x" fileName="imgs/unComp.png" xy="-30,184">
+    <image id="n9_ifzr" name="n9" src="ifzr1x" fileName="imgs/unComp.png" xy="-7,184" size="174,73" aspect="true">
       <gearDisplay controller="ctrl_bComplate" pages="2"/>
     </image>
   </displayList>

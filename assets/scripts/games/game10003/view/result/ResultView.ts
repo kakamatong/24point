@@ -188,15 +188,13 @@ export class ResultView extends FGUIResultView {
 
     /**
      * @method updateButtonState
-     * @description 根据房间是否结束/是否提供继续回调切换按钮显示：0=继续+返回，1=仅返回
+     * @description 切换按钮显示：0=继续+返回，1=仅返回。只有私人房房间已结束（无法再开下一局）或没有继续回调时才只显示返回；
+     *              匹配房/单机房即使房间已销毁也保留继续游戏（匹配房点击后重新匹配新对局）
      * @private
      */
     private updateButtonState(): void {
-        if (GameData.instance.roomEnd || !this._continueFunc) {
-            this.ctrl_btn.selectedIndex = 1;
-        } else {
-            this.ctrl_btn.selectedIndex = 0;
-        }
+        const onlyBack = !this._continueFunc || (GameData.instance.roomEnd && GameData.instance.isPrivateRoom);
+        this.ctrl_btn.selectedIndex = onlyBack ? 1 : 0;
     }
 
     /**

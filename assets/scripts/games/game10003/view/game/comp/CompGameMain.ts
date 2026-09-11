@@ -44,6 +44,8 @@ import { FORWARD_MESSAGE_TYPE, GAME_PLAYER_INFO, PLAYER_STATUS, ROOM_END_FLAG, R
 import { SoundManager } from "@frameworks/SoundManager";
 import FGUICompMedal from "@fgui/gameCommon/FGUICompMedal";
 import { UserStatus } from "@modules/UserStatus";
+import { Match } from "@modules/Match";
+import { ConnectGameSvr } from "@modules/ConnectGameSvr";
 import { TALK_LIST } from "@game10003/view/talk/TalkConfig";
 import { ResultView } from "@game10003/view/result/ResultView";
 import { CompFireFlower } from "@game10003/view/game/comp/CompFireFlower";
@@ -724,7 +726,7 @@ export class CompGameMain extends FGUICompGameMain {
 
     /**
      * @method onRoundResultContinue
-     * @description 结算弹窗点击继续游戏：单机重新发送 clientReady 开下一局，私人房发送 gameReady 准备，匹配房由服务器自动开局
+     * @description 结算弹窗点击继续游戏：单机重新发送 clientReady 开下一局，私人房发送 gameReady 准备，匹配房房间已销毁则重新匹配新对局
      * @private
      */
     private onRoundResultContinue(): void {
@@ -732,13 +734,51 @@ export class CompGameMain extends FGUICompGameMain {
             GameSocketManager.instance.sendToServer(SprotoClientReady, {});
             return;
         }
-        if (!GameSocketManager.instance.isOpen()) {
-            this.changeToLobbyScene();
+        if (GameData.instance.isPrivateRoom) {
+            if (GameSocketManager.instance.isOpen()) {
+                GameSocketManager.instance.sendToServer(SprotoGameReady, { ready: 1 });
+            } else {
+                this.changeToLobbyScene();
+            }
             return;
         }
-        if (GameData.instance.isPrivateRoom) {
-            GameSocketManager.instance.sendToServer(SprotoGameReady, { ready: 1 });
+        // 匹配房：房间未结束时由服务器自动开下一局；房间已销毁（roomEnd）时重新发起匹配
+        if (GameData.instance.roomEnd) {
+            this.startMatch();
         }
+    }
+
+    /**
+     * @method startMatch
+     * @description 发起匹配：匹配成功后调起匹配框等待新对局；若服务器返回已在房间中，则询问是否返回该房间
+     * @private
+     */
+    private startMatch(): void {
+        // 清空上一局的玩家列表，等待新房间的 playerEnter 重新填充，避免残留上一局头像
+        (this.UI_COMP_PLAYERS as CompPlayers)?.clear();
+
+        const callBack = (b: boolean, data?: any) => {
+            if (b) {
+                MatchView.showView();
+                return;
+            }
+            if (data && data.gameid && data.roomid) {
+                const backFunc = () => {
+                    ConnectGameSvr.instance.connectGame(data, (success: boolean) => {
+                        if (!success) {
+                            Logger.error("返回游戏房间失败");
+                        }
+                    });
+                };
+                PopMessageView.showView({
+                    title: "温馨提示",
+                    content: "您已经在房间中，是否返回？",
+                    type: ENUM_POP_MESSAGE_TYPE.NUM2,
+                    sureBack: backFunc,
+                });
+            }
+        };
+        Match.instance.req(0, callBack);
     }
 
     /**
