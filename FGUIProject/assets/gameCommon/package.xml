@@ -8,6 +8,12 @@
     <image id="eijp1h" name="奖牌5.png" path="/imgs/"/>
     <image id="eijp1i" name="奖牌6.png" path="/imgs/"/>
     <component id="eijp1f" name="CompMedal.xml" path="/comp/" exported="true"/>
+    <image id="9kqjt" name="tong.png" path="/imgs/"/>
+    <misc id="p2bl1c" name="reward_caidai_3.8.75.atlas" path="/spine/"/>
+    <image id="p2bl1d" name="reward_caidai_3.8.75.png" path="/spine/"/>
+    <spine id="p2bl1b" name="reward_caidai_3.8.75.json" path="/spine/" width="100" height="100" require="p2bl1c,p2bl1d" atlasNames="reward_caidai_3.8.75" anchor="100,100"/>
+    <component id="9kqjv" name="CompFire1.xml" path="/comp/"/>
+    <component id="9kqju" name="CompFireFlower.xml" path="/comp/" exported="true"/>
   </resources>
   <publish name="" genCode="true"/>
 </packageDescription>

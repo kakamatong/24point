@@ -7,7 +7,6 @@ import FGUICompPirvateInfo from "./FGUICompPirvateInfo";
 import FGUICompPlayers from "./FGUICompPlayers";
 import FGUICompPlayerHead from "./FGUICompPlayerHead";
 import FGUICompTimeLeft from "./FGUICompTimeLeft";
-import FGUICompFireFlower from "./FGUICompFireFlower";
 
 import { PackageManager } from "@frameworks/PackageManager";
 import { Logger } from "@frameworks/utils/Utils";
@@ -26,8 +25,8 @@ export default class FGUICompGameMain extends fgui.GComponent {
 	public UI_TXT_PROGRESS:fgui.GTextField;
 	public UI_BTN_BACK:fgui.GButton;
 	public UI_COMP_CLOCK:FGUICompTimeLeft;
-	public UI_COMP_LHT_LEFT:FGUICompFireFlower;
-	public UI_COMP_LHT_RIGHT:FGUICompFireFlower;
+	public UI_COMP_LHT_LEFT:fgui.GComponent;
+	public UI_COMP_LHT_RIGHT:fgui.GComponent;
 	public static URL:string = "ui://2zsfe53xh3uk1d";
 
 	public static packageName:string = "game10003";
@@ -107,8 +106,8 @@ export default class FGUICompGameMain extends fgui.GComponent {
 		this.UI_BTN_BACK = <fgui.GButton>(this.getChildAt(13));
 		this.UI_BTN_BACK.onClick(this.onBtnBack, this);
 		this.UI_COMP_CLOCK = <FGUICompTimeLeft>(this.getChildAt(14));
-		this.UI_COMP_LHT_LEFT = <FGUICompFireFlower>(this.getChildAt(15));
-		this.UI_COMP_LHT_RIGHT = <FGUICompFireFlower>(this.getChildAt(16));
+		this.UI_COMP_LHT_LEFT = <fgui.GComponent>(this.getChildAt(15));
+		this.UI_COMP_LHT_RIGHT = <fgui.GComponent>(this.getChildAt(16));
 		if (this.enableAnimation) this.enterAnimation();
 	}
 	scheduleOnce(callback: () => void, delay: number):void{};

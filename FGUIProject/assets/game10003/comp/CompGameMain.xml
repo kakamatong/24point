@@ -53,10 +53,10 @@
       <gearDisplay controller="ctrl_roomtype" pages="0,1"/>
       <relation target="" sidePair="center-center,middle-middle"/>
     </component>
-    <component id="n25_ffwu" name="UI_COMP_LHT_LEFT" src="ffwu28" fileName="comp/CompFireFlower.xml" xy="6,720">
+    <component id="n27_p2bl" name="UI_COMP_LHT_LEFT" src="9kqju" fileName="comp/CompFireFlower.xml" pkg="so20wr0w" xy="23,1166" pivot="0.5,0.5" visible="false">
       <relation target="" sidePair="center-center,middle-middle"/>
     </component>
-    <component id="n26_ffwu" name="UI_COMP_LHT_RIGHT" src="ffwu28" fileName="comp/CompFireFlower.xml" xy="778,720" pivot="0,1" skew="0,180">
+    <component id="n28_p2bl" name="UI_COMP_LHT_RIGHT" src="9kqju" fileName="comp/CompFireFlower.xml" pkg="so20wr0w" xy="636,1166" pivot="0.5,0.5" scale="-1,1" visible="false">
       <relation target="" sidePair="center-center,middle-middle"/>
     </component>
   </displayList>

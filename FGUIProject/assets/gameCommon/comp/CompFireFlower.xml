@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component size="122,125">
+  <displayList>
+    <component id="n0_9kqj" name="UI_COMP_BUCKET" src="9kqjv" fileName="comp/CompFire1.xml" xy="2,0" pivot="0.5,0.5"/>
+    <loader3D id="n2_p2bl" name="UI_COMP_RIBBONS" xy="-11,-74" pivot="0.5,0.5" size="100,100" url="ui://so20wr0wp2bl1b" autoSize="true" animation="idle" skin="" playing="false"/>
+  </displayList>
+</component>

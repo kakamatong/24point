@@ -1,0 +1,111 @@
+
+reward_caidai_3.8.75.png
+size: 398,253
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+SP_1
+  rotate: false
+  xy: 315, 152
+  size: 21, 39
+  orig: 21, 39
+  offset: 0, 0
+  index: -1
+SP_2
+  rotate: false
+  xy: 361, 160
+  size: 30, 31
+  orig: 30, 31
+  offset: 0, 0
+  index: -1
+SP_3
+  rotate: true
+  xy: 342, 5
+  size: 31, 24
+  orig: 33, 25
+  offset: 1, 0
+  index: -1
+SP_4
+  rotate: false
+  xy: 338, 157
+  size: 21, 34
+  orig: 21, 34
+  offset: 0, 0
+  index: -1
+golden_1
+  rotate: true
+  xy: 286, 72
+  size: 75, 49
+  orig: 75, 49
+  offset: 0, 0
+  index: -1
+green2
+  rotate: true
+  xy: 371, 198
+  size: 53, 25
+  orig: 53, 26
+  offset: 0, 0
+  index: -1
+orange
+  rotate: true
+  xy: 342, 38
+  size: 53, 25
+  orig: 53, 26
+  offset: 0, 0
+  index: -1
+purple
+  rotate: true
+  xy: 337, 93
+  size: 57, 45
+  orig: 57, 45
+  offset: 0, 0
+  index: -1
+purple2
+  rotate: true
+  xy: 286, 12
+  size: 58, 54
+  orig: 58, 55
+  offset: 0, 1
+  index: -1
+red
+  rotate: true
+  xy: 315, 193
+  size: 58, 54
+  orig: 58, 55
+  offset: 0, 1
+  index: -1
+softLight2
+  rotate: false
+  xy: 2, 2
+  size: 254, 249
+  orig: 254, 249
+  offset: 0, 0
+  index: -1
+tiao_b
+  rotate: false
+  xy: 258, 2
+  size: 26, 118
+  orig: 31, 125
+  offset: 3, 3
+  index: -1
+tiao_g
+  rotate: false
+  xy: 258, 122
+  size: 26, 129
+  orig: 31, 135
+  offset: 3, 4
+  index: -1
+tiao_p
+  rotate: false
+  xy: 286, 149
+  size: 27, 102
+  orig: 31, 107
+  offset: 2, 3
+  index: -1
+ylight
+  rotate: false
+  xy: 368, 15
+  size: 20, 21
+  orig: 24, 25
+  offset: 2, 2
+  index: -1

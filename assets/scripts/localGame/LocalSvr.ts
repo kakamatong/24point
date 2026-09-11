@@ -3,7 +3,7 @@
  * @description 算24点(10003)本地游戏模拟服务器（单机模式）：
  *              接管 GameSocketManager 本地模式下的协议收发，按服务端 game10003 logic.lua / room.lua /
  *              privateRoom.lua 的推送顺序与字段模拟联网游戏核心协议流程（进场推送、单局回合机
- *              START→PLAYING→END、提交判定、计分收尾），算法口径与联网模式完全一致
+ *              START→PLAYING→END、提交判定、计分收尾；其中单机答题阶段不限时，算法口径与联网模式完全一致
  * @category 本地单机
  */
 
@@ -13,7 +13,7 @@ import { MAIN_GAME_ID } from "@datacenter/InterfaceConfig";
 import { DataCenter } from "@datacenter/Datacenter";
 import { validate } from "@game10003/logic/Expression";
 import { deal } from "@game10003/logic/Solver";
-import { GAME_STEP, END_TYPE, PLAYER_STATUS, STEP_TIME_LEN, DEFAULT_ROUND_TIME, NUMBER_RANGE } from "@game10003/logic/GameRoundConfig";
+import { GAME_STEP, END_TYPE, PLAYER_STATUS, STEP_TIME_LEN, NUMBER_RANGE } from "@game10003/logic/GameRoundConfig";
 import {
     SprotoClientReady,
     SprotoGameReady,
@@ -31,7 +31,6 @@ import {
     SprotoGameStart,
     SprotoStepId,
     SprotoDealCards,
-    SprotoGameClock,
     SprotoAnswerResult,
     SprotoGameEnd,
 } from "../../types/protocol/game10003/s2c";
@@ -68,6 +67,8 @@ export class LocalSvr {
     private static readonly SELF_SEAT: number = 1;
     /** 回合机 tick 间隔（毫秒），对齐 room.lua:438 的 100ms 驱动 */
     private static readonly TICK_INTERVAL_MS: number = 100;
+    /** 单机模式无答题时限（0 表示不限时） */
+    private static readonly NO_TIME_LIMIT: number = 0;
     /** 单例实例 */
     private static _instance: LocalSvr;
 
@@ -90,8 +91,8 @@ export class LocalSvr {
     private _dealNumbers: number[] = [];
     /** 发牌推送时刻(ms)，用于 usedTime 计算（logic.lua:139-142） */
     private _dealStartMs: number = 0;
-    /** 本局答题时限(秒)，开局时按模式配置确定（dealCards.timeLimit） */
-    private _roundTimeLimit: number = DEFAULT_ROUND_TIME;
+    /** 本局答题时限(秒)，单机模式恒为 0，表示不限时（dealCards.timeLimit） */
+    private _roundTimeLimit: number = LocalSvr.NO_TIME_LIMIT;
     /** 本局开始时间(epoch秒)（gameStart.startTime） */
     private _startTime: number = 0;
     /** 当前阶段ID */
@@ -343,20 +344,20 @@ export class LocalSvr {
     }
 
     /**
-     * 开启新一局：重置单局状态并发局（单机固定参数：30秒时限、1-9数字范围）
+     * 开启新一局：重置单局状态并发局（单机固定参数：无时间限制、1-9数字范围）
      * @private
      */
     private _startRound(): void {
         this._roundNum++;
         this._resetRoundState();
 
-        // 本局答题时限固定 30 秒（config.lua ROUND_TIME）
-        this._roundTimeLimit = DEFAULT_ROUND_TIME;
+        // 单机模式无答题时限
+        this._roundTimeLimit = LocalSvr.NO_TIME_LIMIT;
 
         // 本局开始时间（epoch秒）
         this._startTime = Math.floor(Date.now() / 1000);
 
-        Logger.log(`[LocalSvr] 第${this._roundNum}局开始，时限${this._roundTimeLimit}秒，数字范围${NUMBER_RANGE.MIN}-${NUMBER_RANGE.MAX}`);
+        Logger.log(`[LocalSvr] 第${this._roundNum}局开始，无时间限制，数字范围${NUMBER_RANGE.MIN}-${NUMBER_RANGE.MAX}`);
 
         // 开局推送：gameStart → stepId{1}（内部发牌）
         this.dispatchEvent(SprotoGameStart.Name, {
@@ -405,12 +406,11 @@ export class LocalSvr {
     }
 
     /**
-     * PLAYING 阶段进入动作：推送一次 gameClock 倒计时（time=本局时限, seat=0）
-     * 注：线上只在 PLAYING 开始时推一次，结束/超时不再推 time:0（以 logic.lua 为准）
+     * PLAYING 阶段进入动作：单机模式不限时，不推送 gameClock 倒计时
      * @private
      */
     private _startStepPlaying(): void {
-        this.dispatchEvent(SprotoGameClock.Name, { time: this._roundTimeLimit, seat: 0 });
+        // 无答题时限：不推送 gameClock，客户端保持倒计时隐藏
     }
 
     /**
@@ -476,7 +476,7 @@ export class LocalSvr {
     }
 
     /**
-     * tick 推进：START/PLAYING 阶段按 epoch 秒差判定超时（对齐 logic.lua update 的 os.time 口径）
+     * tick 推进：START 阶段按 epoch 秒差判定超时；PLAYING 单机不限时，跳过超时判定
      * @private
      */
     private _update(): void {
@@ -484,14 +484,19 @@ export class LocalSvr {
         if (step !== GAME_STEP.START && step !== GAME_STEP.PLAYING) {
             return;
         }
+        const stepTimeLen = this._getStepTimeLen(step);
+        if (stepTimeLen <= 0) {
+            // 单机模式 PLAYING 不限时，不触发超时
+            return;
+        }
         const elapsedSec = Math.floor(Date.now() / 1000) - this._stepBeginSec;
-        if (elapsedSec >= this._getStepTimeLen(step)) {
+        if (elapsedSec >= stepTimeLen) {
             this._onStepTimeout(step);
         }
     }
 
     /**
-     * 获取指定阶段时长（秒）：START 固定1秒（configLogic.lua:18-23），PLAYING 取本局时限
+     * 获取指定阶段时长（秒）：START 固定1秒（configLogic.lua:18-23），PLAYING 取本局时限（0 表示不限时）
      * @param step 阶段ID
      * @returns 阶段时长（秒）
      * @private
@@ -507,13 +512,13 @@ export class LocalSvr {
     }
 
     /**
-     * 阶段超时处理：START 超时 → 进入 PLAYING；PLAYING 超时 → 置超时收尾并进入 END
+     * 阶段超时处理：START 超时 → 进入 PLAYING；PLAYING 单机不限时，不会触发此分支
      * @param step 超时的阶段ID
      * @private
      */
     private _onStepTimeout(step: GAME_STEP): void {
         if (step === GAME_STEP.START) {
-            // 停 START 进入 PLAYING（推送 stepId{2} + gameClock）
+            // 停 START 进入 PLAYING（单机不推送 gameClock）
             this._startStep(GAME_STEP.PLAYING);
         } else if (step === GAME_STEP.PLAYING) {
             Logger.log("[LocalSvr] 答题超时，无人答对，本局结束");
@@ -543,7 +548,7 @@ export class LocalSvr {
     private _resetRoundState(): void {
         this._dealNumbers = [];
         this._dealStartMs = 0;
-        this._roundTimeLimit = DEFAULT_ROUND_TIME;
+        this._roundTimeLimit = LocalSvr.NO_TIME_LIMIT;
         this._startTime = 0;
         this._stepId = GAME_STEP.NONE;
         this._stepBeginSec = 0;
