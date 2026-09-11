@@ -21,7 +21,7 @@
       <Button title="返回" icon="ui://gj0r6g5ijorf1h"/>
     </component>
     <text id="n12_rei5" name="n12" xy="105,508" size="80,52" group="n19_oott" fontSize="38" color="#cc6600" text="玩家"/>
-    <list id="n6_fnug" name="UI_LV_GAME_INFO" xy="90,573" size="600,521" group="n19_oott" overflow="scroll" lineGap="5" defaultItem="ui://5x18e99vfnug1" autoClearItems="true">
+    <list id="n6_fnug" name="UI_LV_GAME_INFO" xy="89,572" size="600,521" group="n19_oott" overflow="scroll" lineGap="5" defaultItem="ui://5x18e99vfnug1" autoClearItems="true">
       <item title="1" name="1"/>
       <item title="2" name="2"/>
       <item title="3" name="3"/>
