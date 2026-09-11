@@ -696,15 +696,30 @@ export class CompGameMain extends FGUICompGameMain {
 
     /**
      * @method onSvrAnswerResult
-     * @description 提交结果广播处理：仅自己 correct=1 时播放礼花
+     * @description 提交结果广播处理：自己答对播放礼花；他人答对即时刷新其完成标识与名次
+     *              断线重连时服务端会按同一协议补发已完成玩家的 answerResult，因此重连玩家也据此恢复
      * @param {SprotoAnswerResult.Request} data - 提交结果数据
      * @private
      */
     private onSvrAnswerResult(data: SprotoAnswerResult.Request): void {
-        if (data?.correct !== 1 || data.seat !== GameData.instance.getSelfSeat()) {
+        // 仅处理答对广播；错误提交(correct=0)与结算(gameEnd)都不在此刷新完成状态
+        if (data?.correct !== 1) {
             return;
         }
-        this.playAnswerCorrectEffect();
+
+        // 自己答对：播放礼花（完成标识/名次由结算或自身逻辑处理）
+        if (data.seat === GameData.instance.getSelfSeat()) {
+            this.playAnswerCorrectEffect();
+            return;
+        }
+
+        // 其他玩家答对：立即显示其"已经完成"标识与名次，无需等本局结算
+        const compPlayers = this.UI_COMP_PLAYERS as CompPlayers;
+        if (!compPlayers) {
+            return;
+        }
+        compPlayers.setOtherPlayerComplete(data.seat, true);
+        compPlayers.setOtherPlayerRank(data.seat, data.rank ?? 0);
     }
 
     /**

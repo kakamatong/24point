@@ -82,6 +82,10 @@ export class CompPlayers extends FGUICompPlayers {
             return null;
         }
 
+        // 新列表项先重置为"进行中/无名次"：CompOtherPlayer 的 ctrl_bComplate 编辑器默认页为1(已经完成)，
+        // 不重置会导致未完成玩家开局就带"已完成"标识
+        listItem.reset();
+
         // 设置服务器座位号并更新信息
         listItem.setSvrSeat(svrSeat);
         listItem.updatePlayerInfo(player, headurl);
