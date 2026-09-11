@@ -525,6 +525,8 @@ export class CompGameMain extends FGUICompGameMain {
      */
     onSvrGameStart(data: any): void {
         GameData.instance.gameStart = true;
+        // 新一局开始，隐藏上一局的等待提示
+        this.showHint(false);
         // 新一局开始时取消延迟结算、关闭上一局结算弹窗，并停止可能仍在播放的礼花
         this.cancelPendingResultShow();
         ResultView.hideView();
@@ -698,7 +700,7 @@ export class CompGameMain extends FGUICompGameMain {
 
     /**
      * @method onSvrAnswerResult
-     * @description 提交结果广播处理：自己答对播放礼花；他人答对即时刷新其完成标识与名次
+     * @description 提交结果广播处理：自己答对播放礼花并提示等待其他玩家；他人答对即时刷新其完成标识与名次
      *              断线重连时服务端会按同一协议补发已完成玩家的 answerResult，因此重连玩家也据此恢复
      * @param {SprotoAnswerResult.Request} data - 提交结果数据
      * @private
@@ -712,6 +714,8 @@ export class CompGameMain extends FGUICompGameMain {
         // 自己答对：播放礼花（完成标识/名次由结算或自身逻辑处理）
         if (data.seat === GameData.instance.getSelfSeat()) {
             this.playAnswerCorrectEffect();
+            // 匹配房/私人房本局还有别的玩家在解题，提示等待其他玩家（单机房无需等待）
+            this.showHint(!GameData.instance.isLocalGame);
             return;
         }
 
@@ -904,6 +908,22 @@ export class CompGameMain extends FGUICompGameMain {
             clockComp.stopClock();
             clockComp.visible = false;
         }
+    }
+
+    /**
+     * @method showHint
+     * @description 显示或隐藏提示文本（UI_TXT_HINT）：匹配房/私人房自己做完题后提示"等待其他玩家"，新一局开始时隐藏
+     * @param {boolean} bshow - 是否显示
+     * @param {string} [content] - 提示内容，不传时保持文本原有内容
+     */
+    showHint(bshow: boolean, content?: string): void {
+        if (!this.UI_TXT_HINT) {
+            return;
+        }
+        if (content !== undefined) {
+            this.UI_TXT_HINT.text = content;
+        }
+        this.UI_TXT_HINT.visible = bshow;
     }
 
     /**
