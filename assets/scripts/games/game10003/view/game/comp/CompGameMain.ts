@@ -46,7 +46,7 @@ import FGUICompMedal from "@fgui/gameCommon/FGUICompMedal";
 import { UserStatus } from "@modules/UserStatus";
 import { TALK_LIST } from "@game10003/view/talk/TalkConfig";
 import { ResultView } from "@game10003/view/result/ResultView";
-import { CompFireFlower } from "@game10003/view/result/comp/CompFireFlower";
+import { CompFireFlower } from "@game10003/view/game/comp/CompFireFlower";
 
 /**
  * @class CompGameMain
