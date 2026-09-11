@@ -1,7 +1,7 @@
 /**
  * @file CompTimeLeft.ts
  * @description 算24点(10003)答题倒计时组件业务子类：接收 gameClock 剩余秒数并本地每秒递减显示，
- *              配合进度条(UI_IMG_BAR)与告警控制器(ctrl_warn)，剩余≤5秒进入告警抖动
+ *              配合进度条(UI_IMG_BAR)与告警控制器(ctrl_warn)，剩余≤10秒进入告警抖动
  * @category 游戏 10003
  */
 
@@ -17,7 +17,7 @@ import { ViewClass } from "@frameworks/Framework";
 @ViewClass()
 export class CompTimeLeft extends FGUICompTimeLeft {
     /** 告警阈值（秒）：剩余时间 ≤ 该值时切换告警页（触发 act 抖动动画 + 变红） */
-    private static readonly _WARN_SEC: number = 5;
+    private static readonly _WARN_SEC: number = 10;
     /** 本局总时长（秒），用于时间条比例，首次 start 时记录 */
     private _totalSec: number = 0;
     /** 剩余秒数 */
@@ -83,7 +83,7 @@ export class CompTimeLeft extends FGUICompTimeLeft {
     }
 
     /**
-     * @description 刷新显示：剩余秒数文本、时间条填充比例、告警控制器（剩余≤5秒切告警页）
+     * @description 刷新显示：剩余秒数文本、时间条填充比例、告警控制器（剩余≤10秒切告警页）
      * @private
      */
     private refresh(): void {
