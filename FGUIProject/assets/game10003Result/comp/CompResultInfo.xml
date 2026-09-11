@@ -26,7 +26,7 @@
     <image id="n9_rei5" name="n9" src="pz9v1e" fileName="imgs/矩形 1.png" pkg="gj0r6g5i" xy="0,-2" size="602,122" alpha="0.7">
       <gearDisplay controller="ctrl_self" pages="1"/>
     </image>
-    <text id="n13_jt3f" name="UI_TXT_FUNC" xy="453,44" pivot="0.5,0.5" size="38,42" fontSize="30" color="#ff0000" align="center" vAlign="middle" singleLine="true" text="10">
+    <text id="n13_jt3f" name="UI_TXT_FUNC" xy="446,38" pivot="0.5,0.5" size="52,54" fontSize="40" color="#ff0000" align="center" vAlign="middle" bold="true" singleLine="true" text="10">
       <gearColor controller="ctrl_color" pages="1" values="#0000ff,#000000" default="#ff0000,#000000"/>
     </text>
   </displayList>
