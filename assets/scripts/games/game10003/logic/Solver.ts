@@ -1,7 +1,8 @@
 /**
  * @file Solver.ts
  * @description 算24点(10003)求解器：服务端 solver.lua 的 TypeScript 移植。
- *              ① combine/solve 枚举全部括号组合（分数运算 + - * /），求目标值24的算式；
+ *              ① combine/solve 枚举全部组合方式（分数运算 + - * /），求目标值24的算式；
+ *                 算式按“最小括号”规则拼字符串（仅保留优先级/结合性必需的括号）；
  *              ② solvable 判定4数是否有解（发牌可解校验用）；
  *              ③ deal 发牌：随机生成可解4数，失败100次后从预置组合取并打乱兜底，保证有解。
  *              分数运算复用 Expression.ts 已导出的 calc/FRACTION（= 服务端 expression.lua 等价实现，
@@ -15,15 +16,21 @@ import { calc } from "./Expression";
 import type { FRACTION } from "./Expression";
 import { TARGET_VALUE, DEAL_COUNT } from "./GameRoundConfig";
 
+/** 运算符优先级：+ - 为 1，* / 为 2；叶子数字为 3（高于任何运算符，永不需括号） */
+const OP_PREC: Record<string, number> = { "+": 1, "-": 1, "*": 2, "/": 2 };
+const NUM_PREC = 3;
+
 /**
  * @interface SOLVER_NODE
- * @description 求解节点：一个分数值 + 其对应的算式字符串（叶子节点为单个数字，非叶子为全括号算式）
+ * @description 求解节点：一个分数值 + 其对应的算式字符串（叶子节点为单个数字）
  */
 export interface SOLVER_NODE {
     /** 分数值（始终约分且分母为正） */
     value: FRACTION;
-    /** 算式字符串（全括号） */
+    /** 算式字符串（最小括号） */
     expr: string;
+    /** 算式顶层优先级（+ - 为1，* / 为2；叶子数字为3） */
+    prec: number;
 }
 
 /**
@@ -55,12 +62,31 @@ export function randInt(min: number, max: number): number {
 }
 
 /**
+ * @method exprOf
+ * @description 按最小括号规则拼接 a op b 的算式（不改变数值语义）：
+ *              左子式：优先级低于父运算时加括号（左结合，同级不加）；
+ *              右子式：优先级低于父运算时加括号，或与父运算同级且父运算为 - / 时加括号（右结合性）
+ * @param {SOLVER_NODE} a - 左节点
+ * @param {string} op - 运算符（+ - * /）
+ * @param {SOLVER_NODE} b - 右节点
+ * @returns {{expr: string, prec: number}} 算式字符串与其顶层优先级
+ * @private
+ */
+function exprOf(a: SOLVER_NODE, op: string, b: SOLVER_NODE): { expr: string; prec: number } {
+    const prec = OP_PREC[op];
+    const left = a.prec < prec ? `(${a.expr})` : a.expr;
+    const rightNeedsParen = b.prec < prec || (b.prec === prec && (op === "-" || op === "/"));
+    const right = rightNeedsParen ? `(${b.expr})` : b.expr;
+    return { expr: `${left}${op}${right}`, prec };
+}
+
+/**
  * @method combineNode
  * @description 对两节点执行一次指定运算生成新节点（分数运算无效时返回 null，如除数为0）
  * @param {SOLVER_NODE} a - 左节点
  * @param {string} op - 运算符："+"、"-"、"*"、"/"
  * @param {SOLVER_NODE} b - 右节点
- * @returns {SOLVER_NODE | null} 合并后的新节点（算式带全括号），运算非法时返回 null
+ * @returns {SOLVER_NODE | null} 合并后的新节点（算式按最小括号规则），运算非法时返回 null
  * @private
  */
 function combineNode(a: SOLVER_NODE, op: string, b: SOLVER_NODE): SOLVER_NODE | null {
@@ -68,7 +94,8 @@ function combineNode(a: SOLVER_NODE, op: string, b: SOLVER_NODE): SOLVER_NODE | 
     if (!value) {
         return null;
     }
-    return { value, expr: `(${a.expr}${op}${b.expr})` };
+    const { expr, prec } = exprOf(a, op, b);
+    return { value, expr, prec };
 }
 
 /**
@@ -157,7 +184,7 @@ export function solveNumbers(numbers: number[]): string | null {
     if (!numbers || numbers.length !== DEAL_COUNT) {
         return null;
     }
-    const nodes: SOLVER_NODE[] = numbers.map((n) => ({ value: { n, d: 1 }, expr: `${n}` }));
+    const nodes: SOLVER_NODE[] = numbers.map((n) => ({ value: { n, d: 1 }, expr: `${n}`, prec: NUM_PREC }));
     return solve(nodes);
 }
 
