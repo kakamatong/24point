@@ -11,7 +11,7 @@
       <gearDisplay controller="ctrl_roomtype" pages="1"/>
       <Button title="解散房间" titleFontSize="37" icon="ui://gj0r6g5ijorf1h"/>
     </component>
-    <component id="n10_h3uk" name="UI_COMP_CTRL" src="h3uk1r" fileName="comp/CompCtrl.xml" xy="38,418">
+    <component id="n10_h3uk" name="UI_COMP_CTRL" src="h3uk1r" fileName="comp/CompCtrl.xml" xy="38,418" visible="false">
       <relation target="" sidePair="center-center,middle-middle"/>
     </component>
     <component id="n11_ifzr" name="UI_BTN_INVITE" src="is91n" fileName="comp/CompBtnCommon.xml" pkg="gj0r6g5i" xy="272,1124" size="230,98" group="n13_ifzr" controller="ctrl_color,2">

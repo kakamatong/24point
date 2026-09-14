@@ -580,6 +580,7 @@ export class CompGameMain extends FGUICompGameMain {
      */
     onSvrGameStart(data: any): void {
         GameData.instance.gameStart = true;
+        this.UI_COMP_CTRL.visible = true;
         // 新一局开始，隐藏上一局的等待提示
         this.showHint(false);
         // 新一局开始时取消延迟结算、关闭上一局结算弹窗，并停止可能仍在播放的礼花

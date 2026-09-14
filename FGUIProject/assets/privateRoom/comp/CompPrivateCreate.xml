@@ -33,12 +33,12 @@
       <property target="title" propertyId="0" value="无限对局"/>
     </component>
     <text id="n14_ouez" name="n14" xy="35,339" size="529,49" fontSize="36" color="#7e6547" text="您可以最多邀请5个好友一起游戏"/>
-    <text id="n17_i6x7" name="n17" xy="26,189" size="94,42" fontSize="30" color="#7e6547" text="道具："/>
-    <component id="n18_i6x7" name="UI_BTN_ENABLE" src="q5lz4" fileName="comp/CompBtnItem.xml" xy="122,183" size="203,56">
+    <text id="n17_i6x7" name="n17" xy="26,189" size="94,42" visible="false" fontSize="30" color="#7e6547" text="道具："/>
+    <component id="n18_i6x7" name="UI_BTN_ENABLE" src="q5lz4" fileName="comp/CompBtnItem.xml" xy="122,183" size="203,56" visible="false">
       <Button controller="ctrl_prop" page="1"/>
       <property target="title" propertyId="0" value="允许使用"/>
     </component>
-    <component id="n19_i6x7" name="UI_BTN_DISENABLE" src="q5lz4" fileName="comp/CompBtnItem.xml" xy="347,182" size="236,56">
+    <component id="n19_i6x7" name="UI_BTN_DISENABLE" src="q5lz4" fileName="comp/CompBtnItem.xml" xy="347,182" size="236,56" visible="false">
       <Button checked="true" controller="ctrl_prop" page="0"/>
       <property target="title" propertyId="0" value="不允许使用"/>
     </component>
