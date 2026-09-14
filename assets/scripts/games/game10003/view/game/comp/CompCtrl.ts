@@ -299,9 +299,6 @@ export class CompCtrl extends FGUICompCtrl {
      * @private
      */
     private onSymbolClicked(s: number): void {
-        if (this._busy) {
-            return;
-        }
         if (this._selFirst === -1) {
             // 未选中第一数字，符号选择无效，强制回落到"都不选中"页
             this.ctrl_symbol.selectedIndex = 4;
