@@ -64,7 +64,7 @@ import { CompFireFlower } from "@game10003/view/game/comp/CompFireFlower";
  * @description 算24点游戏主界面组件业务子类：继承 FGUICompGameMain，框架初始化后挂载子组件，业务逻辑待补充
  * @category 游戏 10003
  */
-@ViewClass()
+@ViewClass({ curveScreenAdapt: true })
 export class CompGameMain extends FGUICompGameMain {
     public UI_COMP_SELF_MEDAL: FGUICompMedal;
     public UI_COMP_SELFPLAYER: CompPlayerHead;
