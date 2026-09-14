@@ -174,8 +174,13 @@ export class CompDisband extends FGUICompDisband {
         // 更新最终投票状态
         this.updateVoteList(data.votes);
 
-        // 立即关闭本轮投票，避免延迟回调隐藏随后发起的新投票。
-        this.visible = false;
+        // 保留最终结果 1 秒，旧回调不隐藏随后发起的新投票。
+        const voteId = this._voteId;
+        this.scheduleOnce(() => {
+            if (this._voteId === voteId) {
+                this.visible = false;
+            }
+        }, 1);
         if (data.result === 1) {
             // 超时也会由服务端判为通过；房间结束提示及返回统一交给 roomEnd。
             TipsView.showView({ content: data.reason || "投票通过，等待房间解散" });
