@@ -20,7 +20,7 @@
     <component id="n7_rei5" name="UI_COMP_MEDAL" src="eijp1f" fileName="comp/CompMedal.xml" pkg="so20wr0w" xy="76,-3" controller="ctrl_rank,1">
       <gearDisplay controller="ctrl_uncomp" pages="0"/>
     </component>
-    <text id="n8_rei5" name="UI_TXT_USE_TIME" xy="185,44" pivot="0.5,0.5" size="51,42" fontSize="30" color="#ff0000" align="center" vAlign="middle" singleLine="true" text="0秒">
+    <text id="n8_rei5" name="UI_TXT_USE_TIME" xy="137,44" size="111,42" fontSize="30" color="#ff0000" vAlign="middle" singleLine="true" text="00.00秒">
       <gearColor controller="ctrl_uncomp" pages="0,1" values="#ff0000,#000000|#666666,#000000"/>
     </text>
     <image id="n9_rei5" name="n9" src="pz9v1e" fileName="imgs/矩形 1.png" pkg="gj0r6g5i" xy="0,-2" size="602,122" alpha="0.7">
@@ -28,6 +28,9 @@
     </image>
     <text id="n13_jt3f" name="UI_TXT_FUNC" xy="446,38" pivot="0.5,0.5" size="52,54" fontSize="40" color="#ff0000" align="center" vAlign="middle" bold="true" singleLine="true" text="10">
       <gearColor controller="ctrl_color" pages="1" values="#0000ff,#000000" default="#ff0000,#000000"/>
+    </text>
+    <text id="n14_lede" name="UI_TXT_SCORE" xy="284,44" pivot="0.5,0.5" size="38,42" fontSize="30" color="#ff0000" align="center" vAlign="middle" singleLine="true" text="88">
+      <gearColor controller="ctrl_uncomp" pages="0,1" values="#ff0000,#000000|#666666,#000000"/>
     </text>
   </displayList>
 </component>

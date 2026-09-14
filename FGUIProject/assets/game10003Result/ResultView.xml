@@ -5,7 +5,10 @@
     <action type="change_page" fromPage="" toPage="1" objectId="n9_fnug" controller="ctrl_sign" targetPage="1"/>
     <action type="change_page" fromPage="" toPage="2" objectId="n9_fnug" controller="ctrl_sign" targetPage="2"/>
   </controller>
-  <controller name="ctrl_btn" pages="0,返回继续,1,返回" selected="0"/>
+  <controller name="ctrl_btn" pages="0,,1," selected="0">
+    <remark page="0" value="返回继续"/>
+    <remark page="1" value="返回"/>
+  </controller>
   <displayList>
     <graph id="n10_mifd" name="n10" xy="0,0" size="776,1688" type="rect" lineSize="0" lineColor="#00000000" fillColor="#b2000000">
       <relation target="" sidePair="width-width,height-height"/>
@@ -27,8 +30,9 @@
       <item title="3" name="3"/>
       <item title="4" name="4"/>
     </list>
-    <text id="n13_rei5" name="n13" xy="263,508" size="80,52" group="n19_oott" fontSize="38" color="#cc6600" text="用时"/>
+    <text id="n13_rei5" name="n13" xy="231,508" size="80,52" group="n19_oott" fontSize="38" color="#cc6600" text="用时"/>
     <text id="n14_rei5" name="n14" xy="521,508" size="80,52" group="n19_oott" fontSize="38" color="#cc6600" text="公式"/>
+    <text id="n20_lede" name="n20" xy="356,508" size="80,52" group="n19_oott" fontSize="38" color="#cc6600" text="积分"/>
     <group id="n19_oott" name="UI_GROP_RESULT" xy="58,363" size="660,860" advanced="true">
       <relation target="" sidePair="center-center,middle-middle"/>
     </group>
