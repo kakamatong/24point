@@ -14,6 +14,7 @@ import { Logger } from "@frameworks/utils/Utils";
 export default class FGUICompGameMain extends fgui.GComponent {
 
 	public ctrl_roomtype:fgui.Controller;
+	public UI_BTN_DISBAND:fgui.GButton;
 	public UI_COMP_CTRL:FGUICompCtrl;
 	public UI_BTN_INVITE:fgui.GButton;
 	public UI_BTN_START_GAME:fgui.GButton;
@@ -92,30 +93,33 @@ export default class FGUICompGameMain extends fgui.GComponent {
 
 	protected onConstruct():void {
 		this.ctrl_roomtype = this.getControllerAt(0);
-		this.UI_COMP_CTRL = <FGUICompCtrl>(this.getChildAt(1));
-		this.UI_BTN_INVITE = <fgui.GButton>(this.getChildAt(2));
+		this.UI_BTN_DISBAND = <fgui.GButton>(this.getChildAt(1));
+		this.UI_BTN_DISBAND.onClick(this.onBtnDisband, this);
+		this.UI_COMP_CTRL = <FGUICompCtrl>(this.getChildAt(2));
+		this.UI_BTN_INVITE = <fgui.GButton>(this.getChildAt(3));
 		this.UI_BTN_INVITE.onClick(this.onBtnInvite, this);
-		this.UI_BTN_START_GAME = <fgui.GButton>(this.getChildAt(3));
+		this.UI_BTN_START_GAME = <fgui.GButton>(this.getChildAt(4));
 		this.UI_BTN_START_GAME.onClick(this.onBtnStartGame, this);
-		this.UI_BTN_READY = <fgui.GButton>(this.getChildAt(4));
+		this.UI_BTN_READY = <fgui.GButton>(this.getChildAt(5));
 		this.UI_BTN_READY.onClick(this.onBtnReady, this);
-		this.UI_COMP_PRIVITE_INFO = <FGUICompPirvateInfo>(this.getChildAt(6));
-		this.UI_COMP_PLAYERS = <FGUICompPlayers>(this.getChildAt(7));
-		this.UI_COMP_SELFPLAYER = <FGUICompPlayerHead>(this.getChildAt(8));
-		this.UI_COMP_SELF_MEDAL = <fgui.GComponent>(this.getChildAt(9));
-		this.UI_TXT_PROGRESS = <fgui.GTextField>(this.getChildAt(11));
-		this.UI_BTN_BACK = <fgui.GButton>(this.getChildAt(13));
+		this.UI_COMP_PRIVITE_INFO = <FGUICompPirvateInfo>(this.getChildAt(7));
+		this.UI_COMP_PLAYERS = <FGUICompPlayers>(this.getChildAt(8));
+		this.UI_COMP_SELFPLAYER = <FGUICompPlayerHead>(this.getChildAt(9));
+		this.UI_COMP_SELF_MEDAL = <fgui.GComponent>(this.getChildAt(10));
+		this.UI_TXT_PROGRESS = <fgui.GTextField>(this.getChildAt(12));
+		this.UI_BTN_BACK = <fgui.GButton>(this.getChildAt(14));
 		this.UI_BTN_BACK.onClick(this.onBtnBack, this);
-		this.UI_COMP_CLOCK = <FGUICompTimeLeft>(this.getChildAt(14));
-		this.UI_COMP_LHT_LEFT = <fgui.GComponent>(this.getChildAt(15));
-		this.UI_COMP_LHT_RIGHT = <fgui.GComponent>(this.getChildAt(16));
-		this.UI_TXT_HINT = <fgui.GTextField>(this.getChildAt(17));
+		this.UI_COMP_CLOCK = <FGUICompTimeLeft>(this.getChildAt(15));
+		this.UI_COMP_LHT_LEFT = <fgui.GComponent>(this.getChildAt(16));
+		this.UI_COMP_LHT_RIGHT = <fgui.GComponent>(this.getChildAt(17));
+		this.UI_TXT_HINT = <fgui.GTextField>(this.getChildAt(18));
 		if (this.enableAnimation) this.enterAnimation();
 	}
 	scheduleOnce(callback: () => void, delay: number):void{};
 	unscheduleAllCallbacks():void{};
 	unschedule(callback: () => void):void{};
 	schedule(callback: () => void, interval: number):void{};
+	onBtnDisband():void{};
 	onBtnInvite():void{};
 	onBtnStartGame():void{};
 	onBtnReady():void{};

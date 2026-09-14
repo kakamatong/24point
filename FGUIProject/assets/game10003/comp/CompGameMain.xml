@@ -7,6 +7,10 @@
   </controller>
   <displayList>
     <component id="n0_h3uk" name="n0" src="h3uk1c" fileName="comp/CompDisband.xml" xy="13,0" visible="false"/>
+    <component id="n32_lede" name="UI_BTN_DISBAND" src="is91n" fileName="comp/CompBtnCommon.xml" pkg="gj0r6g5i" xy="135,9" size="207,84" controller="ctrl_color,2">
+      <gearDisplay controller="ctrl_roomtype" pages="1"/>
+      <Button title="解散房间" titleFontSize="37" icon="ui://gj0r6g5ijorf1h"/>
+    </component>
     <component id="n10_h3uk" name="UI_COMP_CTRL" src="h3uk1r" fileName="comp/CompCtrl.xml" xy="38,418">
       <relation target="" sidePair="center-center,middle-middle"/>
     </component>
