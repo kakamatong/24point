@@ -55,6 +55,7 @@ import { Match } from "@modules/Match";
 import { ConnectGameSvr } from "@modules/ConnectGameSvr";
 import { TALK_LIST } from "@game10003/view/talk/TalkConfig";
 import { ResultView } from "@game10003/view/result/ResultView";
+import { TotalResultView } from "@game10003/view/result/TotalResultView";
 import "@game10003/view/game/comp/CompDisband";
 import { CompFireFlower } from "@game10003/view/game/comp/CompFireFlower";
 
@@ -1006,7 +1007,7 @@ export class CompGameMain extends FGUICompGameMain {
     onSvrTotalResult(data: SprotoTotalResult.Request) {
         const time = 0.2;
         this.scheduleOnce(() => {
-            //TotalResultView.showView(data);
+            TotalResultView.showView(data);
         }, time);
     }
 

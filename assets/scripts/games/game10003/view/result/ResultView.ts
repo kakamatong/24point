@@ -213,6 +213,7 @@ export class ResultView extends FGUIResultView {
         const head = node.UI_COMP_HEAD as FGUICompHead;
         head.UI_LOADER_HEAD.url = data.headurl;
         node.UI_TXT_NICKNAME.text = TruncateString(data.nickname || "未知玩家", 8);
+        node.UI_TXT_SCORE.text = data.delta > 0 ? `+${data.delta}` : `${data.delta}`;
 
         const completed = data.usedTime >= 0;
         node.ctrl_uncomp.selectedIndex = completed ? 0 : 1;
