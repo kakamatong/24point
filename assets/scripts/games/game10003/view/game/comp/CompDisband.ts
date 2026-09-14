@@ -1,3 +1,7 @@
+/**
+ * @file CompDisband.ts
+ * @description 私人房解散投票的推送展示与同意、拒绝响应
+ */
 import FGUICompDisband from "@fgui/game10003/FGUICompDisband";
 import * as fgui from "fairygui-cc";
 import {
@@ -11,8 +15,6 @@ import { GameData } from "../../../data/GameData";
 import { GameSocketManager } from "@frameworks/GameSocketManager";
 import { DataCenter } from "@datacenter/Datacenter";
 import { TipsView } from "@view/common/TipsView";
-import { PopMessageView } from "@view/common/PopMessageView";
-import { ENUM_POP_MESSAGE_TYPE } from "@datacenter/InterfaceConfig";
 import { Color } from "cc";
 import { SprotoVoteDisbandResult, SprotoVoteDisbandStart, SprotoVoteDisbandUpdate } from "../../../../../../types/protocol/game10003/s2c";
 import { ViewClass } from "@frameworks/Framework";
@@ -51,6 +53,7 @@ export class CompDisband extends FGUICompDisband {
      * 移除服务器消息监听器
      */
     protected onDestroy(): void {
+        this.stopCountdown();
         super.onDestroy();
         GameSocketManager.instance.removeServerListen(SprotoVoteDisbandStart);
         GameSocketManager.instance.removeServerListen(SprotoVoteDisbandUpdate);
@@ -101,7 +104,9 @@ export class CompDisband extends FGUICompDisband {
     onVoteDisbandStart(data: VoteDisbandStartData) {
         Logger.log("收到投票解散开始消息:", data);
         this.visible = true;
-        this.ctrl_btn.selectedIndex = 0; // 初始化
+        this.ctrl_btn.selectedIndex = data.initiator === DataCenter.instance.userid ? 1 : 0;
+        this._currentVotes = [];
+        this.UI_LV_VOTE_INFO.numItems = 0;
         this._voteId = data.voteId;
         this._voteData = data;
         this._timeLeft = data.timeLeft - Math.ceil(new Date().getTime() / 1000);
@@ -169,24 +174,14 @@ export class CompDisband extends FGUICompDisband {
         // 更新最终投票状态
         this.updateVoteList(data.votes);
 
+        // 立即关闭本轮投票，避免延迟回调隐藏随后发起的新投票。
+        this.visible = false;
         if (data.result === 1) {
-            // 投票通过，房间将被解散
-            Logger.log("投票通过，房间即将解散");
-            PopMessageView.showView({
-                content: "投票通过，房间已解散",
-                type: ENUM_POP_MESSAGE_TYPE.NUM1SURE,
-            });
+            // 超时也会由服务端判为通过；房间结束提示及返回统一交给 roomEnd。
+            TipsView.showView({ content: data.reason || "投票通过，等待房间解散" });
         } else {
-            // 投票未通过
-            Logger.log("投票未通过，继续游戏");
-            TipsView.showView({
-                content: "投票未通过，请继续游戏",
-            });
+            TipsView.showView({ content: data.reason || "投票未通过，请继续游戏" });
         }
-
-        this.scheduleOnce(() => {
-            this.visible = false;
-        }, 1);
     }
 
     /**
@@ -219,7 +214,7 @@ export class CompDisband extends FGUICompDisband {
             if (response && response.code === 1) {
                 Logger.log("投票发送成功");
             } else {
-                Logger.error("投票发送失败:", response?.msg || "未知错误");
+                TipsView.showView({ content: response?.msg || "投票失败" });
             }
         });
     }

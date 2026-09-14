@@ -34,7 +34,13 @@ import { SprotoGameRoomReady } from "../../../../../../types/protocol/lobby/s2c"
 import { Logger } from "@frameworks/utils/Utils";
 import { MatchView } from "@view/match/MatchView";
 import { AuthGame } from "@modules/AuthGame";
-import { SprotoClientReady, SprotoGameReady, SprotoLeaveRoom, SprotoOwnerStartGame } from "../../../../../../types/protocol/game10003/c2s";
+import {
+    SprotoClientReady,
+    SprotoGameReady,
+    SprotoLeaveRoom,
+    SprotoOwnerStartGame,
+    SprotoVoteDisbandRoom,
+} from "../../../../../../types/protocol/game10003/c2s";
 import { PopMessageView } from "@view/common/PopMessageView";
 import { TipsView } from "@view/common/TipsView";
 import { ENUM_POP_MESSAGE_TYPE } from "@datacenter/InterfaceConfig";
@@ -49,6 +55,7 @@ import { Match } from "@modules/Match";
 import { ConnectGameSvr } from "@modules/ConnectGameSvr";
 import { TALK_LIST } from "@game10003/view/talk/TalkConfig";
 import { ResultView } from "@game10003/view/result/ResultView";
+import "@game10003/view/game/comp/CompDisband";
 import { CompFireFlower } from "@game10003/view/game/comp/CompFireFlower";
 
 /**
@@ -481,7 +488,16 @@ export class CompGameMain extends FGUICompGameMain {
             });
         } else if (data.code == ROOM_END_FLAG.VOTE_DISBAND) {
             Logger.log("投票解散 " + msg);
-            //this.onBtnClose()
+            PopMessageView.showView({
+                content: "房间已投票解散",
+                type: ENUM_POP_MESSAGE_TYPE.NUM1SURE,
+                sureBack: () => {
+                    this.changeToLobbyScene();
+                },
+                closeBack: () => {
+                    this.changeToLobbyScene();
+                },
+            });
         }
     }
 
@@ -1138,6 +1154,18 @@ export class CompGameMain extends FGUICompGameMain {
                 TipsView.showView({ content: response?.msg || "准备失败" });
                 // 仅失败时按权威状态恢复按钮；成功保持隐藏，由 playerStatusUpdate(READY) 推送收敛，避免闪回重复点击
                 this.checkShowReadyBtn();
+            }
+        });
+    }
+
+    /**
+     * @method onBtnDisband
+     * @description 发起解散请求，直接解散或投票界面由服务端推送驱动
+     */
+    onBtnDisband(): void {
+        GameSocketManager.instance.sendToServer(SprotoVoteDisbandRoom, { reason: "" }, (response: SprotoVoteDisbandRoom.Response) => {
+            if (!response || response.code !== 1) {
+                TipsView.showView({ content: response?.msg || "发起解散失败" });
             }
         });
     }

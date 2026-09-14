@@ -1,3 +1,8 @@
+/**
+ * @file GameView.ts
+ * @description 游戏视图入口，加载主界面业务扩展后创建界面
+ */
+import "@game10003/view/game/comp/CompGameMain";
 import FGUIGameView from "@fgui/game10003/FGUIGameView";
 import { PackageLoad, ViewClass } from "@frameworks/Framework";
 import * as fgui from "fairygui-cc";
