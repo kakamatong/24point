@@ -22,3 +22,10 @@
 - 上下文：现有 `TotalResultView` 通过 `GameData.getPlayerByUserid/getHeadurlByUserid` 补昵称和头像，使用生成字段 `userid/score/rank`，与当前生成物兼容。空数据不会设置列表数量，保持安全；未改生成基类、FGUI 工程、bin、协议或服务端。
 - 验证：使用 OpenClaw 内置 TypeScript `transpileModule` 对上述三个真实源文件逐个转译，均 0 diagnostics。源码 SHA-256：ResultView `7015ef1377903e931d1640e09e517dfd506be821df4ae40e4259b37d01e1caad`；CompGameMain `ded151dd1c21c77702557484f22c2b4099f1c09520196d86a0c05ce7b497e491`；TotalResultView `f0cb3a1e76e4b0c1a315f7642141a93963009a36345ba77ab013e6cf8edb4efd`。另通过 `git diff --check`。
 - 边界：未使用 Cocos Creator 实机，未验证 FairyGUI 实际布局、遮挡、触摸与真实多人网络时序；需在 Cocos Creator 预览/构建中确认。
+
+## 2026-09-14 本次交付：运算完成后保留运算符选择
+
+- `assets/scripts/games/game10003/view/game/comp/CompCtrl.ts:362-363`：卡片飞行动画完成后不再将 `_selSymbol` 置为 `-1`，也不再把 `ctrl_symbol.selectedIndex` 重置为 4；此前选中的运算符保持显示和可继续使用。
+- `performOperation` 仍在动画开始前捕获 `opChar`，因此动画期间修改运算符选择不会改变当前已完成的运算；下一次点击数字时沿用当前保留的运算符。
+- 未修改数字卡片 `_busy` 拦截、发牌/最终卡片动画、整局重置、协议、FGUI 生成物、bin 或服务端。
+- 验证边界：已做真实 `CompCtrl.ts` TypeScript 转译和差异检查；未启动 Cocos，需实机确认运算符控制器保持选中页与连续运算触摸表现。
