@@ -488,16 +488,7 @@ export class CompGameMain extends FGUICompGameMain {
             });
         } else if (data.code == ROOM_END_FLAG.VOTE_DISBAND) {
             Logger.log("投票解散 " + msg);
-            PopMessageView.showView({
-                content: "房间已投票解散",
-                type: ENUM_POP_MESSAGE_TYPE.NUM1SURE,
-                sureBack: () => {
-                    this.changeToLobbyScene();
-                },
-                closeBack: () => {
-                    this.changeToLobbyScene();
-                },
-            });
+            this.changeToLobbyScene();
         }
     }
 
