@@ -68,32 +68,6 @@ export class CompGameMain extends FGUICompGameMain {
      */
     private _pendingResultShow: (() => void) | null = null;
     /**
-     * @property {boolean} _readySending - 准备请求在途标记，防止重复点击；收到响应或权威状态推送后释放
-     * @private
-     */
-    private _readySending = false;
-    /**
-     * @property {boolean} _startSending - 房主开始游戏请求在途标记，防止重复点击；收到响应或开局推送后释放
-     * @private
-     */
-    private _startSending = false;
-    /**
-     * @property {number} _REQUEST_LOCK_TIMEOUT - 请求在途锁定兜底超时（秒）：
-     *           底层 socket 无请求超时且响应回调永不回收，网络无响应时靠它释放锁，避免按钮永久锁死
-     * @private
-     */
-    private static readonly _REQUEST_LOCK_TIMEOUT = 5;
-    /**
-     * @property {(() => void) | null} _readyLockTimer - 准备请求兜底释放定时器
-     * @private
-     */
-    private _readyLockTimer: (() => void) | null = null;
-    /**
-     * @property {(() => void) | null} _startLockTimer - 开始游戏请求兜底释放定时器
-     * @private
-     */
-    private _startLockTimer: (() => void) | null = null;
-    /**
      * @description 组件构造：调用基类初始化 UI_COMP_CTRL 等子组件引用
      */
     onConstruct() {
@@ -123,8 +97,6 @@ export class CompGameMain extends FGUICompGameMain {
     protected onDestroy(): void {
         super.onDestroy();
         this.cancelPendingResultShow();
-        this.releaseReadyLock();
-        this.releaseStartLock();
         ResultView.hideView();
         this.removeListeners();
         if (GameData.instance.isLocalGame) {
@@ -381,7 +353,6 @@ export class CompGameMain extends FGUICompGameMain {
     private checkShowReadyBtn(): void {
         if (!GameData.instance.isPrivateRoom || GameData.instance.gameStart) {
             // 已开局/非私人房：在途标记已无意义（可能卡在应答丢失里），同步释放
-            this.releaseReadyLock();
             this.showReadyBtn(false);
             return;
         }
@@ -411,62 +382,6 @@ export class CompGameMain extends FGUICompGameMain {
      */
     private showReadyBtn(bshow: boolean): void {
         this.UI_BTN_READY.visible = bshow;
-    }
-
-    /**
-     * @method lockReady
-     * @description 置准备请求在途标记并启动兜底释放定时器，防止重复点击
-     * @private
-     */
-    private lockReady(): void {
-        this._readySending = true;
-        this._readyLockTimer = () => {
-            this._readyLockTimer = null;
-            this._readySending = false;
-            this.checkShowReadyBtn();
-        };
-        this.scheduleOnce(this._readyLockTimer, CompGameMain._REQUEST_LOCK_TIMEOUT);
-    }
-
-    /**
-     * @method releaseReadyLock
-     * @description 释放准备请求在途标记（收到响应/权威状态推送/开局/销毁时调用）
-     * @private
-     */
-    private releaseReadyLock(): void {
-        if (this._readyLockTimer) {
-            this.unschedule(this._readyLockTimer);
-            this._readyLockTimer = null;
-        }
-        this._readySending = false;
-    }
-
-    /**
-     * @method lockStart
-     * @description 置开始游戏请求在途标记并启动兜底释放定时器，防止重复点击
-     * @private
-     */
-    private lockStart(): void {
-        this._startSending = true;
-        this._startLockTimer = () => {
-            this._startLockTimer = null;
-            this._startSending = false;
-            this.checkShowStartGameBtn();
-        };
-        this.scheduleOnce(this._startLockTimer, CompGameMain._REQUEST_LOCK_TIMEOUT);
-    }
-
-    /**
-     * @method releaseStartLock
-     * @description 释放开始游戏请求在途标记（收到响应/开局推送/销毁时调用）
-     * @private
-     */
-    private releaseStartLock(): void {
-        if (this._startLockTimer) {
-            this.unschedule(this._startLockTimer);
-            this._startLockTimer = null;
-        }
-        this._startSending = false;
     }
 
     /**
@@ -674,8 +589,6 @@ export class CompGameMain extends FGUICompGameMain {
             this.UI_COMP_PRIVITE_INFO.visible = false;
         }
         // 开局推送到达即视为在途请求已终结，释放在途标记与兜底定时器
-        this.releaseReadyLock();
-        this.releaseStartLock();
 
         // 非重连情况
         if (!data.brelink) {
@@ -987,7 +900,6 @@ export class CompGameMain extends FGUICompGameMain {
 
         if (data.userid === selfid) {
             // 自己状态更新：服务端权威状态已变更，释放在途标记并按状态刷新准备按钮
-            this.releaseReadyLock();
             this.showPlayerInfoBySeat(svrSeat);
             this.checkShowReadyBtn();
         } else {
@@ -1206,7 +1118,7 @@ export class CompGameMain extends FGUICompGameMain {
         if (GameData.instance.isLocalGame || !GameData.instance.isPrivateRoom) {
             return;
         }
-        if (GameData.instance.gameStart || this._readySending) {
+        if (GameData.instance.gameStart) {
             return;
         }
 
@@ -1217,11 +1129,11 @@ export class CompGameMain extends FGUICompGameMain {
             return;
         }
 
-        this.lockReady();
-        // 点击后立即收起按钮，避免在途期间重复点击；失败时再按权威状态恢复
-        this.showReadyBtn(false);
         GameSocketManager.instance.sendToServer(SprotoGameReady, { ready: 1 }, (response: any) => {
-            this.releaseReadyLock();
+            if (response && response.code === 1) {
+                this.showReadyBtn(false);
+                return;
+            }
             if (!response || response.code !== 1) {
                 TipsView.showView({ content: response?.msg || "准备失败" });
                 // 仅失败时按权威状态恢复按钮；成功保持隐藏，由 playerStatusUpdate(READY) 推送收敛，避免闪回重复点击
@@ -1239,17 +1151,12 @@ export class CompGameMain extends FGUICompGameMain {
         if (GameData.instance.isLocalGame || !GameData.instance.isPrivateRoom) {
             return;
         }
-        if (this._startSending) {
-            return;
-        }
         if (GameData.instance.owner !== DataCenter.instance.userid) {
             // 仅房主可开局；非房主按钮本不显示，此处兜底
             return;
         }
 
-        this.lockStart();
         GameSocketManager.instance.sendToServer(SprotoOwnerStartGame, {}, (response: any) => {
-            this.releaseStartLock();
             if (response && response.code === 1) {
                 // 成功：开局由服务端 gameStart 推送驱动，这里仅收敛按钮
                 this.showStartGameBtn(false);
