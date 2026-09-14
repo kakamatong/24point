@@ -6,7 +6,6 @@
     <remark page="2" value="单机房"/>
   </controller>
   <displayList>
-    <component id="n0_h3uk" name="n0" src="h3uk1c" fileName="comp/CompDisband.xml" xy="13,0" visible="false"/>
     <component id="n32_lede" name="UI_BTN_DISBAND" src="is91n" fileName="comp/CompBtnCommon.xml" pkg="gj0r6g5i" xy="135,9" size="207,84" controller="ctrl_color,2">
       <gearDisplay controller="ctrl_roomtype" pages="1"/>
       <Button title="解散房间" titleFontSize="37" icon="ui://gj0r6g5ijorf1h"/>
@@ -21,7 +20,7 @@
       <Button title="开始游戏" icon="ui://gj0r6g5ijorf1g"/>
     </component>
     <component id="n19_x6u8" name="UI_BTN_READY" src="is91n" fileName="comp/CompBtnCommon.xml" pkg="gj0r6g5i" xy="284,1126" size="230,98" group="n13_ifzr" visible="false" controller="ctrl_color,3">
-      <Button title="开始游戏" icon="ui://gj0r6g5ijorf1g"/>
+      <Button title="准备" icon="ui://gj0r6g5ijorf1g"/>
     </component>
     <group id="n13_ifzr" name="n13" xy="272,1124" size="230,98" advanced="true" layout="hz" colGap="119" excludeInvisibles="true">
       <gearDisplay controller="ctrl_roomtype" pages="1"/>
@@ -68,5 +67,6 @@
     <text id="n30_p2bl" name="UI_TXT_HINT" xy="236,459" pivot="0.5,0.5" size="304,66" visible="false" fontSize="50" color="#ffffff" text="等待其他玩家">
       <relation target="" sidePair="center-center,middle-middle"/>
     </text>
+    <component id="n0_h3uk" name="n0" src="h3uk1c" fileName="comp/CompDisband.xml" xy="13,0" visible="false"/>
   </displayList>
 </component>
