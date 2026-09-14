@@ -34,8 +34,9 @@ import { SprotoGameRoomReady } from "../../../../../../types/protocol/lobby/s2c"
 import { Logger } from "@frameworks/utils/Utils";
 import { MatchView } from "@view/match/MatchView";
 import { AuthGame } from "@modules/AuthGame";
-import { SprotoClientReady, SprotoGameReady, SprotoLeaveRoom } from "../../../../../../types/protocol/game10003/c2s";
+import { SprotoClientReady, SprotoGameReady, SprotoLeaveRoom, SprotoOwnerStartGame } from "../../../../../../types/protocol/game10003/c2s";
 import { PopMessageView } from "@view/common/PopMessageView";
+import { TipsView } from "@view/common/TipsView";
 import { ENUM_POP_MESSAGE_TYPE } from "@datacenter/InterfaceConfig";
 import { CompPlayers } from "./CompPlayers";
 import { CompPlayerHead } from "./CompPlayerHead";
@@ -67,6 +68,32 @@ export class CompGameMain extends FGUICompGameMain {
      */
     private _pendingResultShow: (() => void) | null = null;
     /**
+     * @property {boolean} _readySending - 准备请求在途标记，防止重复点击；收到响应或权威状态推送后释放
+     * @private
+     */
+    private _readySending = false;
+    /**
+     * @property {boolean} _startSending - 房主开始游戏请求在途标记，防止重复点击；收到响应或开局推送后释放
+     * @private
+     */
+    private _startSending = false;
+    /**
+     * @property {number} _REQUEST_LOCK_TIMEOUT - 请求在途锁定兜底超时（秒）：
+     *           底层 socket 无请求超时且响应回调永不回收，网络无响应时靠它释放锁，避免按钮永久锁死
+     * @private
+     */
+    private static readonly _REQUEST_LOCK_TIMEOUT = 5;
+    /**
+     * @property {(() => void) | null} _readyLockTimer - 准备请求兜底释放定时器
+     * @private
+     */
+    private _readyLockTimer: (() => void) | null = null;
+    /**
+     * @property {(() => void) | null} _startLockTimer - 开始游戏请求兜底释放定时器
+     * @private
+     */
+    private _startLockTimer: (() => void) | null = null;
+    /**
      * @description 组件构造：调用基类初始化 UI_COMP_CTRL 等子组件引用
      */
     onConstruct() {
@@ -96,6 +123,8 @@ export class CompGameMain extends FGUICompGameMain {
     protected onDestroy(): void {
         super.onDestroy();
         this.cancelPendingResultShow();
+        this.releaseReadyLock();
+        this.releaseStartLock();
         ResultView.hideView();
         this.removeListeners();
         if (GameData.instance.isLocalGame) {
@@ -302,6 +331,8 @@ export class CompGameMain extends FGUICompGameMain {
             GameData.instance.maxPlayer = data.playerids.length ?? 2;
         }
 
+        // roomInfo 携带房主：房主身份确定后同步刷新准备/开始按钮（playerEnter 早于 roomInfo 时曾按未知房主评估）
+        this.checkShowReadyBtn();
         this.checkShowStartGameBtn();
     }
 
@@ -339,6 +370,103 @@ export class CompGameMain extends FGUICompGameMain {
      */
     showStartGameBtn(bshow: boolean): void {
         this.UI_BTN_START_GAME.visible = bshow;
+    }
+
+    /**
+     * @method checkShowReadyBtn
+     * @description 依据服务端权威状态刷新「准备」按钮显隐：私人房、未开局、自己在线且非首局房主时显示；
+     *              自己已就绪(status=READY)时隐藏，配合点击在途标记避免重复点击与重复准备
+     * @private
+     */
+    private checkShowReadyBtn(): void {
+        if (!GameData.instance.isPrivateRoom || GameData.instance.gameStart) {
+            // 已开局/非私人房：在途标记已无意义（可能卡在应答丢失里），同步释放
+            this.releaseReadyLock();
+            this.showReadyBtn(false);
+            return;
+        }
+
+        const selfid = DataCenter.instance.userid;
+        const self = GameData.instance.getPlayerByUserid(selfid);
+        if (!self || self.status !== PLAYER_STATUS.ONLINE) {
+            this.showReadyBtn(false);
+            return;
+        }
+
+        // 房主在第一局开始前(privateNowCnt=0)不显示准备按钮，由房主直接开始游戏
+        const isOwner = GameData.instance.owner === selfid;
+        if (isOwner && GameData.instance.privateNowCnt === 0) {
+            this.showReadyBtn(false);
+            return;
+        }
+
+        this.showReadyBtn(true);
+    }
+
+    /**
+     * @method showReadyBtn
+     * @description 显示或隐藏准备按钮
+     * @param {boolean} bshow - 是否显示
+     * @private
+     */
+    private showReadyBtn(bshow: boolean): void {
+        this.UI_BTN_READY.visible = bshow;
+    }
+
+    /**
+     * @method lockReady
+     * @description 置准备请求在途标记并启动兜底释放定时器，防止重复点击
+     * @private
+     */
+    private lockReady(): void {
+        this._readySending = true;
+        this._readyLockTimer = () => {
+            this._readyLockTimer = null;
+            this._readySending = false;
+            this.checkShowReadyBtn();
+        };
+        this.scheduleOnce(this._readyLockTimer, CompGameMain._REQUEST_LOCK_TIMEOUT);
+    }
+
+    /**
+     * @method releaseReadyLock
+     * @description 释放准备请求在途标记（收到响应/权威状态推送/开局/销毁时调用）
+     * @private
+     */
+    private releaseReadyLock(): void {
+        if (this._readyLockTimer) {
+            this.unschedule(this._readyLockTimer);
+            this._readyLockTimer = null;
+        }
+        this._readySending = false;
+    }
+
+    /**
+     * @method lockStart
+     * @description 置开始游戏请求在途标记并启动兜底释放定时器，防止重复点击
+     * @private
+     */
+    private lockStart(): void {
+        this._startSending = true;
+        this._startLockTimer = () => {
+            this._startLockTimer = null;
+            this._startSending = false;
+            this.checkShowStartGameBtn();
+        };
+        this.scheduleOnce(this._startLockTimer, CompGameMain._REQUEST_LOCK_TIMEOUT);
+    }
+
+    /**
+     * @method releaseStartLock
+     * @description 释放开始游戏请求在途标记（收到响应/开局推送/销毁时调用）
+     * @private
+     */
+    private releaseStartLock(): void {
+        if (this._startLockTimer) {
+            this.unschedule(this._startLockTimer);
+            this._startLockTimer = null;
+        }
+        this._startSending = false;
     }
 
     /**
@@ -481,6 +609,11 @@ export class CompGameMain extends FGUICompGameMain {
                 this.updateOtherPlayerHead(svrSeat, player);
             }
         }
+
+        // 重连/进入时自己的在线状态由 playerInfos 下发（无独立状态推送），据权威状态刷新准备按钮
+        if (GameData.instance.isPrivateRoom) {
+            this.checkShowReadyBtn();
+        }
     }
 
     /**
@@ -533,12 +666,16 @@ export class CompGameMain extends FGUICompGameMain {
         this.UI_COMP_LHT_LEFT?.stop();
         this.UI_COMP_LHT_RIGHT?.stop();
 
-        // 隐藏开始,邀请游戏按钮
+        // 隐藏开始,邀请,准备游戏按钮
         if (GameData.instance.isPrivateRoom) {
             this.showStartGameBtn(false);
             this.showInviteBtn(false);
+            this.showReadyBtn(false);
             this.UI_COMP_PRIVITE_INFO.visible = false;
         }
+        // 开局推送到达即视为在途请求已终结，释放在途标记与兜底定时器
+        this.releaseReadyLock();
+        this.releaseStartLock();
 
         // 非重连情况
         if (!data.brelink) {
@@ -814,14 +951,8 @@ export class CompGameMain extends FGUICompGameMain {
         }
 
         if (GameData.instance.isPrivateRoom) {
-            if (playerInfo.status == PLAYER_STATUS.ONLINE && selfid == userid) {
-                // 房主在第一局开始前(privateNowCnt=0)不显示准备按钮
-                const isOwner = GameData.instance.owner === selfid;
-                if (!isOwner || GameData.instance.privateNowCnt > 0) {
-                    this.UI_BTN_READY.visible = true;
-                }
-            }
-
+            // 准备按钮显隐以权威状态为准（服务端 playerStatusUpdate/playerInfos 下发）
+            this.checkShowReadyBtn();
             this.checkShowInviteBtn();
             this.checkShowStartGameBtn();
         }
@@ -855,15 +986,10 @@ export class CompGameMain extends FGUICompGameMain {
         const svrSeat = GameData.instance.getSeatByUserid(player.userid);
 
         if (data.userid === selfid) {
-            // 自己状态更新
+            // 自己状态更新：服务端权威状态已变更，释放在途标记并按状态刷新准备按钮
+            this.releaseReadyLock();
             this.showPlayerInfoBySeat(svrSeat);
-            if (data.status == PLAYER_STATUS.ONLINE) {
-                // 房主在第一局开始前(privateNowCnt=0)不显示准备按钮
-                const isOwner = GameData.instance.owner === selfid;
-                if (!isOwner || GameData.instance.privateNowCnt > 0) {
-                    this.UI_BTN_READY.visible = true;
-                }
-            }
+            this.checkShowReadyBtn();
         } else {
             // 其他玩家状态更新
             const compPlayers = this.UI_COMP_PLAYERS as CompPlayers;
@@ -947,6 +1073,8 @@ export class CompGameMain extends FGUICompGameMain {
                 this.UI_COMP_PRIVITE_INFO.UI_TXT_RULE.text = `准备后继续游戏`;
             }
 
+            // 局间局数变化后同步刷新准备/开始按钮（局间依靠全员准备，房主亦可准备）
+            this.checkShowReadyBtn();
             this.checkShowStartGameBtn();
         }
     }
@@ -1067,6 +1195,89 @@ export class CompGameMain extends FGUICompGameMain {
      */
     onSvrStepId(data: SprotoStepId.Request) {
         GameData.instance.gameStep = data.step;
+    }
+
+    /**
+     * @method onBtnReady
+     * @description 「准备」按钮：私人房非首局发起准备(gameReady ready=1)；成功后按钮显隐以服务端 playerStatusUpdate 推送为准
+     * @private
+     */
+    onBtnReady(): void {
+        if (GameData.instance.isLocalGame || !GameData.instance.isPrivateRoom) {
+            return;
+        }
+        if (GameData.instance.gameStart || this._readySending) {
+            return;
+        }
+
+        const selfid = DataCenter.instance.userid;
+        const self = GameData.instance.getPlayerByUserid(selfid);
+        if (!self || self.status === PLAYER_STATUS.READY) {
+            // 已就绪：服务端状态为权威，忽略重复点击
+            return;
+        }
+
+        this.lockReady();
+        // 点击后立即收起按钮，避免在途期间重复点击；失败时再按权威状态恢复
+        this.showReadyBtn(false);
+        GameSocketManager.instance.sendToServer(SprotoGameReady, { ready: 1 }, (response: any) => {
+            this.releaseReadyLock();
+            if (!response || response.code !== 1) {
+                TipsView.showView({ content: response?.msg || "准备失败" });
+                // 仅失败时按权威状态恢复按钮；成功保持隐藏，由 playerStatusUpdate(READY) 推送收敛，避免闪回重复点击
+                this.checkShowReadyBtn();
+            }
+        });
+    }
+
+    /**
+     * @method onBtnStartGame
+     * @description 「开始游戏」按钮：房主发起开局(ownerStartGame)；未准备玩家以昵称友好提示，失败后按权威状态重评估
+     * @private
+     */
+    onBtnStartGame(): void {
+        if (GameData.instance.isLocalGame || !GameData.instance.isPrivateRoom) {
+            return;
+        }
+        if (this._startSending) {
+            return;
+        }
+        if (GameData.instance.owner !== DataCenter.instance.userid) {
+            // 仅房主可开局；非房主按钮本不显示，此处兜底
+            return;
+        }
+
+        this.lockStart();
+        GameSocketManager.instance.sendToServer(SprotoOwnerStartGame, {}, (response: any) => {
+            this.releaseStartLock();
+            if (response && response.code === 1) {
+                // 成功：开局由服务端 gameStart 推送驱动，这里仅收敛按钮
+                this.showStartGameBtn(false);
+                return;
+            }
+            TipsView.showView({ content: this.buildStartFailMsg(response) });
+            this.checkShowStartGameBtn();
+        });
+    }
+
+    /**
+     * @method buildStartFailMsg
+     * @description 组装房主开局失败提示：存在未准备玩家时以昵称列出，否则回退服务端文案
+     * @param {any} response - ownerStartGame 响应
+     * @returns {string} 提示文案
+     * @private
+     */
+    private buildStartFailMsg(response: any): string {
+        const msg = response?.msg || "开始游戏失败";
+        const notReadyUserids: number[] = response?.notReadyUserids ?? [];
+        if (notReadyUserids.length === 0) {
+            return msg;
+        }
+        const names = notReadyUserids.map((userid) => {
+            const player = GameData.instance.getPlayerByUserid(userid);
+            return player?.nickname || `${userid}`;
+        });
+        return `${msg}：${names.join("、")}`;
     }
 
     /**
