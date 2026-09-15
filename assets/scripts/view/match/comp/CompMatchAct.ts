@@ -52,7 +52,7 @@ export class CompMatchAct extends FGUICompMatchAct {
         this._expressionIndex = 0;
         this.change();
         this._scheid = this.change.bind(this);
-        this.schedule(this._scheid, 0.2);
+        this.schedule(this._scheid, 0.5);
     }
 
     /**
