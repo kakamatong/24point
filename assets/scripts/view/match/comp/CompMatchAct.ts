@@ -16,10 +16,6 @@ import { ViewClass } from "@frameworks/Framework";
  */
 @ViewClass()
 export class CompMatchAct extends FGUICompMatchAct {
-    /** 控制器列表 */
-    private _ctrls: Array<fgui.Controller> = [];
-    /** 当前索引 */
-    private _nowIndex = 0;
     /** 定时器回调函数 */
     private _scheid: (() => void) | null = null;
 
