@@ -3,7 +3,7 @@
  * @description 算24点(10003)本地游戏模拟服务器（单机模式）：
  *              接管 GameSocketManager 本地模式下的协议收发，按服务端 game10003 logic.lua / room.lua /
  *              privateRoom.lua 的推送顺序与字段模拟联网游戏核心协议流程（进场推送、单局回合机
- *              START→PLAYING→END、提交判定、计分收尾；其中单机答题阶段不限时，算法口径与联网模式完全一致
+ *              START→PLAYING→END、提交判定、结算收尾；单机不限时、不计分，答题算法口径与联网模式一致
  * @category 本地单机
  */
 
@@ -57,8 +57,8 @@ interface PLAYER_ROUND_PROGRESS {
 /**
  * @class LocalSvr
  * @description 本地游戏模拟服务器单例：C2S 监听/响应分发 + S2C 推送模拟（进场、单局回合机、结束收尾），
- *              回合机与计分口径对齐服务端 10003（logic.lua:77-198 阶段管理、310-427 提交与结束、
- *              490-511 秒级 tick 判定阶段超时；scoring.lua:84-110 私人房计分 playerCnt=1 形态）
+ *              回合机对齐服务端 10003（logic.lua:77-198 阶段管理、310-427 提交与结束、
+ *              490-511 秒级 tick 判定阶段超时）；单机不计分，结算分数字段固定为 0
  * @category 本地单机
  * @singleton 单例模式
  */
@@ -85,8 +85,6 @@ export class LocalSvr {
     // ============ 单局回合机状态（对齐 logic.lua） ============
     /** 当前局序号（场会话内从1递增；clientReady 重置场会话） */
     private _roundNum: number = 0;
-    /** 场/关累计局分（对应私人房 totalScores[seat]，playerCnt=1 形态） */
-    private _accumScore: number = 0;
     /** 本局4个发牌数字 */
     private _dealNumbers: number[] = [];
     /** 发牌推送时刻(ms)，用于 usedTime 计算（logic.lua:139-142） */
@@ -163,7 +161,7 @@ export class LocalSvr {
 
     /**
      * 客户端就绪 → 重置场状态并推送进场与开局序列
-     * 说明：每次 clientReady 视为一场新会话（重置 roundNum/累计分/时钟等跨场残留，避免串场）；
+     * 说明：每次 clientReady 视为一场新会话（重置 roundNum/时钟等跨场残留，避免串场）；
      *       单机模式一局结束即停，由 UI"再来一局"再次发 clientReady 开下一局
      */
     onClientReady(): void {
@@ -429,12 +427,10 @@ export class LocalSvr {
                 : { seat: LocalSvr.SELF_SEAT, expression: "", usedTime: -1, rank: 0 },
         ];
 
-        // 计分：私人房 playerCnt=1 口径（scoring.lua:84-110）：答对 1 分、未答对 0 分，newScore=场/关累计
-        const delta = progress.finished ? 1 : 0;
-        this._accumScore += delta;
-        const scores = [{ seat: LocalSvr.SELF_SEAT, newScore: this._accumScore, delta: delta }];
+        // 单机不计分：保留结算分数字段，让小结算始终显示 0。
+        const scores = [{ seat: LocalSvr.SELF_SEAT, newScore: 0, delta: 0 }];
 
-        Logger.log(`[LocalSvr] 第${this._roundNum}局结束 endType=${this._endType} 本局delta=${delta} 累计=${this._accumScore}`);
+        Logger.log(`[LocalSvr] 第${this._roundNum}局结束 endType=${this._endType} 单机不计分`);
 
         this.dispatchEvent(SprotoGameEnd.Name, {
             roundNum: this._roundNum,
@@ -532,12 +528,11 @@ export class LocalSvr {
     // ============================================
 
     /**
-     * 重置场会话状态（跨场残留清零：局序号/累计分/本局数字/阶段/时钟）
+     * 重置场会话状态（跨场残留清零：局序号/本局数字/阶段/时钟）
      * @private
      */
     private _resetSession(): void {
         this._roundNum = 0;
-        this._accumScore = 0;
         this._resetRoundState();
     }
 
