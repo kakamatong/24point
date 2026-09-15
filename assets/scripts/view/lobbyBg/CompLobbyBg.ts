@@ -7,7 +7,6 @@
 import * as fgui from "fairygui-cc";
 import FGUICompLobbyBg from "@fgui/lobbyBg/FGUICompLobbyBg";
 import { PackageLoad, ViewClass } from "@frameworks/Framework";
-import { CompBgCubePage } from "./comp/CompBgCubePage";
 
 /**
  * @class CompLobbyBg
@@ -19,7 +18,6 @@ import { CompBgCubePage } from "./comp/CompBgCubePage";
 export class CompLobbyBg extends FGUICompLobbyBg {
     onConstruct() {
         super.onConstruct();
-        (this.UI_COMP_CUBE_PAGE as CompBgCubePage).startAnimation();
     }
 }
 fgui.UIObjectFactory.setExtension(CompLobbyBg.URL, CompLobbyBg);

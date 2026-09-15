@@ -19,7 +19,7 @@
     <image id="n5_lede" name="n5" src="ledey" fileName="imgs/06-right-triangle.png" xy="27,1358">
       <relation target="" sidePair="center-center,middle-middle"/>
     </image>
-    <image id="n6_lede" name="n6" src="ledez" fileName="imgs/07-circle-radius.png" xy="522,601">
+    <image id="n6_lede" name="n6" src="ledez" fileName="imgs/07-circle-radius.png" xy="522,479">
       <relation target="" sidePair="center-center,middle-middle"/>
     </image>
     <image id="n7_lede" name="n7" src="lede10" fileName="imgs/08-wireframe-cube.png" xy="547,1216">

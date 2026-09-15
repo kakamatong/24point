@@ -4,7 +4,7 @@
     <image id="n4_lede" name="n4" src="h3uk1n" fileName="imgs/bg24.jpg" xy="0,0">
       <relation target="" sidePair="width-width,height-height"/>
     </image>
-    <component id="n16_lede" name="n16" src="lede14" fileName="comp/CompMath.xml" xy="0,0" alpha="0.45">
+    <component id="n16_lede" name="UI_BG_MAIN" src="lede14" fileName="comp/CompMath.xml" xy="0,0" alpha="0.45">
       <relation target="" sidePair="width-width,height-height"/>
     </component>
   </displayList>
