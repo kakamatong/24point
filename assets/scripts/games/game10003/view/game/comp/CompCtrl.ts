@@ -323,17 +323,22 @@ export class CompCtrl extends FGUICompCtrl {
         if (!a || !b || this._selSymbol < 0) {
             return;
         }
+
         const result = calc(a, CompCtrl._OP_CHARS[this._selSymbol], b);
+        // 非法运算（如除零）：拒绝，
         if (!result) {
-            // 非法运算（如除零）：拒绝，取消符号选中，保留第一数字
-            this._selSymbol = -1;
-            this.ctrl_symbol.selectedIndex = 4;
             return;
         }
+
         const opChar = CompCtrl._OP_CHARS[this._selSymbol];
         this._busy = true;
         const fromBtn = this._numBtns[first];
         const toBtn = this._numBtns[second];
+
+        // 取消符号选中,每次计算都取消选中符号
+        this._selSymbol = -1;
+        this.ctrl_symbol.selectedIndex = 4;
+
         // 置顶并飞向第二格
         this.setChildIndex(fromBtn, this.numChildren - 1);
         this._flyTween = fgui.GTween.to2(fromBtn.x, fromBtn.y, toBtn.x, toBtn.y, 0.35)
@@ -352,8 +357,7 @@ export class CompCtrl extends FGUICompCtrl {
                 // 右子式：优先级低于父运算、或同级且父运算为 - / 时加括号（右结合性）
                 const prec = CompCtrl._OP_PREC[opChar];
                 const leftExpr = this._precs[first] < prec ? `(${this._exprs[first]})` : this._exprs[first];
-                const rightNeedsParen = this._precs[second] < prec
-                    || (this._precs[second] === prec && (opChar === "-" || opChar === "/"));
+                const rightNeedsParen = this._precs[second] < prec || (this._precs[second] === prec && (opChar === "-" || opChar === "/"));
                 const rightExpr = rightNeedsParen ? `(${this._exprs[second]})` : this._exprs[second];
                 this._exprs[second] = `${leftExpr}${opChar}${rightExpr}`;
                 this._precs[second] = prec;
@@ -383,10 +387,7 @@ export class CompCtrl extends FGUICompCtrl {
         if (!btn || !btn.visible || this._numBtnPos.length === 0) {
             return;
         }
-        const center = this._numBtnPos.reduce(
-            (sum, pos) => ({ x: sum.x + pos.x, y: sum.y + pos.y }),
-            { x: 0, y: 0 },
-        );
+        const center = this._numBtnPos.reduce((sum, pos) => ({ x: sum.x + pos.x, y: sum.y + pos.y }), { x: 0, y: 0 });
         center.x /= this._numBtnPos.length;
         center.y /= this._numBtnPos.length;
         this._busy = true;

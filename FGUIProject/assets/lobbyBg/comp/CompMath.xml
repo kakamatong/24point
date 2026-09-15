@@ -1,34 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <component size="776,1688">
   <displayList>
-    <image id="n0_lede" name="n0" src="lede13" fileName="imgs/01-pythagorean.png" xy="52,531" rotation="-21">
+    <image id="n0_lede" name="n0" src="lede13" fileName="imgs/01-pythagorean.png" xy="166,341" rotation="-21">
       <relation target="" sidePair="center-center,middle-middle"/>
     </image>
-    <image id="n1_lede" name="n1" src="ledeu" fileName="imgs/02-mass-energy.png" xy="45,71">
+    <image id="n1_lede" name="n1" src="ledeu" fileName="imgs/02-mass-energy.png" xy="374,151">
       <relation target="" sidePair="center-center,middle-middle"/>
     </image>
-    <image id="n2_lede" name="n2" src="ledev" fileName="imgs/03-circle-area.png" xy="508,147" rotation="-9">
+    <image id="n2_lede" name="n2" src="ledev" fileName="imgs/03-circle-area.png" xy="551,85" rotation="-9">
       <relation target="" sidePair="center-center,middle-middle"/>
     </image>
-    <image id="n3_lede" name="n3" src="ledew" fileName="imgs/04-quadratic-formula.png" xy="33,927">
+    <image id="n3_lede" name="n3" src="ledew" fileName="imgs/04-quadratic-formula.png" xy="288,1306">
       <relation target="" sidePair="center-center,middle-middle"/>
     </image>
-    <image id="n4_lede" name="n4" src="ledex" fileName="imgs/05-euler-identity.png" xy="572,1529">
+    <image id="n4_lede" name="n4" src="ledex" fileName="imgs/05-euler-identity.png" xy="587,1412">
       <relation target="" sidePair="center-center,middle-middle"/>
     </image>
     <image id="n5_lede" name="n5" src="ledey" fileName="imgs/06-right-triangle.png" xy="27,1358">
       <relation target="" sidePair="center-center,middle-middle"/>
     </image>
-    <image id="n6_lede" name="n6" src="ledez" fileName="imgs/07-circle-radius.png" xy="522,479">
+    <image id="n6_lede" name="n6" src="ledez" fileName="imgs/07-circle-radius.png" xy="29,168">
       <relation target="" sidePair="center-center,middle-middle"/>
     </image>
-    <image id="n7_lede" name="n7" src="lede10" fileName="imgs/08-wireframe-cube.png" xy="547,1216">
+    <image id="n7_lede" name="n7" src="lede10" fileName="imgs/08-wireframe-cube.png" xy="568,1158">
       <relation target="" sidePair="center-center,middle-middle"/>
     </image>
-    <image id="n8_lede" name="n8" src="lede11" fileName="imgs/09-parabola-axes.png" xy="502,842">
+    <image id="n8_lede" name="n8" src="lede11" fileName="imgs/09-parabola-axes.png" xy="76,1108">
       <relation target="" sidePair="center-center,middle-middle"/>
     </image>
-    <image id="n9_lede" name="n9" src="lede12" fileName="imgs/10-regular-pentagon.png" xy="79,1121">
+    <image id="n9_lede" name="n9" src="lede12" fileName="imgs/10-regular-pentagon.png" xy="613,155">
       <relation target="" sidePair="center-center,middle-middle"/>
     </image>
   </displayList>

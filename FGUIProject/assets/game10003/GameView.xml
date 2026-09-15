@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <component size="776,1688">
   <displayList>
-    <image id="n49_h3uk" name="n49" src="h3uk1n" fileName="imgs/bg24.jpg" xy="0,0" pkg="m52rjp09">
+    <component id="n50_lede" name="n50" src="d01o0" fileName="comp/CompLobbyBg.xml" pkg="m52rjp09" xy="0,0">
       <relation target="" sidePair="width-width,height-height"/>
-    </image>
+    </component>
     <component id="n46_h3uk" name="UI_COMP_MAIN" src="h3uk1d" fileName="comp/CompGameMain.xml" xy="0,0">
       <relation target="" sidePair="width-width,height-height"/>
     </component>
