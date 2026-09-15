@@ -171,7 +171,6 @@ export class MatchView extends FGUIMatchView {
      */
     stopAct() {
         (this.UI_COMP_ACT as CompMatchAct).stopSche();
-        (this.UI_COMP_ACT as CompMatchAct).success();
     }
 
     /**
