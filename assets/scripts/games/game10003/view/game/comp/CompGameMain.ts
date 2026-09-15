@@ -58,6 +58,7 @@ import { ResultView } from "@game10003/view/result/ResultView";
 import { TotalResultView } from "@game10003/view/result/TotalResultView";
 import "@game10003/view/game/comp/CompDisband";
 import { CompFireFlower } from "@game10003/view/game/comp/CompFireFlower";
+import { MiniGameUtils } from "@frameworks/utils/sdk/MiniGameUtils";
 
 /**
  * @class CompGameMain
@@ -1235,6 +1236,73 @@ export class CompGameMain extends FGUICompGameMain {
         } else {
             this.changeToLobbyScene();
         }
+    }
+
+    /**
+     * 绘制邀请图片
+     * @returns 图片路径
+     */
+    async drawInviteInfo(): Promise<string> {
+        return new Promise<string>(async (resolve, reject) => {
+            // 邀请好友
+            const bgUrl = "https://qiudaoyu-miniapp.oss-cn-hangzhou.aliyuncs.com/share/10003/share.jpg";
+            const width = 320;
+            const height = 320;
+            const bg = await MiniGameUtils.instance.loadImage(bgUrl);
+            const canvas = MiniGameUtils.instance.getCanvas();
+            if (!canvas) {
+                reject();
+                return;
+            }
+            canvas.width = width;
+            canvas.height = height;
+            const canvasContext = MiniGameUtils.instance.getCanvasContext();
+            if (!canvasContext) {
+                reject();
+                return;
+            }
+
+            canvasContext.globalCompositeOperation = "source-over";
+            canvasContext.clearRect(0, 0, width, height);
+            canvasContext.drawImage(bg, 0, 0, width, height);
+
+            const head = await MiniGameUtils.instance.loadImage(DataCenter.instance.headurl);
+            const headWidth = 80;
+            const headHeight = 80;
+            canvasContext.drawImage(head, width * 0.1, height * 0.7, headWidth, headHeight);
+
+            canvasContext.font = "bold 20px Arial";
+            canvasContext.fillStyle = "#993300";
+            canvasContext.textAlign = "left";
+            canvasContext.fillText(DataCenter.instance.userData?.nickname || "", width * 0.1 + headWidth + 10, height * 0.8 + 10);
+            canvasContext.fillText(`${DataCenter.instance.userid || 0}`, width * 0.1 + headWidth + 10, height * 0.8 + 50);
+            MiniGameUtils.instance
+                .makeCanvasImage({ filename: "invite" })
+                .then((res: string) => {
+                    Logger.log(res);
+                    resolve(res);
+                })
+                .catch((err: any) => {
+                    reject(err);
+                });
+        });
+    }
+
+    /**
+     * 邀请好友
+     */
+    onBtnInvite(): void {
+        this.drawInviteInfo()
+            .then((res: string) => {
+                MiniGameUtils.instance.shareAppMessage({
+                    title: `房间号：${DataCenter.instance.shortRoomid} 点击加入 速来战`,
+                    imageUrl: res,
+                    query: `gameid=${10002}&roomid=${DataCenter.instance.shortRoomid}`,
+                });
+            })
+            .catch((err: any) => {
+                Logger.log(err);
+            });
     }
 }
 fgui.UIObjectFactory.setExtension(CompGameMain.URL, CompGameMain);
