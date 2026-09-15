@@ -359,9 +359,7 @@ export class CompCtrl extends FGUICompCtrl {
                 this._precs[second] = prec;
                 toBtn.title = this.formatFraction(result);
                 this._opCount++;
-                // 只清理运算符号，保留数字选中状态
-                this._selSymbol = -1;
-                this.ctrl_symbol.selectedIndex = 4;
+                // 保留当前运算符选择，下一次点击数字时继续使用原选中的运算符。
                 // 选中计算结果卡片（第二格）
                 this._selFirst = second;
                 this.ctrl_nums.selectedIndex = second;
