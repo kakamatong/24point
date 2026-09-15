@@ -11,6 +11,7 @@ export default class FGUICompMatchAct extends fgui.GComponent {
 	public ctrl_act_0:fgui.Controller;
 	public ctrl_act_1:fgui.Controller;
 	public ctrl_act_2:fgui.Controller;
+	public UI_TXT_MSG:fgui.GTextField;
 	public act:fgui.Transition;
 	public static URL:string = "ui://y9gp37x6wfqx1";
 
@@ -78,6 +79,7 @@ export default class FGUICompMatchAct extends fgui.GComponent {
 		this.ctrl_act_0 = this.getControllerAt(0);
 		this.ctrl_act_1 = this.getControllerAt(1);
 		this.ctrl_act_2 = this.getControllerAt(2);
+		this.UI_TXT_MSG = <fgui.GTextField>(this.getChildAt(1));
 		this.act = this.getTransitionAt(0);
 		if (this.enableAnimation) this.enterAnimation();
 	}
