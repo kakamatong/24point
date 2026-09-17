@@ -31,9 +31,6 @@ function genCode(handler: FairyEditor.PublishHandler) {
             writer.writeln('import * as fgui from "fairygui-cc";');
             if (refCount == 0) writer.writeln();
         }
-        writer.writeln('import { PackageManager } from "@/frameworks/PackageManager";');
-        writer.writeln('import { Logger } from "@frameworks/utils/Utils";');
-        writer.writeln();
 
         if (refCount > 0) {
             for (let j: number = 0; j < refCount; j++) {
@@ -43,6 +40,9 @@ function genCode(handler: FairyEditor.PublishHandler) {
             }
             writer.writeln();
         }
+        writer.writeln('import { PackageManager } from "@/frameworks/PackageManager";');
+        writer.writeln('import { Logger } from "@frameworks/utils/Utils";');
+        writer.writeln();
 
         writer.writeln("export default class %s extends %s", classInfo.className, classInfo.superClassName);
         writer.startBlock();
@@ -64,18 +64,17 @@ function genCode(handler: FairyEditor.PublishHandler) {
         writer.writeln("public enableAnimation: boolean = false;");
         writer.writeln();
 
-        // showView 用于显示，但只能同时显示一个
-        writer.writeln("public static showView(params?:any, callBack?:(b:boolean)=>void):void", classInfo.className);
+        // showView 用于显示，但只能同时显示一个（FGUI 包已加载时直接创建，避免每次都走异步加载）
+        writer.writeln("public static showView(params?: any, callBack?: (b: boolean) => void): void");
         writer.startBlock();
-        writer.writeln("if(%s.instance)", classInfo.className);
+        writer.writeln("if (%s.instance)", classInfo.className);
         writer.startBlock();
         writer.writeln('console.log("allready show");');
-        writer.writeln("callBack&&callBack(false);");
+        writer.writeln("callBack && callBack(false);");
         writer.writeln("return;");
         writer.endBlock();
-        writer.writeln('PackageManager.instance.loadPackage("fgui", this.packageName).then(()=>');
-        writer.startBlock();
-        writer.writeln();
+        writer.writeln("const createView = () => {");
+        writer.incIndent();
         writer.writeln(
             'const view = %s.UIPackage.createObject("%s", "%s") as %s;',
             ns,
@@ -88,9 +87,32 @@ function genCode(handler: FairyEditor.PublishHandler) {
         writer.writeln("%s.instance = view;", classInfo.className);
         writer.writeln("fgui.GRoot.inst.addChild(view);");
         writer.writeln("view.show && view.show(params);");
-        writer.writeln("callBack&&callBack(true);");
+        writer.writeln("callBack && callBack(true);");
+        writer.decIndent();
+        writer.writeln("};");
+        writer.writeln();
+        writer.writeln('if (PackageManager.instance.hasPackage("fgui", this.packageName))');
+        writer.startBlock();
+        writer.writeln("createView();");
+        writer.writeln("return;");
         writer.endBlock();
-        writer.writeln(').catch(error=>{Logger.error("showView error", error);callBack&&callBack(false);return;});');
+        writer.writeln();
+        writer.writeln("PackageManager.instance");
+        writer.incIndent();
+        writer.writeln('.loadPackage("fgui", this.packageName)');
+        writer.writeln(".then(() => {");
+        writer.incIndent();
+        writer.writeln("createView();");
+        writer.decIndent();
+        writer.writeln("})");
+        writer.writeln(".catch((error) => {");
+        writer.incIndent();
+        writer.writeln('Logger.error("showView error", error);');
+        writer.writeln("callBack && callBack(false);");
+        writer.writeln("return;");
+        writer.decIndent();
+        writer.writeln("});");
+        writer.decIndent();
         writer.endBlock();
         writer.writeln();
 
