@@ -40,7 +40,7 @@ function genCode(handler: FairyEditor.PublishHandler) {
             }
             writer.writeln();
         }
-        writer.writeln('import { PackageManager } from "@/frameworks/PackageManager";');
+        writer.writeln('import { PackageManager } from "@frameworks/PackageManager";');
         writer.writeln('import { Logger } from "@frameworks/utils/Utils";');
         writer.writeln();
 
