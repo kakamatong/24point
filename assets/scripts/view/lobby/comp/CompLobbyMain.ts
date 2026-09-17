@@ -166,7 +166,8 @@ export class CompLobbyMain extends FGUICompLobbyMain {
         Logger.log("onLoginSuccess");
         const options = MiniGameUtils.instance.getLaunchOptionsSync();
         this.checkPrivateRoomid(options);
-        this.autoShowSignIn();
+        // 当前版本暂不开放签到，后续版本启用时恢复此自动弹窗调用。
+        // this.autoShowSignIn();
         this.reqAdInfo();
     }
 
