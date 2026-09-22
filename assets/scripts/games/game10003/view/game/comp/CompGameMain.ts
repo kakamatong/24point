@@ -280,7 +280,7 @@ export class CompGameMain extends FGUICompGameMain {
         }
 
         // 人数变化影响邀请按钮（已开过局时仍只显示准备）：统一刷新三个按钮
-        this.refreshPrivateBtns();
+        this.refreshGameBtns();
     }
 
     /**
@@ -314,7 +314,7 @@ export class CompGameMain extends FGUICompGameMain {
         }
 
         // roomInfo 携带房主：房主身份确定后统一刷新三个按钮（playerEnter 早于 roomInfo 时曾按未知房主评估）
-        this.refreshPrivateBtns();
+        this.refreshGameBtns();
     }
 
     /**
@@ -354,16 +354,20 @@ export class CompGameMain extends FGUICompGameMain {
     }
 
     /**
-     * @method refreshPrivateBtns
-     * @description 统一刷新私人房三个按钮（准备/开始/邀请）
-     *              三者都以服务端权威状态为准，其中「是否已开过局」由 privateNowCnt（第几局）判断：
+     * @method refreshGameBtns
+     * @description 统一刷新按钮（准备/开始/邀请/继续游戏）
+     *              四者都以服务端权威状态为准，其中「是否已开过局」由 privateNowCnt（第几局）判断：
      *              已开过局（局间）只显示准备按钮——房主也不再显示开始游戏，邀请同时收起
      * @private
      */
-    private refreshPrivateBtns(): void {
-        this.checkShowReadyBtn();
-        this.checkShowStartGameBtn();
-        this.checkShowInviteBtn();
+    private refreshGameBtns(): void {
+        if (GameData.instance.isPrivateRoom) {
+            this.checkShowReadyBtn();
+            this.checkShowStartGameBtn();
+            this.checkShowInviteBtn();
+        } else {
+            this.checkShowContinueBtn();
+        }
     }
 
     /**
@@ -397,6 +401,40 @@ export class CompGameMain extends FGUICompGameMain {
         }
 
         this.showReadyBtn(true);
+    }
+
+    /**
+     * @method checkShowReadyBtn
+     * @description 是否显示继续游戏按钮
+     * @private
+     */
+    private checkShowContinueBtn(): void {
+        if (GameData.instance.isPrivateRoom || GameData.instance.gameStart) {
+            // 已开局/非私人房：在途标记已无意义（可能卡在应答丢失里），同步释放
+            this.showContinueBtn(false);
+            return;
+        }
+
+        this.showContinueBtn(true);
+    }
+
+    /**
+     * @method showReadyBtn
+     * @description 显示或隐藏继续按钮
+     * @param {boolean} bshow - 是否显示
+     * @private
+     */
+    private showContinueBtn(bshow: boolean): void {
+        this.UI_BTN_CONTINUE.visible = bshow;
+    }
+
+    /**
+     * @method onBtnContinue
+     * @description 点击继续游戏按钮：发送客户端准备消息
+     * @public
+     */
+    onBtnContinue(): void {
+        this.onRoundResultContinue();
     }
 
     /**
@@ -705,9 +743,7 @@ export class CompGameMain extends FGUICompGameMain {
         UserStatus.instance.req();
 
         // 本局结束即进入局间（已开过局，只应显示准备按钮）：统一刷新三个按钮
-        if (GameData.instance.isPrivateRoom) {
-            this.refreshPrivateBtns();
-        }
+        this.refreshGameBtns();
     }
 
     /**
@@ -898,10 +934,7 @@ export class CompGameMain extends FGUICompGameMain {
             this.addOtherPlayer(svrSeat, playerInfo);
         }
 
-        if (GameData.instance.isPrivateRoom) {
-            // 准备按钮显隐以权威状态为准（服务端 playerStatusUpdate/playerInfos 下发）
-            this.refreshPrivateBtns();
-        }
+        this.refreshGameBtns();
     }
 
     /**
@@ -945,9 +978,7 @@ export class CompGameMain extends FGUICompGameMain {
             }
         }
 
-        if (GameData.instance.isPrivateRoom) {
-            this.refreshPrivateBtns();
-        }
+        this.refreshGameBtns();
     }
 
     /**
@@ -1021,7 +1052,7 @@ export class CompGameMain extends FGUICompGameMain {
             }
 
             // 局数变化后统一刷新三个按钮：已开过局时只保留准备，收起开始游戏与邀请
-            this.refreshPrivateBtns();
+            this.refreshGameBtns();
         }
     }
 
