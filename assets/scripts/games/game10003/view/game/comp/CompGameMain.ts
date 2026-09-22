@@ -675,7 +675,8 @@ export class CompGameMain extends FGUICompGameMain {
             ResultView.showView({
                 ...data,
                 continueFunc: () => this.onRoundResultContinue(),
-                backFunc: () => this.onBtnBack(),
+                // 小局结算的「返回」只关闭本弹窗，不退出房间、不回大厅
+                // （需要离开房间时走游戏场景内的返回按钮 UI_BTN_BACK）
                 resultEffectFunc: (resultFlag: number) => this.playRoundResultSound(resultFlag),
             });
         };
