@@ -29,23 +29,37 @@ export default class FGUICompPrivateJoin extends fgui.GComponent {
 
 	public enableAnimation: boolean = false;
 
-	public static showView(params?:any, callBack?:(b:boolean)=>void):void {
-		if(FGUICompPrivateJoin.instance) {
+	public static showView(params?: any, callBack?: (b: boolean) => void): void {
+		if (FGUICompPrivateJoin.instance) {
 			console.log("allready show");
-			callBack&&callBack(false);
+			callBack && callBack(false);
 			return;
 		}
-		PackageManager.instance.loadPackage("fgui", this.packageName).then(()=> {
-
+		const createView = () => {
 			const view = fgui.UIPackage.createObject("privateRoom", "CompPrivateJoin") as FGUICompPrivateJoin;
 
 			view.makeFullScreen();
 			FGUICompPrivateJoin.instance = view;
 			fgui.GRoot.inst.addChild(view);
 			view.show && view.show(params);
-			callBack&&callBack(true);
+			callBack && callBack(true);
+		};
+
+		if (PackageManager.instance.hasPackage("fgui", this.packageName)) {
+			createView();
+			return;
 		}
-		).catch(error=>{Logger.error("showView error", error);callBack&&callBack(false);return;});
+
+		PackageManager.instance
+			.loadPackage("fgui", this.packageName)
+			.then(() => {
+				createView();
+			})
+			.catch((error) => {
+				Logger.error("showView error", error);
+				callBack && callBack(false);
+				return;
+			});
 	}
 
 	protected onDestroy():void {
