@@ -8,6 +8,8 @@ import { GameSocketManager } from "@frameworks/GameSocketManager";
 import { Logger } from "@frameworks/utils/Utils";
 import { SprotoSubmitAnswer } from "../../../../types/protocol/game10003/c2s";
 import { validate } from "../logic/Expression";
+import { GameData } from "@game10003/data/GameData";
+import { ENUM_GAME_STEP } from "@game10003/data/InterfaceGameConfig";
 
 /**
  * @interface SUBMIT_RESULT
@@ -32,6 +34,13 @@ export interface SUBMIT_RESULT {
  * @param {(result: SUBMIT_RESULT) => void} callBack - 结果回调
  */
 export function submitAnswer(expression: string, numbers: number[], callBack?: (result: SUBMIT_RESULT) => void): void {
+    // 阶段校验：只在答题阶段允许上抛（本局超时/结算后不应再提交）
+    if (GameData.instance.gameStep !== ENUM_GAME_STEP.PLAYING) {
+        Logger.warn("[SubmitAnswer] 非答题阶段，拒绝提交, step=", GameData.instance.gameStep);
+        callBack && callBack({ code: 0, msg: "当前不在答题阶段", rank: 0, localValid: false });
+        return;
+    }
+
     // 本地预校验：错误直接回调，不浪费网络往返
     const checked = validate(expression, numbers);
     if (!checked.ok) {

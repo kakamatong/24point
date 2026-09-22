@@ -12,6 +12,9 @@ import { ViewClass } from "@frameworks/Framework";
 import { SprotoDealCards } from "../../../../../../types/protocol/game10003/s2c";
 import { calc, FRACTION } from "../../../logic/Expression";
 import { submitAnswer } from "../../../net/SubmitAnswer";
+import { GameData } from "@game10003/data/GameData";
+import { ENUM_GAME_STEP } from "@game10003/data/InterfaceGameConfig";
+import { Logger } from "@frameworks/utils/Utils";
 
 /**
  * @class CompCtrl
@@ -84,12 +87,28 @@ export class CompCtrl extends FGUICompCtrl {
     }
 
     /**
+     * @method isPlayingPhase
+     * @description 是否处于答题阶段：仅答题阶段（服务端 stepId 推送维护在 GameData.gameStep）允许选牌/运算/提交
+     * @returns {boolean} true 表示可操作
+     * @private
+     */
+    private isPlayingPhase(): boolean {
+        return GameData.instance.gameStep === ENUM_GAME_STEP.PLAYING;
+    }
+
+    /**
      * @description 发牌协议回调：重置全部状态并设置四个数字
      * @param {SprotoDealCards.Request} data - 发牌数据（numbers 为4个数字）
      * @private
      */
     private onDealCards(data: SprotoDealCards.Request) {
         if (!data || !data.numbers || data.numbers.length === 0) {
+            return;
+        }
+        // 只在发牌/答题阶段接受发牌：本局结束后服务端不再补发，若仍收到（如过期消息）直接忽略
+        const step = GameData.instance.gameStep;
+        if (step !== ENUM_GAME_STEP.START && step !== ENUM_GAME_STEP.PLAYING) {
+            Logger.warn("[CompCtrl] 非发牌阶段收到 dealCards，忽略, step=", step);
             return;
         }
         this.resetRound();
@@ -279,7 +298,7 @@ export class CompCtrl extends FGUICompCtrl {
      * @private
      */
     private onNumClicked(i: number): void {
-        if (this._busy || !this._slots[i]) {
+        if (this._busy || !this._slots[i] || !this.isPlayingPhase()) {
             return;
         }
         if (this._selFirst === -1) {
@@ -299,6 +318,10 @@ export class CompCtrl extends FGUICompCtrl {
      * @private
      */
     private onSymbolClicked(s: number): void {
+        // 阶段校验：本局已结束（超时/结算）不允许再选运算符
+        if (!this.isPlayingPhase()) {
+            return;
+        }
         if (this._selFirst === -1) {
             // 未选中第一数字，符号选择无效，强制回落到"都不选中"页
             this.ctrl_symbol.selectedIndex = 4;
@@ -411,6 +434,11 @@ export class CompCtrl extends FGUICompCtrl {
         if (lastIdx < 0) {
             return;
         }
+        // 阶段校验：本局已结束（超时/结算）不再提交，避免“看起来还能继续答题”
+        if (!this.isPlayingPhase()) {
+            Logger.warn("[CompCtrl] 非答题阶段，忽略提交, step=", GameData.instance.gameStep);
+            return;
+        }
         submitAnswer(this._exprs[lastIdx], this._dealNumbers, (result) => {
             if (result.code === 1) {
                 TipsView.showView({ content: "回答正确" });
@@ -429,7 +457,7 @@ export class CompCtrl extends FGUICompCtrl {
      * @public 由 FGUI 基类 onClick 绑定调用（UI_BTN_RESET）
      */
     public onBtnReset(): void {
-        if (this._busy || this._dealNumbers.length === 0) {
+        if (this._busy || this._dealNumbers.length === 0 || !this.isPlayingPhase()) {
             return;
         }
         this.restoreToDeal();
@@ -450,7 +478,7 @@ export class CompCtrl extends FGUICompCtrl {
      * @description 撤销整局操作（公开接口，供程序调用）：恢复到发牌初始状态
      */
     public undo(): void {
-        if (this._busy || this._opCount === 0) {
+        if (this._busy || this._opCount === 0 || !this.isPlayingPhase()) {
             return;
         }
         this.restoreToDeal();
