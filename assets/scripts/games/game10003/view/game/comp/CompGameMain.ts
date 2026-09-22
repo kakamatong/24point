@@ -278,8 +278,8 @@ export class CompGameMain extends FGUICompGameMain {
             GameData.instance.removePlayerBySeat(svrSeat);
         }
 
-        this.checkShowInviteBtn();
-        this.checkShowStartGameBtn();
+        // 人数变化影响邀请按钮（已开过局时仍只显示准备）：统一刷新三个按钮
+        this.refreshPrivateBtns();
     }
 
     /**
@@ -312,9 +312,8 @@ export class CompGameMain extends FGUICompGameMain {
             GameData.instance.maxPlayer = data.playerids.length ?? 2;
         }
 
-        // roomInfo 携带房主：房主身份确定后同步刷新准备/开始按钮（playerEnter 早于 roomInfo 时曾按未知房主评估）
-        this.checkShowReadyBtn();
-        this.checkShowStartGameBtn();
+        // roomInfo 携带房主：房主身份确定后统一刷新三个按钮（playerEnter 早于 roomInfo 时曾按未知房主评估）
+        this.refreshPrivateBtns();
     }
 
     /**
@@ -351,6 +350,19 @@ export class CompGameMain extends FGUICompGameMain {
      */
     showStartGameBtn(bshow: boolean): void {
         this.UI_BTN_START_GAME.visible = bshow;
+    }
+
+    /**
+     * @method refreshPrivateBtns
+     * @description 统一刷新私人房三个按钮（准备/开始/邀请）
+     *              三者都以服务端权威状态为准，其中「是否已开过局」由 privateNowCnt（第几局）判断：
+     *              已开过局（局间）只显示准备按钮——房主也不再显示开始游戏，邀请同时收起
+     * @private
+     */
+    private refreshPrivateBtns(): void {
+        this.checkShowReadyBtn();
+        this.checkShowStartGameBtn();
+        this.checkShowInviteBtn();
     }
 
     /**
@@ -691,10 +703,9 @@ export class CompGameMain extends FGUICompGameMain {
 
         UserStatus.instance.req();
 
-        // 本局结束即进入局间（私人房需全员准备才开下一局）：刷新准备/开始按钮
+        // 本局结束即进入局间（已开过局，只应显示准备按钮）：统一刷新三个按钮
         if (GameData.instance.isPrivateRoom) {
-            this.checkShowReadyBtn();
-            this.checkShowStartGameBtn();
+            this.refreshPrivateBtns();
         }
     }
 
@@ -885,9 +896,7 @@ export class CompGameMain extends FGUICompGameMain {
 
         if (GameData.instance.isPrivateRoom) {
             // 准备按钮显隐以权威状态为准（服务端 playerStatusUpdate/playerInfos 下发）
-            this.checkShowReadyBtn();
-            this.checkShowInviteBtn();
-            this.checkShowStartGameBtn();
+            this.refreshPrivateBtns();
         }
     }
 
@@ -933,7 +942,7 @@ export class CompGameMain extends FGUICompGameMain {
         }
 
         if (GameData.instance.isPrivateRoom) {
-            this.checkShowStartGameBtn();
+            this.refreshPrivateBtns();
         }
     }
 
@@ -992,22 +1001,23 @@ export class CompGameMain extends FGUICompGameMain {
         if (!data) {
             return;
         }
+        // 局数先落库（不放在房型判断里），保证「是否已开过局」在任何时序下都拿得到权威值
+        GameData.instance.privateMaxCnt = data.maxCnt;
+        GameData.instance.privateNowCnt = data.nowCnt;
+
         if (GameData.instance.isPrivateRoom) {
             if (data.maxCnt === 9999) {
                 this.UI_TXT_PROGRESS.text = `第${data.nowCnt ?? 0}局 无限局`;
             } else {
                 this.UI_TXT_PROGRESS.text = `第${data.nowCnt ?? 0}局 共${data.maxCnt ?? 0}局`;
             }
-            GameData.instance.privateMaxCnt = data.maxCnt;
-            GameData.instance.privateNowCnt = data.nowCnt;
 
             if (data.nowCnt && data.nowCnt > 0) {
                 this.UI_COMP_PRIVITE_INFO.UI_TXT_RULE.text = `准备后继续游戏`;
             }
 
-            // 局间局数变化后同步刷新准备/开始按钮（局间依靠全员准备，房主亦可准备）
-            this.checkShowReadyBtn();
-            this.checkShowStartGameBtn();
+            // 局数变化后统一刷新三个按钮：已开过局时只保留准备，收起开始游戏与邀请
+            this.refreshPrivateBtns();
         }
     }
 
