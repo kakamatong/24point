@@ -45,6 +45,7 @@ import { PopMessageView } from "@view/common/PopMessageView";
 import { TipsView } from "@view/common/TipsView";
 import { ENUM_POP_MESSAGE_TYPE } from "@datacenter/InterfaceConfig";
 import { CompPlayers } from "./CompPlayers";
+import { CompCtrl } from "./CompCtrl";
 import { CompPlayerHead } from "./CompPlayerHead";
 import { CompTimeLeft } from "./CompTimeLeft";
 import { FORWARD_MESSAGE_TYPE, GAME_PLAYER_INFO, PLAYER_STATUS, ROOM_END_FLAG, ROOM_TYPE } from "@game10003/data/InterfaceGameConfig";
@@ -795,6 +796,9 @@ export class CompGameMain extends FGUICompGameMain {
         // 自己答对：播放礼花（完成标识/名次由结算或自身逻辑处理）
         if (data.seat === GameData.instance.getSelfSeat()) {
             this.playAnswerCorrectEffect();
+            // 断线重连补发时：把牌面切到已完成终态（只留一张 24 牌居中），
+            // 否则重连后会重新显示四张牌、看起来还能继续作答（本机刚答对时此调用为幂等空操作）
+            (this.UI_COMP_CTRL as CompCtrl)?.showFinishedResult();
             // 匹配房/私人房本局还有别的玩家在解题，提示等待其他玩家（单机房无需等待）
             this.showHint(!GameData.instance.isLocalGame);
             return;

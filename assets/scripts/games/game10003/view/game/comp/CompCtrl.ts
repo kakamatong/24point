@@ -47,6 +47,9 @@ export class CompCtrl extends FGUICompCtrl {
     private _opCount: number = 0;
     /** 飞行动画期间锁定输入 */
     private _busy: boolean = false;
+
+    /** 本局自己是否已答对（重连补发时据此直接呈现已完成终态，并锁住操作） */
+    private _finished: boolean = false;
     /** 本局发牌数字（提交与撤销重置用） */
     private _dealNumbers: number[] = [];
     /** 当前飞行 tween 引用 */
@@ -87,6 +90,48 @@ export class CompCtrl extends FGUICompCtrl {
     }
 
     /**
+     * @method canOperate
+     * @description 是否可操作：答题阶段且本局自己尚未答对
+     * @returns {boolean} true 表示可点牌/点运算符/重置/撤销/提交
+     * @private
+     */
+    private canOperate(): boolean {
+        return !this._finished && this.isPlayingPhase();
+    }
+
+    /**
+     * @method showFinishedResult
+     * @description 自己已答对（含重连补发）时，把牌面切到已完成终态：只保留一张 24 牌并居中，
+     *              避免重连后又显示四张牌、看起来还能继续作答
+     * @public
+     */
+    public showFinishedResult(): void {
+        if (this._dealNumbers.length === 0) {
+            return;
+        }
+        // 已经是终态（自己刚在本机答对，服务端把同一结果广播回来）则不重复处理，避免闪一下
+        if (this._opCount >= 3 && this._numBtns.filter((b) => b.visible).length === 1) {
+            this._finished = true;
+            return;
+        }
+        this._finished = true;
+        // 清空本局运算与选中、四格复位，再只保留一张 24 牌
+        this.resetRound();
+        const btn = this._numBtns[0];
+        if (!btn || this._numBtnPos.length === 0) {
+            return;
+        }
+        this._slots = [{ n: 24, d: 1 }, null, null, null];
+        this._exprs = ["24", "", "", ""];
+        this._precs = [CompCtrl._NUM_PREC, 0, 0, 0];
+        btn.title = "24";
+        btn.visible = true;
+        btn.setPosition(this._numBtnPos[0].x, this._numBtnPos[0].y);
+        // 复用终态动画：把这张 24 牌平移到四格牌区中心
+        this.moveFinalCardToCenter(0);
+    }
+
+    /**
      * @method isPlayingPhase
      * @description 是否处于答题阶段：仅答题阶段（服务端 stepId 推送维护在 GameData.gameStep）允许选牌/运算/提交
      * @returns {boolean} true 表示可操作
@@ -111,6 +156,7 @@ export class CompCtrl extends FGUICompCtrl {
             Logger.warn("[CompCtrl] 非发牌阶段收到 dealCards，忽略, step=", step);
             return;
         }
+        this._finished = false;
         this.resetRound();
         this._dealNumbers = data.numbers.slice();
         this.applyDealNumbers(this._dealNumbers);
@@ -298,7 +344,7 @@ export class CompCtrl extends FGUICompCtrl {
      * @private
      */
     private onNumClicked(i: number): void {
-        if (this._busy || !this._slots[i] || !this.isPlayingPhase()) {
+        if (this._busy || !this._slots[i] || !this.canOperate()) {
             return;
         }
         if (this._selFirst === -1) {
@@ -318,8 +364,8 @@ export class CompCtrl extends FGUICompCtrl {
      * @private
      */
     private onSymbolClicked(s: number): void {
-        // 阶段校验：本局已结束（超时/结算）不允许再选运算符
-        if (!this.isPlayingPhase()) {
+        // 阶段校验：本局已结束（超时/结算）或自己已答对时不允许再选运算符
+        if (!this.canOperate()) {
             return;
         }
         if (this._selFirst === -1) {
@@ -434,9 +480,9 @@ export class CompCtrl extends FGUICompCtrl {
         if (lastIdx < 0) {
             return;
         }
-        // 阶段校验：本局已结束（超时/结算）不再提交，避免“看起来还能继续答题”
-        if (!this.isPlayingPhase()) {
-            Logger.warn("[CompCtrl] 非答题阶段，忽略提交, step=", GameData.instance.gameStep);
+        // 阶段校验：本局已结束（超时/结算）或自己已答对时不再提交
+        if (!this.canOperate()) {
+            Logger.warn("[CompCtrl] 不可操作（非答题阶段或已答对），忽略提交, step=", GameData.instance.gameStep);
             return;
         }
         submitAnswer(this._exprs[lastIdx], this._dealNumbers, (result) => {
@@ -457,7 +503,7 @@ export class CompCtrl extends FGUICompCtrl {
      * @public 由 FGUI 基类 onClick 绑定调用（UI_BTN_RESET）
      */
     public onBtnReset(): void {
-        if (this._busy || this._dealNumbers.length === 0 || !this.isPlayingPhase()) {
+        if (this._busy || this._dealNumbers.length === 0 || !this.canOperate()) {
             return;
         }
         this.restoreToDeal();
@@ -478,7 +524,7 @@ export class CompCtrl extends FGUICompCtrl {
      * @description 撤销整局操作（公开接口，供程序调用）：恢复到发牌初始状态
      */
     public undo(): void {
-        if (this._busy || this._opCount === 0 || !this.isPlayingPhase()) {
+        if (this._busy || this._opCount === 0 || !this.canOperate()) {
             return;
         }
         this.restoreToDeal();
