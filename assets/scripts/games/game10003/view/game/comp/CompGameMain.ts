@@ -368,7 +368,10 @@ export class CompGameMain extends FGUICompGameMain {
 
         const selfid = DataCenter.instance.userid;
         const self = GameData.instance.getPlayerByUserid(selfid);
-        if (!self || self.status !== PLAYER_STATUS.ONLINE) {
+        // 已准备则隐藏，避免重复准备；
+        // 注意：不再要求状态必须是 ONLINE——局间的状态推送可能缺失/滞后，
+        // 只要不在对局中（gameStart=false）且自己未准备，就应允许准备（否则局间永远不显示准备按钮）
+        if (!self || self.status === PLAYER_STATUS.READY) {
             this.showReadyBtn(false);
             return;
         }
@@ -686,6 +689,12 @@ export class CompGameMain extends FGUICompGameMain {
         }
 
         UserStatus.instance.req();
+
+        // 本局结束即进入局间（私人房需全员准备才开下一局）：刷新准备/开始按钮
+        if (GameData.instance.isPrivateRoom) {
+            this.checkShowReadyBtn();
+            this.checkShowStartGameBtn();
+        }
     }
 
     /**
