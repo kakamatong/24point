@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <component size="776,1688">
-  <controller name="ctrl_roomtype" pages="0,,1,,2," selected="0">
+  <controller name="ctrl_roomtype" pages="0,,1,,2," selected="1">
     <remark page="0" value="普通房"/>
     <remark page="1" value="私人房"/>
     <remark page="2" value="单机房"/>
@@ -21,6 +21,9 @@
     </component>
     <component id="n19_x6u8" name="UI_BTN_READY" src="is91n" fileName="comp/CompBtnCommon.xml" pkg="gj0r6g5i" xy="284,1126" size="230,98" group="n13_ifzr" visible="false" controller="ctrl_color,3">
       <Button title="准备" icon="ui://gj0r6g5ijorf1g"/>
+    </component>
+    <component id="n33_rzp5" name="UI_BTN_CONTINUE" src="is91n" fileName="comp/CompBtnCommon.xml" pkg="gj0r6g5i" xy="260,1126" size="230,98" group="n13_ifzr" visible="false" controller="ctrl_color,3">
+      <Button title="继续游戏" icon="ui://gj0r6g5ijorf1g"/>
     </component>
     <group id="n13_ifzr" name="n13" xy="272,1124" size="230,98" advanced="true" layout="hz" colGap="119" excludeInvisibles="true">
       <gearDisplay controller="ctrl_roomtype" pages="1"/>

@@ -18,23 +18,37 @@ export default class FGUISignInView extends fgui.GComponent {
 
 	public enableAnimation: boolean = false;
 
-	public static showView(params?:any, callBack?:(b:boolean)=>void):void {
-		if(FGUISignInView.instance) {
+	public static showView(params?: any, callBack?: (b: boolean) => void): void {
+		if (FGUISignInView.instance) {
 			console.log("allready show");
-			callBack&&callBack(false);
+			callBack && callBack(false);
 			return;
 		}
-		PackageManager.instance.loadPackage("fgui", this.packageName).then(()=> {
-
+		const createView = () => {
 			const view = fgui.UIPackage.createObject("signIn", "SignInView") as FGUISignInView;
 
 			view.makeFullScreen();
 			FGUISignInView.instance = view;
 			fgui.GRoot.inst.addChild(view);
 			view.show && view.show(params);
-			callBack&&callBack(true);
+			callBack && callBack(true);
+		};
+
+		if (PackageManager.instance.hasPackage("fgui", this.packageName)) {
+			createView();
+			return;
 		}
-		).catch(error=>{Logger.error("showView error", error);callBack&&callBack(false);return;});
+
+		PackageManager.instance
+			.loadPackage("fgui", this.packageName)
+			.then(() => {
+				createView();
+			})
+			.catch((error) => {
+				Logger.error("showView error", error);
+				callBack && callBack(false);
+				return;
+			});
 	}
 
 	protected onDestroy():void {

@@ -19,6 +19,7 @@ export default class FGUICompGameMain extends fgui.GComponent {
 	public UI_BTN_INVITE:fgui.GButton;
 	public UI_BTN_START_GAME:fgui.GButton;
 	public UI_BTN_READY:fgui.GButton;
+	public UI_BTN_CONTINUE:fgui.GButton;
 	public UI_COMP_PRIVITE_INFO:FGUICompPirvateInfo;
 	public UI_COMP_PLAYERS:FGUICompPlayers;
 	public UI_COMP_SELFPLAYER:FGUICompPlayerHead;
@@ -37,23 +38,37 @@ export default class FGUICompGameMain extends fgui.GComponent {
 
 	public enableAnimation: boolean = false;
 
-	public static showView(params?:any, callBack?:(b:boolean)=>void):void {
-		if(FGUICompGameMain.instance) {
+	public static showView(params?: any, callBack?: (b: boolean) => void): void {
+		if (FGUICompGameMain.instance) {
 			console.log("allready show");
-			callBack&&callBack(false);
+			callBack && callBack(false);
 			return;
 		}
-		PackageManager.instance.loadPackage("fgui", this.packageName).then(()=> {
-
+		const createView = () => {
 			const view = fgui.UIPackage.createObject("game10003", "CompGameMain") as FGUICompGameMain;
 
 			view.makeFullScreen();
 			FGUICompGameMain.instance = view;
 			fgui.GRoot.inst.addChild(view);
 			view.show && view.show(params);
-			callBack&&callBack(true);
+			callBack && callBack(true);
+		};
+
+		if (PackageManager.instance.hasPackage("fgui", this.packageName)) {
+			createView();
+			return;
 		}
-		).catch(error=>{Logger.error("showView error", error);callBack&&callBack(false);return;});
+
+		PackageManager.instance
+			.loadPackage("fgui", this.packageName)
+			.then(() => {
+				createView();
+			})
+			.catch((error) => {
+				Logger.error("showView error", error);
+				callBack && callBack(false);
+				return;
+			});
 	}
 
 	protected onDestroy():void {
@@ -102,17 +117,19 @@ export default class FGUICompGameMain extends fgui.GComponent {
 		this.UI_BTN_START_GAME.onClick(this.onBtnStartGame, this);
 		this.UI_BTN_READY = <fgui.GButton>(this.getChildAt(4));
 		this.UI_BTN_READY.onClick(this.onBtnReady, this);
-		this.UI_COMP_PRIVITE_INFO = <FGUICompPirvateInfo>(this.getChildAt(6));
-		this.UI_COMP_PLAYERS = <FGUICompPlayers>(this.getChildAt(7));
-		this.UI_COMP_SELFPLAYER = <FGUICompPlayerHead>(this.getChildAt(8));
-		this.UI_COMP_SELF_MEDAL = <fgui.GComponent>(this.getChildAt(9));
-		this.UI_TXT_PROGRESS = <fgui.GTextField>(this.getChildAt(11));
-		this.UI_BTN_BACK = <fgui.GButton>(this.getChildAt(13));
+		this.UI_BTN_CONTINUE = <fgui.GButton>(this.getChildAt(5));
+		this.UI_BTN_CONTINUE.onClick(this.onBtnContinue, this);
+		this.UI_COMP_PRIVITE_INFO = <FGUICompPirvateInfo>(this.getChildAt(7));
+		this.UI_COMP_PLAYERS = <FGUICompPlayers>(this.getChildAt(8));
+		this.UI_COMP_SELFPLAYER = <FGUICompPlayerHead>(this.getChildAt(9));
+		this.UI_COMP_SELF_MEDAL = <fgui.GComponent>(this.getChildAt(10));
+		this.UI_TXT_PROGRESS = <fgui.GTextField>(this.getChildAt(12));
+		this.UI_BTN_BACK = <fgui.GButton>(this.getChildAt(14));
 		this.UI_BTN_BACK.onClick(this.onBtnBack, this);
-		this.UI_COMP_CLOCK = <FGUICompTimeLeft>(this.getChildAt(14));
-		this.UI_COMP_LHT_LEFT = <fgui.GComponent>(this.getChildAt(15));
-		this.UI_COMP_LHT_RIGHT = <fgui.GComponent>(this.getChildAt(16));
-		this.UI_TXT_HINT = <fgui.GTextField>(this.getChildAt(17));
+		this.UI_COMP_CLOCK = <FGUICompTimeLeft>(this.getChildAt(15));
+		this.UI_COMP_LHT_LEFT = <fgui.GComponent>(this.getChildAt(16));
+		this.UI_COMP_LHT_RIGHT = <fgui.GComponent>(this.getChildAt(17));
+		this.UI_TXT_HINT = <fgui.GTextField>(this.getChildAt(18));
 		if (this.enableAnimation) this.enterAnimation();
 	}
 	scheduleOnce(callback: () => void, delay: number):void{};
@@ -123,6 +140,7 @@ export default class FGUICompGameMain extends fgui.GComponent {
 	onBtnInvite():void{};
 	onBtnStartGame():void{};
 	onBtnReady():void{};
+	onBtnContinue():void{};
 	onBtnBack():void{};
 }
 fgui.UIObjectFactory.setExtension(FGUICompGameMain.URL, FGUICompGameMain);
