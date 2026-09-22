@@ -377,8 +377,9 @@ export class CompGameMain extends FGUICompGameMain {
      * @private
      */
     private checkShowReadyBtn(): void {
-        if (!GameData.instance.isPrivateRoom || GameData.instance.gameStart) {
+        if (!GameData.instance.isPrivateRoom || GameData.instance.gameStart || !GameSocketManager.instance.isOpen()) {
             // 已开局/非私人房：在途标记已无意义（可能卡在应答丢失里），同步释放
+            // 断开socket连接
             this.showReadyBtn(false);
             return;
         }
@@ -1184,6 +1185,18 @@ export class CompGameMain extends FGUICompGameMain {
             return;
         }
         if (GameData.instance.gameStart) {
+            return;
+        }
+
+        // socket 已断开
+        if (!GameSocketManager.instance.isOpen()) {
+            PopMessageView.showView({
+                type: ENUM_POP_MESSAGE_TYPE.NUM2,
+                content: "已断开房间连接，点击确定返回大厅",
+                sureBack: () => {
+                    this.changeToLobbyScene();
+                },
+            });
             return;
         }
 
