@@ -126,6 +126,8 @@ export class CompCtrl extends FGUICompCtrl {
         this._precs = [CompCtrl._NUM_PREC, 0, 0, 0];
         btn.title = "24";
         btn.visible = true;
+        btn.setScale(1, 1);
+        btn.alpha = 1;
         btn.setPosition(this._numBtnPos[0].x, this._numBtnPos[0].y);
         // 复用终态动画：把这张 24 牌平移到四格牌区中心
         this.moveFinalCardToCenter(0);
@@ -546,6 +548,10 @@ export class CompCtrl extends FGUICompCtrl {
         for (let i = 0; i < this._numBtns.length; i++) {
             const btn = this._numBtns[i];
             btn.setPosition(this._numBtnPos[i].x, this._numBtnPos[i].y);
+            // 发牌动画会把牌缩为0且透明（靠 tween 还原）；中途被打断时必须显式复原，
+            // 否则后续显示的牌会看不见（曾出现：重连切终态后牌面全空）
+            btn.setScale(1, 1);
+            btn.alpha = 1;
             btn.visible = false;
         }
         this.clearSelection();
