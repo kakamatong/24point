@@ -43,6 +43,9 @@ export class CompPrivateCreate extends FGUICompPrivateCreate {
      */
     initUI(rule: any): void {
         this.ctrl_mode.selectedPage = `${rule.playNum}`;
+        // 难度：0随机/1简单/2中等/3困难，缺省或不合法按“随机”处理
+        const difficulty = Number(rule.difficulty);
+        this.ctrl_difficulty.selectedPage = `${Number.isInteger(difficulty) && difficulty >= 0 && difficulty <= 3 ? difficulty : 0}`;
     }
 
     /**
@@ -58,7 +61,8 @@ export class CompPrivateCreate extends FGUICompPrivateCreate {
     onBtnCreate(): void {
         const gameRule = {
             playNum: Number(this.ctrl_mode.selectedPage),
-            enableProp: Number(this.ctrl_prop.selectedPage),
+            // 出题难度：0随机/1简单/2中等/3困难（服务端按此走对应出题逻辑）
+            difficulty: Number(this.ctrl_difficulty.selectedPage),
         };
         const func = (result: any) => {
             if (result && result.code == 1) {
