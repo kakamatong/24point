@@ -50,6 +50,12 @@ export class CompLobbyMain extends FGUICompLobbyMain {
         super.onConstruct();
         this.initListeners();
         this.initUI();
+    }
+
+    /**
+     * 组件启用时触发，开始登录流程
+     */
+    onEnable() {
         this.startLogin();
     }
 
