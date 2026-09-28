@@ -1081,10 +1081,7 @@ export class CompGameMain extends FGUICompGameMain {
      * @param data 总结果数据
      */
     onSvrTotalResult(data: SprotoTotalResult.Request) {
-        const time = 0.2;
-        this.scheduleOnce(() => {
-            TotalResultView.showView(data);
-        }, time);
+        TotalResultView.showView(data);
     }
 
     /**
