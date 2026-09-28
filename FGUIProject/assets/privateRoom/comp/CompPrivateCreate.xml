@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<component size="600,550">
-  <controller name="ctrl_mode" pages="0,3,1,5,2,10,3,999" selected="0">
+<component size="600,595">
+  <controller name="ctrl_nums" pages="0,3,1,5,2,10,3,999" selected="3">
     <remark page="0" value="3局"/>
     <remark page="1" value="5局"/>
     <remark page="2" value="10局"/>
@@ -12,45 +12,77 @@
     <remark page="2" value="中等"/>
     <remark page="3" value="困难"/>
   </controller>
+  <controller name="ctrl_mode" pages="0,0,1,1" selected="1">
+    <remark page="0" value="普通模式"/>
+    <remark page="1" value="竞速模式"/>
+  </controller>
+  <controller name="ctrl_questions" pages="0,0,1,1" selected="0">
+    <remark page="0" value="题数5"/>
+    <remark page="1" value="题数10"/>
+  </controller>
   <displayList>
-    <image id="n16_oott" name="n16" src="axf11n" fileName="imgs/inlinebg.png" pkg="gj0r6g5i" xy="0,6" size="600,417"/>
-    <component id="n15_oott" name="UI_BTN_CREATE" src="cmlt4" fileName="comp/CompBtnScale.xml" pkg="gj0r6g5i" xy="185,436" controller="ctrl_color,1">
+    <image id="n16_oott" name="n16" src="axf11n" fileName="imgs/inlinebg.png" pkg="gj0r6g5i" xy="0,6" size="600,473"/>
+    <component id="n15_oott" name="UI_BTN_CREATE" src="cmlt4" fileName="comp/CompBtnScale.xml" pkg="gj0r6g5i" xy="185,489" controller="ctrl_color,1">
       <Button title="创建" icon="ui://gj0r6g5ijorf1f"/>
     </component>
-    <text id="n2_ba3d" name="n2" xy="26,41" size="94,42" fontSize="30" color="#7e6547" text="局数："/>
-    <component id="n5_q5lz" name="UI_BTN_JU3" src="q5lz4" fileName="comp/CompBtnItem.xml" xy="122,35" size="121,56">
-      <Button checked="true" controller="ctrl_mode" page="0"/>
+    <text id="n14_ouez" name="n14" xy="137,438" size="325,32" fontSize="22" color="#7e6547" text="您可以最多邀请5个好友一起游戏"/>
+    <text id="n2_ba3d" name="n2" xy="26,95" size="94,42" group="n22_b1vm" fontSize="30" color="#7e6547" text="局数："/>
+    <component id="n5_q5lz" name="UI_BTN_JU3" src="q5lz4" fileName="comp/CompBtnItem.xml" xy="122,89" size="121,56" group="n22_b1vm">
+      <Button controller="ctrl_nums" page="0"/>
       <property target="title" propertyId="0" value="3局"/>
     </component>
-    <component id="n6_q5lz" name="UI_BTN_JU5" src="q5lz4" fileName="comp/CompBtnItem.xml" xy="282,37" size="118,56">
-      <Button controller="ctrl_mode" page="1"/>
+    <component id="n6_q5lz" name="UI_BTN_JU5" src="q5lz4" fileName="comp/CompBtnItem.xml" xy="282,91" size="118,56" group="n22_b1vm">
+      <Button controller="ctrl_nums" page="1"/>
       <property target="title" propertyId="0" value="5局"/>
     </component>
-    <component id="n7_q5lz" name="UI_BTN_JU7" src="q5lz4" fileName="comp/CompBtnItem.xml" xy="442,37" size="142,56">
-      <Button controller="ctrl_mode" page="2"/>
+    <component id="n7_q5lz" name="UI_BTN_JU7" src="q5lz4" fileName="comp/CompBtnItem.xml" xy="442,91" size="142,56" group="n22_b1vm">
+      <Button controller="ctrl_nums" page="2"/>
       <property target="title" propertyId="0" value="10局"/>
     </component>
-    <component id="n9_idb1" name="UI_BTN_JU0" src="q5lz4" fileName="comp/CompBtnItem.xml" xy="122,108" size="200,56">
-      <Button controller="ctrl_mode" page="3"/>
+    <component id="n9_idb1" name="UI_BTN_JU0" src="q5lz4" fileName="comp/CompBtnItem.xml" xy="122,162" size="200,56" group="n22_b1vm">
+      <Button checked="true" controller="ctrl_nums" page="3"/>
       <property target="title" propertyId="0" value="无限对局"/>
     </component>
-    <text id="n14_ouez" name="n14" xy="35,339" size="529,49" fontSize="36" color="#7e6547" text="您可以最多邀请5个好友一起游戏"/>
-    <text id="n17_i6x7" name="n17" xy="26,189" size="94,42" fontSize="30" color="#7e6547" text="难度："/>
-    <component id="n18_i6x7" name="UI_BTN_DIFFICULTY0" src="q5lz4" fileName="comp/CompBtnItem.xml" xy="122,183" size="130,56">
-      <Button title="随机" controller="ctrl_difficulty" page="0"/>
+    <group id="n22_b1vm" name="n22" xy="26,89" size="558,129"/>
+    <text id="n17_i6x7" name="n17" xy="26,233" size="94,42" group="n23_b1vm" fontSize="30" color="#7e6547" text="难度："/>
+    <component id="n18_i6x7" name="UI_BTN_DIFFICULTY0" src="q5lz4" fileName="comp/CompBtnItem.xml" xy="122,227" size="130,56" group="n23_b1vm">
+      <Button checked="true" title="随机" controller="ctrl_difficulty" page="0"/>
       <property target="title" propertyId="0" value="随机"/>
     </component>
-    <component id="n19_i6x7" name="UI_BTN_DIFFICULTY1" src="q5lz4" fileName="comp/CompBtnItem.xml" xy="282,182" size="136,56">
-      <Button checked="true" title="简单" controller="ctrl_difficulty" page="1"/>
+    <component id="n19_i6x7" name="UI_BTN_DIFFICULTY1" src="q5lz4" fileName="comp/CompBtnItem.xml" xy="282,226" size="136,56" group="n23_b1vm">
+      <Button title="简单" controller="ctrl_difficulty" page="1"/>
       <property target="title" propertyId="0" value="简单"/>
     </component>
-    <component id="n20_j46u" name="UI_BTN_DIFFICULTY2" src="q5lz4" fileName="comp/CompBtnItem.xml" xy="442,183" size="136,56">
+    <component id="n20_j46u" name="UI_BTN_DIFFICULTY2" src="q5lz4" fileName="comp/CompBtnItem.xml" xy="442,227" size="136,56" group="n23_b1vm">
       <Button title="中等" controller="ctrl_difficulty" page="2"/>
       <property target="title" propertyId="0" value="中等"/>
     </component>
-    <component id="n21_j46u" name="UI_BTN_DIFFICULTY3" src="q5lz4" fileName="comp/CompBtnItem.xml" xy="122,255" size="136,56">
+    <component id="n21_j46u" name="UI_BTN_DIFFICULTY3" src="q5lz4" fileName="comp/CompBtnItem.xml" xy="122,299" size="136,56" group="n23_b1vm">
       <Button title="困难" controller="ctrl_difficulty" page="3"/>
       <property target="title" propertyId="0" value="困难"/>
     </component>
+    <group id="n23_b1vm" name="n23" xy="26,226" size="552,129"/>
+    <text id="n24_b1vm" name="n24" xy="26,32" size="94,42" group="n29_b1vm" fontSize="30" color="#7e6547" text="模式："/>
+    <component id="n25_b1vm" name="UI_BTN_MODE0" src="q5lz4" fileName="comp/CompBtnItem.xml" xy="122,26" size="203,56" group="n29_b1vm">
+      <Button title="普通模式" controller="ctrl_mode" page="0"/>
+      <property target="title" propertyId="0" value="普通模式"/>
+    </component>
+    <component id="n26_b1vm" name="UI_BTN_MODE1" src="q5lz4" fileName="comp/CompBtnItem.xml" xy="358,28" size="203,56" group="n29_b1vm">
+      <Button checked="true" title="竞速模式" controller="ctrl_mode" page="1"/>
+      <property target="title" propertyId="0" value="竞速模式"/>
+    </component>
+    <group id="n29_b1vm" name="n29" xy="26,26" size="535,58"/>
+    <text id="n30_b1vm" name="n30" xy="26,373" size="94,42" group="n33_b1vm" fontSize="30" color="#7e6547" text="题数："/>
+    <component id="n31_b1vm" name="UI_BTN_QUESTIONS0" src="q5lz4" fileName="comp/CompBtnItem.xml" xy="122,367" size="203,56" group="n33_b1vm">
+      <Button checked="true" title="5题" controller="ctrl_questions" page="0"/>
+      <property target="title" propertyId="0" value="5题"/>
+    </component>
+    <component id="n32_b1vm" name="UI_BTN_QUESTIONS1" src="q5lz4" fileName="comp/CompBtnItem.xml" xy="358,369" size="203,56" group="n33_b1vm">
+      <Button title="10题" controller="ctrl_questions" page="1"/>
+      <property target="title" propertyId="0" value="10题"/>
+    </component>
+    <group id="n33_b1vm" name="n33" xy="26,367" size="535,58" advanced="true">
+      <gearDisplay controller="ctrl_mode" pages="1"/>
+    </group>
   </displayList>
 </component>

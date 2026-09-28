@@ -8,8 +8,10 @@ import { Logger } from "@frameworks/utils/Utils";
 
 export default class FGUICompPrivateCreate extends fgui.GComponent {
 
-	public ctrl_mode:fgui.Controller;
+	public ctrl_nums:fgui.Controller;
 	public ctrl_difficulty:fgui.Controller;
+	public ctrl_mode:fgui.Controller;
+	public ctrl_questions:fgui.Controller;
 	public UI_BTN_CREATE:fgui.GButton;
 	public UI_BTN_JU3:fgui.GButton;
 	public UI_BTN_JU5:fgui.GButton;
@@ -19,6 +21,10 @@ export default class FGUICompPrivateCreate extends fgui.GComponent {
 	public UI_BTN_DIFFICULTY1:fgui.GButton;
 	public UI_BTN_DIFFICULTY2:fgui.GButton;
 	public UI_BTN_DIFFICULTY3:fgui.GButton;
+	public UI_BTN_MODE0:fgui.GButton;
+	public UI_BTN_MODE1:fgui.GButton;
+	public UI_BTN_QUESTIONS0:fgui.GButton;
+	public UI_BTN_QUESTIONS1:fgui.GButton;
 	public static URL:string = "ui://s0qy2rl1nomu1";
 
 	public static packageName:string = "privateRoom";
@@ -96,17 +102,19 @@ export default class FGUICompPrivateCreate extends fgui.GComponent {
 	}
 
 	protected onConstruct():void {
-		this.ctrl_mode = this.getControllerAt(0);
+		this.ctrl_nums = this.getControllerAt(0);
 		this.ctrl_difficulty = this.getControllerAt(1);
+		this.ctrl_mode = this.getControllerAt(2);
+		this.ctrl_questions = this.getControllerAt(3);
 		this.UI_BTN_CREATE = <fgui.GButton>(this.getChildAt(1));
 		this.UI_BTN_CREATE.onClick(this.onBtnCreate, this);
-		this.UI_BTN_JU3 = <fgui.GButton>(this.getChildAt(3));
+		this.UI_BTN_JU3 = <fgui.GButton>(this.getChildAt(4));
 		this.UI_BTN_JU3.onClick(this.onBtnJu3, this);
-		this.UI_BTN_JU5 = <fgui.GButton>(this.getChildAt(4));
+		this.UI_BTN_JU5 = <fgui.GButton>(this.getChildAt(5));
 		this.UI_BTN_JU5.onClick(this.onBtnJu5, this);
-		this.UI_BTN_JU7 = <fgui.GButton>(this.getChildAt(5));
+		this.UI_BTN_JU7 = <fgui.GButton>(this.getChildAt(6));
 		this.UI_BTN_JU7.onClick(this.onBtnJu7, this);
-		this.UI_BTN_JU0 = <fgui.GButton>(this.getChildAt(6));
+		this.UI_BTN_JU0 = <fgui.GButton>(this.getChildAt(7));
 		this.UI_BTN_JU0.onClick(this.onBtnJu0, this);
 		this.UI_BTN_DIFFICULTY0 = <fgui.GButton>(this.getChildAt(9));
 		this.UI_BTN_DIFFICULTY0.onClick(this.onBtnDifficulty0, this);
@@ -116,6 +124,14 @@ export default class FGUICompPrivateCreate extends fgui.GComponent {
 		this.UI_BTN_DIFFICULTY2.onClick(this.onBtnDifficulty2, this);
 		this.UI_BTN_DIFFICULTY3 = <fgui.GButton>(this.getChildAt(12));
 		this.UI_BTN_DIFFICULTY3.onClick(this.onBtnDifficulty3, this);
+		this.UI_BTN_MODE0 = <fgui.GButton>(this.getChildAt(14));
+		this.UI_BTN_MODE0.onClick(this.onBtnMode0, this);
+		this.UI_BTN_MODE1 = <fgui.GButton>(this.getChildAt(15));
+		this.UI_BTN_MODE1.onClick(this.onBtnMode1, this);
+		this.UI_BTN_QUESTIONS0 = <fgui.GButton>(this.getChildAt(17));
+		this.UI_BTN_QUESTIONS0.onClick(this.onBtnQuestions0, this);
+		this.UI_BTN_QUESTIONS1 = <fgui.GButton>(this.getChildAt(18));
+		this.UI_BTN_QUESTIONS1.onClick(this.onBtnQuestions1, this);
 		if (this.enableAnimation) this.enterAnimation();
 	}
 	scheduleOnce(callback: () => void, delay: number):void{};
@@ -131,5 +147,9 @@ export default class FGUICompPrivateCreate extends fgui.GComponent {
 	onBtnDifficulty1():void{};
 	onBtnDifficulty2():void{};
 	onBtnDifficulty3():void{};
+	onBtnMode0():void{};
+	onBtnMode1():void{};
+	onBtnQuestions0():void{};
+	onBtnQuestions1():void{};
 }
 fgui.UIObjectFactory.setExtension(FGUICompPrivateCreate.URL, FGUICompPrivateCreate);
