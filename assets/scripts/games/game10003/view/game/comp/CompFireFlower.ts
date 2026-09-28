@@ -74,7 +74,9 @@ export class CompFireFlower extends FGUICompFireFlower {
         this._playing = false;
         this._ribbonsPlaying = false;
         this._onComplete = null;
-        this._bucketTransition?.stop();
+        // 销毁阶段子节点已被 Cocos 先销毁（组件的 _destruct 会清空 _uiTrans/_contentSize 等字段），
+        // 传 false 终止转场与各 item 的 tween 但不复位数值，避免把结束值写到已销毁的节点上而抛异常
+        this._bucketTransition?.stop(false);
         this.unbindFrameEvent();
         this.stopRibbons();
         super.onDestroy();

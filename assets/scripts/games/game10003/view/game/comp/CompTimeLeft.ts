@@ -39,7 +39,8 @@ export class CompTimeLeft extends FGUICompTimeLeft {
      * @description 组件销毁：停止倒计时
      */
     protected onDestroy(): void {
-        this.stopClock();
+        // 主动销毁会有bug
+        //this.stopClock();
         super.onDestroy();
     }
 
