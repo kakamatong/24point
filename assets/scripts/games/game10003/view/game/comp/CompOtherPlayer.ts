@@ -171,6 +171,7 @@ export class CompOtherPlayer extends FGUICompOtherPlayer {
             this.UI_TXT_PROGRESS.text = "";
             return;
         }
+        this.UI_GROP_MSG.visible = true;
         const idx = Math.max(1, Math.min(questionIndex || 1, total));
         this.UI_TXT_PROGRESS.text = `${idx}/${total}`;
     }
