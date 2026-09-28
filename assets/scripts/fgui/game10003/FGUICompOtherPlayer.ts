@@ -12,6 +12,7 @@ export default class FGUICompOtherPlayer extends fgui.GComponent {
 	public ctrl_bComplate:fgui.Controller;
 	public UI_COMP_HEAD:FGUICompPlayerHead;
 	public UI_COMP_MEDAL:fgui.GComponent;
+	public UI_TXT_PROGRESS:fgui.GTextField;
 	public static URL:string = "ui://2zsfe53xifzr1t";
 
 	public static packageName:string = "game10003";
@@ -92,6 +93,7 @@ export default class FGUICompOtherPlayer extends fgui.GComponent {
 		this.ctrl_bComplate = this.getControllerAt(0);
 		this.UI_COMP_HEAD = <FGUICompPlayerHead>(this.getChildAt(0));
 		this.UI_COMP_MEDAL = <fgui.GComponent>(this.getChildAt(1));
+		this.UI_TXT_PROGRESS = <fgui.GTextField>(this.getChildAt(4));
 		if (this.enableAnimation) this.enterAnimation();
 	}
 	scheduleOnce(callback: () => void, delay: number):void{};

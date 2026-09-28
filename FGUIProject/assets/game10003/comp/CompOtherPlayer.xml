@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <component size="160,324">
-  <controller name="ctrl_bComplate" pages="0,,1,,2," selected="1">
+  <controller name="ctrl_bComplate" pages="0,,1,,2," selected="2">
     <remark page="0" value="进行中"/>
     <remark page="1" value="已经完成"/>
     <remark page="2" value="未完成"/>
@@ -14,5 +14,6 @@
     <image id="n9_ifzr" name="n9" src="ifzr1x" fileName="imgs/unComp.png" xy="-7,184" size="174,73" aspect="true">
       <gearDisplay controller="ctrl_bComplate" pages="2"/>
     </image>
+    <text id="n10_b1vm" name="UI_TXT_PROGRESS" xy="34,259" size="92,56" visible="false" fontSize="42" color="#ffffff" text="8/10"/>
   </displayList>
 </component>
