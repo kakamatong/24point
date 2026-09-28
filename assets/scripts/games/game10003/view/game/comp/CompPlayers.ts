@@ -184,6 +184,22 @@ export class CompPlayers extends FGUICompPlayers {
     }
 
     /**
+     * @method setOtherPlayerRaceProgress
+     * @description 设置其他玩家的竞速进度显示（模板「X/N」）
+     * @param {number} svrSeat - 服务器座位号
+     * @param {number} questionIndex - 当前题号（1开始）
+     * @param {number} total - 总题数
+     */
+    setOtherPlayerRaceProgress(svrSeat: number, questionIndex: number, total: number): void {
+        const otherPlayer = this._playerMap.get(svrSeat);
+        if (otherPlayer) {
+            otherPlayer.setRaceProgress(questionIndex, total);
+        } else {
+            Logger.warn(`服务器座位 ${svrSeat} 的玩家不存在，无法设置竞速进度`);
+        }
+    }
+
+    /**
      * @method setOtherPlayerIncomplete
      * @description 设置其他玩家为未完成状态
      * @param {number} svrSeat - 服务器座位号

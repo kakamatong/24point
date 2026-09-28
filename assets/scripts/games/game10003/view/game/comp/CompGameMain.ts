@@ -1058,7 +1058,10 @@ export class CompGameMain extends FGUICompGameMain {
         }
 
         if (GameData.instance.isPrivateRoom) {
-            if (data.maxCnt === 9999) {
+            if (GameData.instance.isRaceMode()) {
+                // 竞速模式：顶部进度显示题目进度（第X题 共N题），不显示局数
+                this.refreshRaceProgress();
+            } else if (data.maxCnt === 9999) {
                 this.UI_TXT_PROGRESS.text = `第${data.nowCnt ?? 0}局 无限局`;
             } else {
                 this.UI_TXT_PROGRESS.text = `第${data.nowCnt ?? 0}局 共${data.maxCnt ?? 0}局`;
@@ -1306,24 +1309,34 @@ export class CompGameMain extends FGUICompGameMain {
 
     /**
      * @method refreshRaceProgress
-     * @description 刷新竞速进度显示：竞速进度组件（CompRaceProgress，FGUI 用户制作）存在则用、不存在回退默认；
-     *              回退默认 = 顶部进度文案（x/N），无进度组件时也保证信息可见
+     * @description 刷新竞速进度显示（游戏区统一走文本进度，不用竞速进度组件）：
+     *              自己进度显示在顶部 UI_TXT_PROGRESS，模板「第X题 共N题」；
+     *              其他玩家进度显示在其 CompOtherPlayer 的 UI_TXT_PROGRESS，模板「X/N」
      * @private
      */
     private refreshRaceProgress(): void {
-        const myIndex = Math.min(GameData.instance.raceQuestionIndex, GameData.instance.raceTotalQuestions);
         const total = GameData.instance.raceTotalQuestions;
-        // 竞速进度组件（挂接点 UI_COMP_RACE_PROGRESS，FGUI 尚未制作时为 undefined，防御式跳过）
-        const raceComp = (this as any).UI_COMP_RACE_PROGRESS;
-        if (raceComp && typeof raceComp.updateRace === "function") {
-            raceComp.updateRace(GameData.instance.raceProgress, myIndex, total);
+        if (total <= 0) {
             return;
         }
-        // 回退默认：顶部进度文案显示 "题数 x/N"（UI_TXT_PROGRESS 已存在）
-        if (this.UI_TXT_PROGRESS && total > 0) {
-            this.UI_TXT_PROGRESS.text = GameData.instance.raceEnded
-                ? "竞速结束"
-                : "竞速 " + myIndex + "/" + total;
+        // 自己：第X题 共N题（题号越界收敛到 [1, N]）
+        const myIndex = Math.max(1, Math.min(GameData.instance.raceQuestionIndex || 1, total));
+        if (this.UI_TXT_PROGRESS) {
+            this.UI_TXT_PROGRESS.text = `第${myIndex}题 共${total}题`;
+        }
+
+        // 其他玩家：每人组件进度文本「X/N」
+        const compPlayers = this.UI_COMP_PLAYERS as CompPlayers;
+        if (!compPlayers) {
+            return;
+        }
+        const selfSeat = GameData.instance.getSelfSeat();
+        for (const p of GameData.instance.raceProgress) {
+            if (!p || p.seat === selfSeat) {
+                continue;
+            }
+            const idx = Math.max(1, Math.min(p.questionIndex || 1, total));
+            compPlayers.setOtherPlayerRaceProgress(p.seat, idx, total);
         }
     }
 

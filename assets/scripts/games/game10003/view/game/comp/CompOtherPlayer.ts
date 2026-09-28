@@ -158,6 +158,24 @@ export class CompOtherPlayer extends FGUICompOtherPlayer {
     }
 
     /**
+     * @method setRaceProgress
+     * @description 设置竞速进度文本（模板「X/N」，如 1/10）；总题数非法时清空文本
+     * @param {number} questionIndex - 当前题号（1开始）
+     * @param {number} total - 总题数
+     */
+    setRaceProgress(questionIndex: number, total: number): void {
+        if (!this.UI_TXT_PROGRESS) {
+            return;
+        }
+        if (total <= 0) {
+            this.UI_TXT_PROGRESS.text = "";
+            return;
+        }
+        const idx = Math.max(1, Math.min(questionIndex || 1, total));
+        this.UI_TXT_PROGRESS.text = `${idx}/${total}`;
+    }
+
+    /**
      * @method setRank
      * @description 设置名次显示
      * @param {number} rank - 名次，0表示不显示，1-6表示名次
@@ -197,6 +215,7 @@ export class CompOtherPlayer extends FGUICompOtherPlayer {
         }
         this.setCompleteStatus("playing");
         this.setRank(0);
+        this.setRaceProgress(0, 0);
     }
 
     /**
