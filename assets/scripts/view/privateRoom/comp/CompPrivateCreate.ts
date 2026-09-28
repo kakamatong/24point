@@ -42,10 +42,46 @@ export class CompPrivateCreate extends FGUICompPrivateCreate {
      * @param rule 房间规则
      */
     initUI(rule: any): void {
-        this.ctrl_mode.selectedPage = `${rule.playNum}`;
+        // 局数控制器存在则用（普通模式）；竞速模式隐藏局数，FGUI 未就绪时防御式跳过
+        const ctrlMode = this.ctrl_mode;
+        if (ctrlMode) {
+            ctrlMode.selectedPage = `${rule.playNum}`;
+        }
         // 难度：0随机/1简单/2中等/3困难，缺省或不合法按“随机”处理
         const difficulty = Number(rule.difficulty);
-        this.ctrl_difficulty.selectedPage = `${Number.isInteger(difficulty) && difficulty >= 0 && difficulty <= 3 ? difficulty : 0}`;
+        const ctrlDifficulty = this.ctrl_difficulty;
+        if (ctrlDifficulty) {
+            ctrlDifficulty.selectedPage = `${Number.isInteger(difficulty) && difficulty >= 0 && difficulty <= 3 ? difficulty : 0}`;
+        }
+        // 玩法切换控制器 ctrl_playMode（页面 0普通/1竞速，FGUI 用户制作）：存在则回显、不存在回退默认
+        const ctrlPlayMode = (this as any).ctrl_playMode;
+        if (ctrlPlayMode && typeof ctrlPlayMode === "object") {
+            ctrlPlayMode.selectedPage = `${Number(rule.playMode) === 1 ? 1 : 0}`;
+        }
+        // 竞速题数控制器 ctrl_raceQuestionCount（页面 5/10，FGUI 用户制作）：存在则回显、不存在回退默认
+        const ctrlRaceCount = (this as any).ctrl_raceQuestionCount;
+        if (ctrlRaceCount && typeof ctrlRaceCount === "object") {
+            const cnt = Number(rule.raceQuestionCount);
+            ctrlRaceCount.selectedPage = `${cnt === 5 ? 5 : 10}`;
+        }
+        this.refreshModeUI(Number(rule.playMode) === 1 ? 1 : 0);
+    }
+
+    /**
+     * @description 按玩法模式刷新可见性：竞速时隐藏局数选项，普通模式原样。
+     *              FGUI 节点未就绪时全部防御式跳过，编译与运行不依赖未做的界面。
+     */
+    private refreshModeUI(playMode: number): void {
+        // 局数选项组（FGUI 约定名 ctrl_mode_group，存在则用）
+        const modeGroup = (this as any).ctrl_mode_group;
+        if (modeGroup && typeof modeGroup === "object" && "visible" in modeGroup) {
+            modeGroup.visible = playMode !== 1;
+        }
+        // 竞速题数选项组（FGUI 约定名 ctrl_raceQuestionCount_group，存在则用）
+        const raceGroup = (this as any).ctrl_raceQuestionCount_group;
+        if (raceGroup && typeof raceGroup === "object" && "visible" in raceGroup) {
+            raceGroup.visible = playMode === 1;
+        }
     }
 
     /**
@@ -59,10 +95,28 @@ export class CompPrivateCreate extends FGUICompPrivateCreate {
      * @description 创建房间按钮点击事件
      */
     onBtnCreate(): void {
+        // 玩法模式：ctrl_playMode 页面 0普通/1竞速（key 与服务端 privateRule.playMode 完全一致）
+        const ctrlPlayMode = (this as any).ctrl_playMode;
+        const playMode = ctrlPlayMode && typeof ctrlPlayMode === "object"
+            ? (Number(ctrlPlayMode.selectedPage) === 1 ? 1 : 0)
+            : 0;
+        // 竞速题数：ctrl_raceQuestionCount 页面 5/10（key 与服务端 privateRule.raceQuestionCount 完全一致），
+        // 非法/未就绪回退默认 10（与服务端 config.RACE.DEFAULT_QUESTION_COUNT 一致）
+        const ctrlRaceCount = (this as any).ctrl_raceQuestionCount;
+        let raceQuestionCount = ctrlRaceCount && typeof ctrlRaceCount === "object"
+            ? Number(ctrlRaceCount.selectedPage)
+            : 0;
+        if (raceQuestionCount !== 5 && raceQuestionCount !== 10) {
+            raceQuestionCount = 10;
+        }
         const gameRule = {
-            playNum: Number(this.ctrl_mode.selectedPage),
+            playNum: Number(this.ctrl_mode?.selectedPage ?? 3),
             // 出题难度：0随机/1简单/2中等/3困难（服务端按此走对应出题逻辑）
-            difficulty: Number(this.ctrl_difficulty.selectedPage),
+            difficulty: Number(this.ctrl_difficulty?.selectedPage ?? 0),
+            // 玩法模式：0普通/1竞速
+            playMode: playMode,
+            // 竞速题数：5/10（仅 playMode=1 生效）
+            raceQuestionCount: raceQuestionCount,
         };
         const func = (result: any) => {
             if (result && result.code == 1) {
