@@ -43,9 +43,24 @@ export class CompPrivateCreate extends FGUICompPrivateCreate {
      */
     initUI(rule: any): void {
         this.ctrl_nums.selectedPage = `${rule.playNum}`;
+        this.ctrl_playMode.selectedPage = `${Number(rule.playMode) === 1 ? 1 : 0}`;
         // 难度：0随机/1简单/2中等/3困难，缺省或不合法按“随机”处理
         const difficulty = Number(rule.difficulty);
-        this.ctrl_difficulty.selectedPage = `${Number.isInteger(difficulty) && difficulty >= 0 && difficulty <= 3 ? difficulty : 0}`;
+        const ctrlDifficulty = this.ctrl_difficulty;
+        if (ctrlDifficulty) {
+            ctrlDifficulty.selectedPage = `${Number.isInteger(difficulty) && difficulty >= 0 && difficulty <= 3 ? difficulty : 0}`;
+        }
+        // 玩法切换控制器 ctrl_playMode（页面 0普通/1竞速，FGUI 用户制作）：存在则回显、不存在回退默认
+        const ctrlPlayMode = this.ctrl_playMode;
+        if (ctrlPlayMode && typeof ctrlPlayMode === "object") {
+            ctrlPlayMode.selectedPage = `${Number(rule.playMode) === 1 ? 1 : 0}`;
+        }
+        // 竞速题数控制器 ctrl_raceQuestionCount（页面 5/10，FGUI 用户制作）：存在则回显、不存在回退默认
+        const ctrlRaceCount = this.ctrl_raceQuestionCount;
+        if (ctrlRaceCount && typeof ctrlRaceCount === "object") {
+            const cnt = Number(rule.raceQuestionCount);
+            ctrlRaceCount.selectedPage = `${cnt === 5 ? 5 : 10}`;
+        }
     }
 
     /**
@@ -59,10 +74,24 @@ export class CompPrivateCreate extends FGUICompPrivateCreate {
      * @description 创建房间按钮点击事件
      */
     onBtnCreate(): void {
+        // 玩法模式：ctrl_playMode 页面 0普通/1竞速（key 与服务端 privateRule.playMode 完全一致）
+        const ctrlPlayMode = this.ctrl_playMode;
+        const playMode = ctrlPlayMode && typeof ctrlPlayMode === "object" ? (Number(ctrlPlayMode.selectedPage) === 1 ? 1 : 0) : 0;
+        // 竞速题数：ctrl_raceQuestionCount 页面 5/10（key 与服务端 privateRule.raceQuestionCount 完全一致），
+        // 非法/未就绪回退默认 10（与服务端 config.RACE.DEFAULT_QUESTION_COUNT 一致）
+        const ctrlRaceCount = this.ctrl_raceQuestionCount;
+        let raceQuestionCount = ctrlRaceCount && typeof ctrlRaceCount === "object" ? Number(ctrlRaceCount.selectedPage) : 0;
+        if (raceQuestionCount !== 5 && raceQuestionCount !== 10) {
+            raceQuestionCount = 10;
+        }
         const gameRule = {
             playNum: Number(this.ctrl_nums.selectedPage),
             // 出题难度：0随机/1简单/2中等/3困难（服务端按此走对应出题逻辑）
-            difficulty: Number(this.ctrl_difficulty.selectedPage),
+            difficulty: Number(this.ctrl_difficulty?.selectedPage ?? 0),
+            // 玩法模式：0普通/1竞速
+            playMode: playMode,
+            // 竞速题数：5/10（仅 playMode=1 生效）
+            raceQuestionCount: raceQuestionCount,
         };
         const func = (result: any) => {
             if (result && result.code == 1) {

@@ -8,6 +8,23 @@ import { DEFAULT_HEADURL } from "@datacenter/InterfaceConfig";
 import { GAME_PLAYER_INFO, ENUM_GAME_STEP, GAME_DATA } from "./InterfaceGameConfig";
 
 /**
+ * @interface RACE_PLAYER_PROGRESS
+ * @description 竞速玩法单个玩家进度（对应 s2c.raceProgress.players 条目）
+ */
+export interface RACE_PLAYER_PROGRESS {
+    /** 房间座位 */
+    seat: number;
+    /** 当前题号（1开始） */
+    questionIndex: number;
+    /** 已答对题数 */
+    finishedCount: number;
+    /** 达到当前进度用时(毫秒) */
+    usedTimeMs: number;
+    /** 0:答题中, 1:已完赛 */
+    status: number;
+}
+
+/**
  * @class GameData
  * @description 游戏数据类，管理游戏 10003 的游戏数据，使用单例模式
  * @category 游戏 10003
@@ -31,6 +48,22 @@ export class GameData {
     private _privateMaxCnt: number = 0; // 最大局数
     /** 是否是本地游戏 */
     private _isLocalGame: boolean = false;
+
+    /** ===== 竞速玩法状态（playMode=1，仅好友房） ===== */
+    /** 玩法模式：0普通/1竞速（privateInfo.playMode 或 raceQuestion 首包驱动） */
+    private _playMode: number = 0;
+    /** 竞速总题数 */
+    private _raceTotalQuestions: number = 0;
+    /** 我当前题号（1开始，0=未收到题目） */
+    private _raceQuestionIndex: number = 0;
+    /** 我已答对题数 */
+    private _raceFinishedCount: number = 0;
+    /** 我是否已完赛（答完全部题） */
+    private _raceSelfFinished: boolean = false;
+    /** 竞速是否已结束（收到 raceFinish） */
+    private _raceEnded: boolean = false;
+    /** 全员进度快照（key 为房间座位） */
+    private _raceProgressMap: Map<number, RACE_PLAYER_PROGRESS> = new Map();
 
     /** 单例实例 */
     private static _instance: GameData;
@@ -63,6 +96,13 @@ export class GameData {
         this._owner = 0;
         this._privateNowCnt = 0;
         this._isLocalGame = false;
+        this._playMode = 0;
+        this._raceTotalQuestions = 0;
+        this._raceQuestionIndex = 0;
+        this._raceFinishedCount = 0;
+        this._raceSelfFinished = false;
+        this._raceEnded = false;
+        this._raceProgressMap.clear();
     }
 
     get gameStep(): ENUM_GAME_STEP {
@@ -269,5 +309,96 @@ export class GameData {
 
     get isLocalGame(): boolean {
         return this._isLocalGame;
+    }
+
+    /** ===== 竞速玩法状态 ===== */
+
+    /** 玩法模式：0普通/1竞速 */
+    get playMode(): number {
+        return this._playMode;
+    }
+
+    set playMode(mode: number) {
+        this._playMode = mode;
+    }
+
+    /** 是否竞速模式 */
+    isRaceMode(): boolean {
+        return this._playMode === 1;
+    }
+
+    /** 竞速总题数 */
+    get raceTotalQuestions(): number {
+        return this._raceTotalQuestions;
+    }
+
+    set raceTotalQuestions(cnt: number) {
+        this._raceTotalQuestions = cnt;
+    }
+
+    /** 我当前题号（1开始，0=未收到） */
+    get raceQuestionIndex(): number {
+        return this._raceQuestionIndex;
+    }
+
+    set raceQuestionIndex(index: number) {
+        this._raceQuestionIndex = index;
+    }
+
+    /** 我已答对题数 */
+    get raceFinishedCount(): number {
+        return this._raceFinishedCount;
+    }
+
+    set raceFinishedCount(cnt: number) {
+        this._raceFinishedCount = cnt;
+    }
+
+    /** 我是否已完赛 */
+    get raceSelfFinished(): boolean {
+        return this._raceSelfFinished;
+    }
+
+    set raceSelfFinished(flag: boolean) {
+        this._raceSelfFinished = flag;
+    }
+
+    /** 竞速是否已结束 */
+    get raceEnded(): boolean {
+        return this._raceEnded;
+    }
+
+    set raceEnded(flag: boolean) {
+        this._raceEnded = flag;
+    }
+
+    /**
+     * @description 覆盖式刷新全员竞速进度快照（raceProgress 全量下发，天然重同步）
+     * @param players 进度条目数组
+     */
+    setRaceProgress(players: RACE_PLAYER_PROGRESS[]): void {
+        this._raceProgressMap.clear();
+        for (const p of players ?? []) {
+            if (p && p.seat) {
+                this._raceProgressMap.set(p.seat, p);
+            }
+        }
+    }
+
+    /** 获取全员竞速进度 */
+    get raceProgress(): RACE_PLAYER_PROGRESS[] {
+        return Array.from(this._raceProgressMap.values());
+    }
+
+    /** 获取指定座位竞速进度 */
+    getRaceProgressBySeat(seat: number): RACE_PLAYER_PROGRESS | null {
+        return this._raceProgressMap.get(seat) ?? null;
+    }
+
+    /**
+     * @description 竞速中且自己未完赛、竞速未结束才允许选牌/提交
+     */
+    canOperateRace(): boolean {
+        return this.isRaceMode() && !this._raceEnded && !this._raceSelfFinished && this._raceQuestionIndex > 0;
     }
 }

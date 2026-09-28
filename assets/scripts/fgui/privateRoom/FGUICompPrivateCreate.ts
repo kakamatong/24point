@@ -10,8 +10,8 @@ export default class FGUICompPrivateCreate extends fgui.GComponent {
 
 	public ctrl_nums:fgui.Controller;
 	public ctrl_difficulty:fgui.Controller;
-	public ctrl_mode:fgui.Controller;
-	public ctrl_questions:fgui.Controller;
+	public ctrl_playMode:fgui.Controller;
+	public ctrl_raceQuestionCount:fgui.Controller;
 	public UI_BTN_CREATE:fgui.GButton;
 	public UI_BTN_JU3:fgui.GButton;
 	public UI_BTN_JU5:fgui.GButton;
@@ -104,8 +104,8 @@ export default class FGUICompPrivateCreate extends fgui.GComponent {
 	protected onConstruct():void {
 		this.ctrl_nums = this.getControllerAt(0);
 		this.ctrl_difficulty = this.getControllerAt(1);
-		this.ctrl_mode = this.getControllerAt(2);
-		this.ctrl_questions = this.getControllerAt(3);
+		this.ctrl_playMode = this.getControllerAt(2);
+		this.ctrl_raceQuestionCount = this.getControllerAt(3);
 		this.UI_BTN_CREATE = <fgui.GButton>(this.getChildAt(1));
 		this.UI_BTN_CREATE.onClick(this.onBtnCreate, this);
 		this.UI_BTN_JU3 = <fgui.GButton>(this.getChildAt(4));

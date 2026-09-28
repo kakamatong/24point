@@ -12,6 +12,9 @@ import { DataCenter } from "@datacenter/Datacenter";
 import { GameSocketManager } from "@frameworks/GameSocketManager";
 import { LocalSvr } from "@localGame/LocalSvr";
 import {
+    SprotoRaceFinish,
+    SprotoRaceProgress,
+    SprotoRaceQuestion,
     SprotoAnswerResult,
     SprotoForwardMessage,
     SprotoGameClock,
@@ -153,6 +156,9 @@ export class CompGameMain extends FGUICompGameMain {
         GameSocketManager.instance.addServerListen(SprotoGameRecord, this.onSvrGameRecord.bind(this));
         GameSocketManager.instance.addServerListen(SprotoForwardMessage, this.onSvrForwardMessage.bind(this));
         GameSocketManager.instance.addServerListen(SprotoStepId, this.onSvrStepId.bind(this));
+        GameSocketManager.instance.addServerListen(SprotoRaceQuestion, this.onSvrRaceQuestion.bind(this));
+        GameSocketManager.instance.addServerListen(SprotoRaceProgress, this.onSvrRaceProgress.bind(this));
+        GameSocketManager.instance.addServerListen(SprotoRaceFinish, this.onSvrRaceFinish.bind(this));
 
         LobbySocketManager.instance.addServerListen(SprotoGameRoomReady, this.onSvrGameRoomReady.bind(this));
         AddEventListener(FW_EVENT_NAMES.GAME_SOCKET_DISCONNECT, this.onGameSocketDisconnect, this);
@@ -177,6 +183,9 @@ export class CompGameMain extends FGUICompGameMain {
         GameSocketManager.instance.removeServerListen(SprotoGameRecord);
         GameSocketManager.instance.removeServerListen(SprotoForwardMessage);
         GameSocketManager.instance.removeServerListen(SprotoStepId);
+        GameSocketManager.instance.removeServerListen(SprotoRaceQuestion);
+        GameSocketManager.instance.removeServerListen(SprotoRaceProgress);
+        GameSocketManager.instance.removeServerListen(SprotoRaceFinish);
 
         LobbySocketManager.instance.removeServerListen(SprotoGameRoomReady);
         RemoveEventListener(FW_EVENT_NAMES.GAME_SOCKET_DISCONNECT, this.onGameSocketDisconnect);
@@ -1040,6 +1049,13 @@ export class CompGameMain extends FGUICompGameMain {
         // 局数先落库（不放在房型判断里），保证「是否已开过局」在任何时序下都拿得到权威值
         GameData.instance.privateMaxCnt = data.maxCnt;
         GameData.instance.privateNowCnt = data.nowCnt;
+        // 玩法模式/竞速题数（privateInfo 新 tag，旧服务端不带时防御式回退 0=普通）
+        if (data.playMode !== undefined && data.playMode !== null) {
+            GameData.instance.playMode = Number(data.playMode) === 1 ? 1 : 0;
+        }
+        if (data.totalQuestions) {
+            GameData.instance.raceTotalQuestions = data.totalQuestions;
+        }
 
         if (GameData.instance.isPrivateRoom) {
             if (data.maxCnt === 9999) {
@@ -1173,6 +1189,142 @@ export class CompGameMain extends FGUICompGameMain {
      */
     onSvrStepId(data: SprotoStepId.Request) {
         GameData.instance.gameStep = data.step;
+    }
+
+    /**
+     * @method onSvrRaceQuestion
+     * @description 竞速当前题下发（raceQuestion）：只认当前题、忽略乱序旧题；铺题复用现有牌面/算式输入，
+     *              答题进度取服务端权威值（questionIndex-1），并刷新竞速进度显示
+     * @param {SprotoRaceQuestion.Request} data - 当前题（questionIndex/totalQuestions/numbers）
+     * @private
+     */
+    private onSvrRaceQuestion(data: SprotoRaceQuestion.Request): void {
+        if (!data || !data.numbers || data.numbers.length === 0) {
+            return;
+        }
+        GameData.instance.playMode = 1;
+        if (data.totalQuestions > 0) {
+            GameData.instance.raceTotalQuestions = data.totalQuestions;
+        }
+        // 只认当前题忽略乱序：旧题号（小于已收题号）直接丢弃；同题号视为重连补发/重推，幂等重铺
+        if (data.questionIndex < GameData.instance.raceQuestionIndex) {
+            Logger.warn("[Race] 乱序旧题，忽略 questionIndex=", data.questionIndex);
+            return;
+        }
+        GameData.instance.raceQuestionIndex = data.questionIndex;
+        // 进度以服务端题号为准：已答对题数 = 当前题号 - 1
+        GameData.instance.raceFinishedCount = Math.max(0, data.questionIndex - 1);
+        GameData.instance.raceSelfFinished = false;
+        // 铺当前题：复用现有牌面/算式输入（CompCtrl 发牌同路径，含 tween scale/alpha 复位）
+        const ctrl = this.UI_COMP_CTRL as CompCtrl;
+        ctrl?.showRaceQuestion(data.numbers.slice());
+        this.refreshRaceProgress();
+    }
+
+    /**
+     * @method onSvrRaceProgress
+     * @description 竞速进度快照（raceProgress，每次推进全量广播）：覆盖式刷新全员进度并更新进度组件；
+     *              全量快照天然重同步，重连补发同一份
+     * @param {SprotoRaceProgress.Request} data - 全员进度
+     * @private
+     */
+    private onSvrRaceProgress(data: SprotoRaceProgress.Request): void {
+        if (!data) {
+            return;
+        }
+        GameData.instance.setRaceProgress(data.players ?? []);
+        // 自己进度以广播快照兜底收敛（与 raceQuestion 题号推导一致）
+        const selfSeat = GameData.instance.getSelfSeat();
+        const selfProgress = selfSeat > 0 ? GameData.instance.getRaceProgressBySeat(selfSeat) : null;
+        if (selfProgress) {
+            GameData.instance.raceFinishedCount = selfProgress.finishedCount ?? GameData.instance.raceFinishedCount;
+            GameData.instance.raceSelfFinished = (selfProgress.status ?? 0) === 1;
+        }
+        this.refreshRaceProgress();
+    }
+
+    /**
+     * @method onSvrRaceFinish
+     * @description 竞速结束（raceFinish）：锁定操作（已完赛锁操作/竞速结束锁操作），跳过小结算 ResultView，
+     *              直接打开 TotalResultView 大结算
+     * @param {SprotoRaceFinish.Request} data - endType(1有人完赛/2保护时限到)/winnerSeat/questionCount/rankings
+     * @private
+     */
+    private onSvrRaceFinish(data: SprotoRaceFinish.Request): void {
+        if (!data) {
+            return;
+        }
+        GameData.instance.playMode = 1;
+        GameData.instance.raceEnded = true;
+        GameData.instance.raceSelfFinished = true;
+        // 锁操作 + 停倒计时 + 清提示
+        this.showClock(false);
+        this.showHint(false);
+        // 跳过小结算：竞速流程不发 gameEnd，这里显式兜底关闭可能残留的小结算弹窗
+        ResultView.hideView();
+        // 直接进大结算（totalResult 权威数据到达时 onSvrTotalResult 会覆盖刷新同一视图）
+        this.scheduleOnce(() => {
+            TotalResultView.showView(this.buildRaceTotalResult(data));
+        }, 0.2);
+    }
+
+    /**
+     * @method buildRaceTotalResult
+     * @description 由 raceFinish 拼 TotalResultView 兼容数据（totalResult 权威数据到达前的即时大结算）；
+     *              得分按竞速计分规则 playerCnt-rank+1（与服务端 scoring.calculatePrivateScore 一致）
+     * @param {SprotoRaceFinish.Request} data - 竞速结束数据
+     * @returns {SprotoTotalResult.Request} 大结算数据
+     * @private
+     */
+    private buildRaceTotalResult(data: SprotoRaceFinish.Request): SprotoTotalResult.Request {
+        const playerCnt = data.rankings?.length ?? 0;
+        const totalResultInfo = (data.rankings ?? []).map((r) => {
+            const player = GameData.instance.getPlayerBySeat(r.seat);
+            return {
+                seat: r.seat,
+                userid: player?.userid ?? 0,
+                score: r.rank > 0 ? Math.max(0, playerCnt - r.rank + 1) : 0,
+                win: 0,
+                lose: 0,
+                draw: 0,
+                rank: r.rank ?? 0,
+                ext: "",
+            };
+        });
+        return {
+            startTime: 0,
+            endTime: 0,
+            shortRoomid: DataCenter.instance.shortRoomid ?? 0,
+            roomid: 0,
+            owner: GameData.instance.owner,
+            rule: GameData.instance.gameData?.rule ?? "{}",
+            playCnt: 1,
+            maxCnt: 1,
+            totalResultInfo,
+        };
+    }
+
+    /**
+     * @method refreshRaceProgress
+     * @description 刷新竞速进度显示：竞速进度组件（CompRaceProgress，FGUI 用户制作）存在则用、不存在回退默认；
+     *              回退默认 = 顶部进度文案（x/N），无进度组件时也保证信息可见
+     * @private
+     */
+    private refreshRaceProgress(): void {
+        const myIndex = Math.min(GameData.instance.raceQuestionIndex, GameData.instance.raceTotalQuestions);
+        const total = GameData.instance.raceTotalQuestions;
+        // 竞速进度组件（挂接点 UI_COMP_RACE_PROGRESS，FGUI 尚未制作时为 undefined，防御式跳过）
+        const raceComp = (this as any).UI_COMP_RACE_PROGRESS;
+        if (raceComp && typeof raceComp.updateRace === "function") {
+            raceComp.updateRace(GameData.instance.raceProgress, myIndex, total);
+            return;
+        }
+        // 回退默认：顶部进度文案显示 "题数 x/N"（UI_TXT_PROGRESS 已存在）
+        if (this.UI_TXT_PROGRESS && total > 0) {
+            this.UI_TXT_PROGRESS.text = GameData.instance.raceEnded
+                ? "竞速结束"
+                : "竞速 " + myIndex + "/" + total;
+        }
     }
 
     /**

@@ -41,6 +41,13 @@ export function submitAnswer(expression: string, numbers: number[], callBack?: (
         return;
     }
 
+    // 竞速模式门控：竞速中且自己未完赛才可提交（已完赛/竞速已结束一律拒绝，服务端同步拒收）
+    if (GameData.instance.isRaceMode() && !GameData.instance.canOperateRace()) {
+        Logger.warn("[SubmitAnswer] 竞速不可操作（已完赛或竞速结束），拒绝提交");
+        callBack && callBack({ code: 0, msg: "竞速已结束", rank: 0, localValid: false });
+        return;
+    }
+
     // 本地预校验：错误直接回调，不浪费网络往返
     const checked = validate(expression, numbers);
     if (!checked.ok) {

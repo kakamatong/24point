@@ -96,7 +96,30 @@ export class CompCtrl extends FGUICompCtrl {
      * @private
      */
     private canOperate(): boolean {
-        return !this._finished && this.isPlayingPhase();
+        if (this._finished) {
+            return false;
+        }
+        // 竞速模式：竞速中且自己未完赛才可选牌/提交（已完赛/竞速已结束一律锁操作）
+        if (GameData.instance.isRaceMode()) {
+            return GameData.instance.canOperateRace();
+        }
+        return this.isPlayingPhase();
+    }
+
+    /**
+     * @description 竞速模式铺当前题（raceQuestion 推送驱动）：复用发牌路径重置并铺开本题数字；
+     *              resetRound 显式复位 tween scale/alpha，避免上一题残留动画状态导致牌面不可见
+     * @param {number[]} numbers - 本题4个数字
+     * @public 由 CompGameMain.onSvrRaceQuestion 调用
+     */
+    public showRaceQuestion(numbers: number[]): void {
+        if (!numbers || numbers.length === 0) {
+            return;
+        }
+        this._finished = false;
+        this.resetRound();
+        this._dealNumbers = numbers.slice();
+        this.applyDealNumbers(this._dealNumbers);
     }
 
     /**
@@ -490,6 +513,8 @@ export class CompCtrl extends FGUICompCtrl {
         submitAnswer(this._exprs[lastIdx], this._dealNumbers, (result) => {
             if (result.code === 1) {
                 TipsView.showView({ content: "回答正确" });
+                // 竞速模式：换题/进度全部由 raceQuestion/raceProgress 推送驱动（且推送先于本 response 到达），
+                // response 不驱动 UI 状态，这里不改 _finished/进度计数，避免与推送重复计数或提前锁板
             } else {
                 TipsView.showView({ content: result.msg || "回答错误" });
                 // 本地预校验未通过（核实结果不等于24等）：自动执行重置接口，恢复发牌初始状态以便重新作答

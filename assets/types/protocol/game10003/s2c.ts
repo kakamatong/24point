@@ -57,6 +57,23 @@ export interface ScoreInfo {
     delta: number;
 }
 
+/** 竞速玩家进度 */
+export interface RaceProgressInfo {
+    seat: number;
+    questionIndex: number;
+    finishedCount: number;
+    usedTimeMs: number;
+    status: number;
+}
+
+/** 竞速排名 */
+export interface RaceRankingInfo {
+    seat: number;
+    finishedCount: number;
+    usedTimeMs: number;
+    rank: number;
+}
+
 /** 服务器消息 - 请求参数 */
 export interface SvrmsgRequest {
     type: string;
@@ -141,6 +158,8 @@ export interface PrivateinfoRequest {
     nowCnt: number;
     maxCnt: number;
     ext: string;
+    playMode: number;
+    totalQuestions: number;
 }
 
 /** gameRecord 协议请求参数 - 请求参数 */
@@ -208,6 +227,28 @@ export interface GameendRequest {
 /** 游戏重连恢复 - 请求参数 */
 export interface GamerelinkRequest {
     startTime: number;
+}
+
+/** 竞速题目下发（只单发本人当前题） - 请求参数 */
+export interface RacequestionRequest {
+    questionIndex: number;
+    totalQuestions: number;
+    numbers: number[];
+    startTime: number;
+    timeLimit: number;
+}
+
+/** 竞速进度快照（每次推进全量广播，重连补发同一份） - 请求参数 */
+export interface RaceprogressRequest {
+    players: RaceProgressInfo[];
+}
+
+/** 竞速结束（跳过小结算，客户端直接进大结算） - 请求参数 */
+export interface RacefinishRequest {
+    endType: number;
+    winnerSeat: number;
+    questionCount: number;
+    rankings: RaceRankingInfo[];
 }
 
 export namespace SprotoSvrMsg {
@@ -334,4 +375,22 @@ export namespace SprotoGameRelink {
     export const Name = "gameRelink";
     export type Request = GamerelinkRequest;
     export type Response = undefined;  // gameRelink 协议没有响应参数
+}
+
+export namespace SprotoRaceQuestion {
+    export const Name = "raceQuestion";
+    export type Request = RacequestionRequest;
+    export type Response = undefined;  // raceQuestion 协议没有响应参数
+}
+
+export namespace SprotoRaceProgress {
+    export const Name = "raceProgress";
+    export type Request = RaceprogressRequest;
+    export type Response = undefined;  // raceProgress 协议没有响应参数
+}
+
+export namespace SprotoRaceFinish {
+    export const Name = "raceFinish";
+    export type Request = RacefinishRequest;
+    export type Response = undefined;  // raceFinish 协议没有响应参数
 }
