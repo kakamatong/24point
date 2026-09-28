@@ -1320,7 +1320,7 @@ export class CompGameMain extends FGUICompGameMain {
             return;
         }
         // 自己：第X题 共N题（题号越界收敛到 [1, N]）
-        const myIndex = Math.max(1, Math.min(GameData.instance.raceQuestionIndex || 1, total));
+        const myIndex = GameData.instance.gameStart ? Math.max(1, Math.min(GameData.instance.raceQuestionIndex || 1, total)) : 0;
         if (this.UI_TXT_PROGRESS) {
             this.UI_TXT_PROGRESS.text = `第${myIndex}题 共${total}题`;
         }
