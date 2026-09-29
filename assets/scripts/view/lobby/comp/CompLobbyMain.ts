@@ -374,7 +374,7 @@ export class CompLobbyMain extends FGUICompLobbyMain {
      * 点击分享
      */
     onBtnShare(): void {
-        MiniGameUtils.instance.shareAppMessage({ title: "约上好友来一局连连看吧", imageUrl: LOBBY_SHARE_PIC_URL, query: "" });
+        MiniGameUtils.instance.shareAppMessage({ title: "约上好友来一局24点速算吧", imageUrl: LOBBY_SHARE_PIC_URL, query: "" });
     }
 
     /**
