@@ -419,7 +419,7 @@ export class CompGameMain extends FGUICompGameMain {
      * @private
      */
     private checkShowContinueBtn(): void {
-        if (GameData.instance.isPrivateRoom || GameData.instance.gameStart) {
+        if (GameData.instance.isPrivateRoom || GameData.instance.isLocalGame || GameData.instance.gameStart) {
             // 已开局/非私人房：在途标记已无意义（可能卡在应答丢失里），同步释放
             this.showContinueBtn(false);
             return;
