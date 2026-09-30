@@ -60,6 +60,10 @@ export class TipsView extends FGUITipsView {
             });
     }
 
+    public static hideView(): void {
+        TipsView.instance && TipsView.instance.dispose();
+    }
+
     /**
      * @description 创建提示消息
      * @param data 提示数据
@@ -69,13 +73,16 @@ export class TipsView extends FGUITipsView {
         this._tipList.push(tip);
         tip.title.text = data.content;
         this.UI_LV_TIPS.addChild(tip);
-        fgui.GTween.to(1, 0, 1)
-            .setDelay(2)
-            .setTarget(tip, "alpha")
-            .onComplete(() => {
-                tip && tip.dispose();
-                this._tipList = this._tipList.filter((t) => t !== tip);
-            });
+        // 延迟0.1秒后开始动画，否则动画会不执行
+        this.scheduleOnce(() => {
+            fgui.GTween.to(1, 0, 1)
+                .setDelay(2)
+                .setTarget(tip, "alpha")
+                .onComplete(() => {
+                    tip && tip.dispose();
+                    this._tipList = this._tipList.filter((t) => t !== tip);
+                });
+        }, 0.05);
     }
 
     /**
@@ -86,7 +93,7 @@ export class TipsView extends FGUITipsView {
             fgui.GTween.kill(tip);
         }
         this._tipList = [];
-        FGUITipsView.instance = null;
+        TipsView.instance = null;
     }
 }
 fgui.UIObjectFactory.setExtension(TipsView.URL, TipsView);
