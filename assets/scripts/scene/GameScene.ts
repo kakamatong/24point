@@ -6,6 +6,7 @@ import { PackageManager } from "@frameworks/PackageManager";
 import { Logger } from "@frameworks/utils/Utils";
 import { GmView } from "@view/gm/GmView";
 import { DataCenter } from "@datacenter/Datacenter";
+import { FGUI_PACKAGE } from "@datacenter/PackageConfig";
 const { ccclass } = _decorator;
 
 @ccclass("GameScene")
@@ -30,9 +31,9 @@ export class GameScene extends Component {
 
     initGM() {
         PackageManager.instance
-            .loadPackages("fgui", ["common", "gm"])
+            .loadPackages("fgui", [FGUI_PACKAGE.COMMON, FGUI_PACKAGE.GM])
             .then(() => {
-                const gm = fgui.UIPackage.createObject("gm", "BtnGm") as fgui.GButton;
+                const gm = fgui.UIPackage.createObject(FGUI_PACKAGE.GM, "BtnGm") as fgui.GButton;
                 if (!gm) {
                     Logger.error("create gm error");
                     return;

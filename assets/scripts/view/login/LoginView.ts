@@ -12,6 +12,7 @@ import { LobbyView } from "../lobby/LobbyView";
 import { PrivacyView } from "../privacy/PrivacyView";
 import { MiniGameUtils } from "@frameworks/utils/sdk/MiniGameUtils";
 import { PackageLoad, ViewClass } from "@frameworks/Framework";
+import { FGUI_PACKAGE } from "@datacenter/PackageConfig";
 
 /**
  * @class LoginView
@@ -19,7 +20,7 @@ import { PackageLoad, ViewClass } from "@frameworks/Framework";
  * @category 登录视图
  */
 @ViewClass()
-@PackageLoad(["common", , "lobbyBg"])
+@PackageLoad([FGUI_PACKAGE.COMMON, FGUI_PACKAGE.LOBBY_BG])
 export class LoginView extends FGUILoginView {
     /**
      * @description 显示登录视图

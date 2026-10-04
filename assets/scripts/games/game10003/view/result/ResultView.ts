@@ -15,6 +15,7 @@ import { DataCenter } from "@datacenter/Datacenter";
 import { TruncateString } from "@frameworks/utils/Utils";
 import { ScoreInfo, SprotoGameEnd } from "../../../../../types/protocol/game10003/s2c";
 import { END_TYPE } from "../../logic/GameRoundConfig";
+import { FGUI_PACKAGE } from "@datacenter/PackageConfig";
 
 /**
  * @interface RESULT_VIEW_PARAMS
@@ -58,7 +59,7 @@ interface RESULT_ITEM_DATA {
  * @category 游戏 10003
  */
 @ViewClass()
-@PackageLoad(["gameCommon"])
+@PackageLoad([FGUI_PACKAGE.GAME_COMMON])
 export class ResultView extends FGUIResultView {
     /**
      * @property {(() => void) | null} _continueFunc - 继续游戏回调

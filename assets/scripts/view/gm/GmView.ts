@@ -7,8 +7,9 @@
 import FGUIGmView from "@fgui/gm/FGUIGmView";
 import { PackageLoad, ViewClass } from "@frameworks/Framework";
 import * as fgui from "fairygui-cc";
+import { FGUI_PACKAGE } from "@datacenter/PackageConfig";
 
-@PackageLoad(["gm"])
+@PackageLoad([FGUI_PACKAGE.GM])
 @ViewClass()
 export class GmView extends FGUIGmView {}
 fgui.UIObjectFactory.setExtension(GmView.URL, GmView);

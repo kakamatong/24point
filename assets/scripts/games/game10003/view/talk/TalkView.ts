@@ -6,8 +6,9 @@ import { TALK_LIST, FORWARD_MESSAGE_TYPE } from "./TalkConfig";
 import { SprotoForwardMessage } from "../../../../../types/protocol/game10003/c2s";
 import * as fgui from "fairygui-cc";
 import { Logger } from "@frameworks/utils/Utils";
+import { FGUI_PACKAGE } from "@datacenter/PackageConfig";
 
-@PackageLoad(["props"])
+@PackageLoad([FGUI_PACKAGE.PROPS])
 @ViewClass()
 export class TalkView extends FGUITalkView {
     show(data?: any) {

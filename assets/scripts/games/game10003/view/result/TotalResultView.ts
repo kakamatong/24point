@@ -7,9 +7,10 @@ import { TruncateString } from "@frameworks/utils/Utils";
 import { SprotoTotalResult } from "../../../../../types/protocol/game10003/s2c";
 import FGUICompTotalResultInfo from "@fgui/game10003Result/FGUICompTotalResultInfo";
 import FGUICompMedal from "@fgui/gameCommon/FGUICompMedal";
+import { FGUI_PACKAGE } from "@datacenter/PackageConfig";
 
 @ViewClass()
-@PackageLoad(["gameCommon"])
+@PackageLoad([FGUI_PACKAGE.GAME_COMMON])
 export class TotalResultView extends FGUITotalResultView {
     private _data: any | null = null;
     show(data?: SprotoTotalResult.Request) {

@@ -7,13 +7,14 @@
 import * as fgui from "fairygui-cc";
 import { PackageLoad, ViewClass } from "@frameworks/Framework";
 import FGUISignInView from "@fgui/signIn/FGUISignInView";
+import { FGUI_PACKAGE } from "@datacenter/PackageConfig";
 
 /**
  * @class SignInView
  * @description 签到视图，显示签到界面
  * @category 签到视图
  */
-@PackageLoad(["props"])
+@PackageLoad([FGUI_PACKAGE.PROPS])
 @ViewClass()
 export class SignInView extends FGUISignInView {
     /**

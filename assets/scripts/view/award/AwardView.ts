@@ -8,6 +8,7 @@ import FGUIAwardView from "@fgui/award/FGUIAwardView";
 import { PackageLoad, ViewClass } from "@frameworks/Framework";
 import * as fgui from "fairygui-cc";
 import { AwardConfig } from "./data/AwardConfig";
+import { FGUI_PACKAGE } from "@datacenter/PackageConfig";
 
 /**
  * @class AwardView
@@ -15,7 +16,7 @@ import { AwardConfig } from "./data/AwardConfig";
  * @category 奖励视图
  */
 @ViewClass()
-@PackageLoad(["props"])
+@PackageLoad([FGUI_PACKAGE.PROPS])
 export class AwardView extends FGUIAwardView {
     /**
      * @description 显示奖励视图

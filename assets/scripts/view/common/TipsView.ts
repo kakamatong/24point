@@ -11,6 +11,7 @@ import * as fgui from "fairygui-cc";
 import { ViewClass } from "@frameworks/Framework";
 import { Logger } from "@frameworks/utils/Utils";
 import { PackageManager } from "@frameworks/PackageManager";
+import { FGUI_PACKAGE } from "@datacenter/PackageConfig";
 
 /**
  * @class TipsView
@@ -33,7 +34,7 @@ export class TipsView extends FGUITipsView {
         }
 
         const createView = () => {
-            const view = fgui.UIPackage.createObject("common", "TipsView") as TipsView;
+            const view = fgui.UIPackage.createObject(FGUI_PACKAGE.COMMON, "TipsView") as TipsView;
 
             view.makeFullScreen();
             TipsView.instance = view;
@@ -69,7 +70,7 @@ export class TipsView extends FGUITipsView {
      * @param data 提示数据
      */
     createTip(data: any) {
-        const tip = fgui.UIPackage.createObject("common", "CompTips") as FGUICompTips;
+        const tip = fgui.UIPackage.createObject(FGUI_PACKAGE.COMMON, "CompTips") as FGUICompTips;
         this._tipList.push(tip);
         tip.title.text = data.content;
         this.UI_LV_TIPS.addChild(tip);

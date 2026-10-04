@@ -8,6 +8,7 @@ import { SoundManager } from "@frameworks/SoundManager";
 import { Logger } from "@frameworks/utils/Utils";
 import { PackageManager } from "@frameworks/PackageManager";
 import { GmView } from "@view/gm/GmView";
+import { FGUI_PACKAGE } from "@datacenter/PackageConfig";
 const { ccclass } = _decorator;
 // 开启动态合批，减少drawcall，但是内存占用会增加
 macro.CLEANUP_IMAGE_CACHE = false;
@@ -50,9 +51,9 @@ export class LobbyScreen extends Component {
 
     initGM() {
         PackageManager.instance
-            .loadPackages("fgui", ["common", "gm"])
+            .loadPackages("fgui", [FGUI_PACKAGE.COMMON, FGUI_PACKAGE.GM])
             .then(() => {
-                const gm = fgui.UIPackage.createObject("gm", "BtnGm") as fgui.GButton;
+                const gm = fgui.UIPackage.createObject(FGUI_PACKAGE.GM, "BtnGm") as fgui.GButton;
                 if (!gm) {
                     Logger.error("create gm error");
                     return;

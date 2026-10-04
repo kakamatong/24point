@@ -9,8 +9,9 @@ import { PackageLoad, ViewClass } from "@frameworks/Framework";
 import * as fgui from "fairygui-cc";
 import { UserEnergy } from "@modules/UserEnergy";
 import { GmView } from "../GmView";
+import { FGUI_PACKAGE } from "@datacenter/PackageConfig";
 
-@PackageLoad(["gm"])
+@PackageLoad([FGUI_PACKAGE.GM])
 @ViewClass()
 export class CompGm extends FGUICompGm {
     onBtnEnergyAdd(): void {
