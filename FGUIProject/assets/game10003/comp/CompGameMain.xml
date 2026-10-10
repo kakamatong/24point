@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <component size="776,1688">
-  <controller name="ctrl_roomtype" pages="0,,1,,2," selected="1">
+  <controller name="ctrl_roomtype" pages="0,,1,,2," selected="0">
     <remark page="0" value="普通房"/>
     <remark page="1" value="私人房"/>
     <remark page="2" value="单机房"/>
+  </controller>
+  <controller name="ctrl_playmode" pages="0,,1," selected="1">
+    <remark page="0" value="普通模式"/>
+    <remark page="1" value="竞速模式"/>
   </controller>
   <displayList>
     <component id="n32_lede" name="UI_BTN_DISBAND" src="is91n" fileName="comp/CompBtnCommon.xml" pkg="gj0r6g5i" xy="135,9" size="207,84" controller="ctrl_color,2">
@@ -66,7 +70,8 @@
       <relation target="" sidePair="center-center,middle-middle"/>
     </component>
     <group id="n29_p2bl" name="n29" xy="23,961" size="735,125"/>
-    <text id="n30_p2bl" name="UI_TXT_HINT" xy="236,459" pivot="0.5,0.5" size="304,66" visible="false" fontSize="50" color="#ffffff" text="等待其他玩家">
+    <text id="n30_p2bl" name="UI_TXT_HINT" xy="236,346" pivot="0.5,0.5" size="304,66" visible="false" fontSize="50" color="#ffffff" text="等待其他玩家">
+      <gearXY controller="ctrl_playmode" pages="1" values="236,346" default="236,459"/>
       <relation target="" sidePair="center-center,middle-middle"/>
     </text>
     <component id="n0_h3uk" name="n0" src="h3uk1c" fileName="comp/CompDisband.xml" xy="13,0" visible="false"/>

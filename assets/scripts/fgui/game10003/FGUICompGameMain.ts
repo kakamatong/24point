@@ -14,6 +14,7 @@ import { Logger } from "@frameworks/utils/Utils";
 export default class FGUICompGameMain extends fgui.GComponent {
 
 	public ctrl_roomtype:fgui.Controller;
+	public ctrl_playmode:fgui.Controller;
 	public UI_BTN_DISBAND:fgui.GButton;
 	public UI_COMP_CTRL:FGUICompCtrl;
 	public UI_BTN_INVITE:fgui.GButton;
@@ -108,6 +109,7 @@ export default class FGUICompGameMain extends fgui.GComponent {
 
 	protected onConstruct():void {
 		this.ctrl_roomtype = this.getControllerAt(0);
+		this.ctrl_playmode = this.getControllerAt(1);
 		this.UI_BTN_DISBAND = <fgui.GButton>(this.getChildAt(0));
 		this.UI_BTN_DISBAND.onClick(this.onBtnDisband, this);
 		this.UI_COMP_CTRL = <FGUICompCtrl>(this.getChildAt(1));

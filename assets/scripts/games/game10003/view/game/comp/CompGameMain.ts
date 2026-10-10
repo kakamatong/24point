@@ -1061,6 +1061,7 @@ export class CompGameMain extends FGUICompGameMain {
             if (GameData.instance.isRaceMode()) {
                 // 竞速模式：顶部进度显示题目进度（第X题 共N题），不显示局数
                 this.refreshRaceProgress();
+                this.ctrl_playmode.selectedIndex = 1; // 竞速模式界面变化
             } else if (data.maxCnt === 9999) {
                 this.UI_TXT_PROGRESS.text = `第${data.nowCnt ?? 0}局 无限局`;
             } else {
@@ -1257,7 +1258,6 @@ export class CompGameMain extends FGUICompGameMain {
         if (!data) {
             return;
         }
-        GameData.instance.playMode = 1;
         GameData.instance.raceEnded = true;
         GameData.instance.raceSelfFinished = true;
         // 锁操作 + 停倒计时 + 清提示
