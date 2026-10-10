@@ -1205,7 +1205,7 @@ export class CompGameMain extends FGUICompGameMain {
         if (!data || !data.numbers || data.numbers.length === 0) {
             return;
         }
-        GameData.instance.playMode = 1;
+
         if (data.totalQuestions > 0) {
             GameData.instance.raceTotalQuestions = data.totalQuestions;
         }
@@ -1323,6 +1323,7 @@ export class CompGameMain extends FGUICompGameMain {
         const myIndex = GameData.instance.gameStart ? Math.max(1, Math.min(GameData.instance.raceQuestionIndex || 1, total)) : 0;
         if (this.UI_TXT_PROGRESS) {
             this.UI_TXT_PROGRESS.text = `第${myIndex}题 共${total}题`;
+            GameData.instance.gameStart && this.showHint(true, `第${myIndex}题`);
         }
 
         // 其他玩家：每人组件进度文本「X/N」
