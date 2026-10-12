@@ -63,6 +63,8 @@ export class CompCtrl extends FGUICompCtrl {
     private static readonly _DEAL_ANIM_DUR: number = 0.35;
     /** 发牌入场动画：相邻卡片错峰延迟(秒) */
     private static readonly _DEAL_ANIM_STAGGER: number = 0.08;
+    /** 发牌动画 tween 的类型标识：GTweener 是全局池化对象，必须靠"目标+类型"成对标识后续精确 kill */
+    private static readonly _DEAL_TWEEN_KEY: string = "compCtrlDealAnim";
 
     /**
      * @description 组件初始化：缓存按钮/布局位置、默认不选中、监听发牌协议
@@ -255,53 +257,81 @@ export class CompCtrl extends FGUICompCtrl {
             btn.setPosition(cx, cy);
             btn.setScale(0, 0);
             btn.alpha = 0;
+            // 三个 tween 并行；统一 setTarget(btn, _DEAL_TWEEN_KEY)：
+            // 一来可被 clearDealTweens 按"目标+类型"精确终止，二来按钮销毁后引擎会自动回收该 tween。
             // 位移：从中心原点飞向各自卡位（QuartOut 缓出）
-            const posTween = fgui.GTween.to2(cx, cy, target.x, target.y, dur)
-                .setDelay(delay)
-                .setEase(fgui.EaseType.QuartOut)
-                .onUpdate((tween) => {
-                    btn.setPosition(tween.value.x, tween.value.y);
-                })
-                .onComplete(() => {
-                    this.onDealAnimCardDone();
-                });
+            this._dealTweens.push(
+                fgui.GTween.to2(cx, cy, target.x, target.y, dur)
+                    .setDelay(delay)
+                    .setEase(fgui.EaseType.QuartOut)
+                    .setTarget(btn, CompCtrl._DEAL_TWEEN_KEY)
+                    .onUpdate((tween) => {
+                        btn.setPosition(tween.value.x, tween.value.y);
+                    })
+                    .onComplete((tween) => {
+                        this.onDealAnimCardDone(tween);
+                    })
+            );
             // 缩放：0→1 BackOut 轻微回弹放大
-            const scaleTween = fgui.GTween.to2(0, 0, 1, 1, dur)
-                .setDelay(delay)
-                .setEase(fgui.EaseType.BackOut)
-                .onUpdate((tween) => {
-                    btn.setScale(tween.value.x, tween.value.y);
-                });
+            this._dealTweens.push(
+                fgui.GTween.to2(0, 0, 1, 1, dur)
+                    .setDelay(delay)
+                    .setEase(fgui.EaseType.BackOut)
+                    .setTarget(btn, CompCtrl._DEAL_TWEEN_KEY)
+                    .onUpdate((tween) => {
+                        btn.setScale(tween.value.x, tween.value.y);
+                    })
+            );
             // 淡入（QuadOut，alpha 不超过1）
-            const alphaTween = fgui.GTween.to2(0, 0, 1, 1, dur)
-                .setDelay(delay)
-                .setEase(fgui.EaseType.QuadOut)
-                .onUpdate((tween) => {
-                    btn.alpha = tween.value.x;
-                });
-            this._dealTweens.push(posTween, scaleTween, alphaTween);
+            this._dealTweens.push(
+                fgui.GTween.to2(0, 0, 1, 1, dur)
+                    .setDelay(delay)
+                    .setEase(fgui.EaseType.QuadOut)
+                    .setTarget(btn, CompCtrl._DEAL_TWEEN_KEY)
+                    .onUpdate((tween) => {
+                        btn.alpha = tween.value.x;
+                    })
+            );
         }
     }
 
     /**
-     * @description 单张卡片入场动画结束回调：全部卡片完成（含错峰）后解除输入锁定
+     * @description 单张卡片入场动画结束回调：该卡片三个 tween 中最晚完成的位移 tween 走到这里，
+     *              先把三个 tween 引用从列表中摘除（GTweener 是引擎全局池化对象，绝不能在动画结束后
+     *              继续持有引用 —— 它可能已被别处的 GTween.to2 借走，再 kill 会误杀别人的动画），
+     *              全部卡片完成（含错峰）后再解除输入锁定
+     * @param {fgui.GTweener} tween - 已完成位移 tween，其 endValue.x 记录本次牌位
      * @private
      */
-    private onDealAnimCardDone(): void {
+    private onDealAnimCardDone(tween: fgui.GTweener): void {
+        // 位移 tween 是单卡三个 tween 中最后完成的（缩放/淡入都是 delay+dur，位移含 delay 且不早于二者）
+        const posX = tween.endValue.x;
+        const idx = this._numBtnPos.findIndex((pos) => pos.x === posX);
+        for (let i = this._dealTweens.length - 1; i >= 0; i--) {
+            const t = this._dealTweens[i];
+            if (!t) {
+                continue;
+            }
+            if (idx >= 0 && t.target === this._numBtns[idx]) {
+                this._dealTweens.splice(i, 1);
+            }
+        }
         this._dealAnimCount--;
         if (this._dealAnimCount <= 0) {
             this._dealAnimCount = 0;
+            this._dealTweens = [];
             this._busy = false;
         }
     }
 
     /**
-     * @description 清理全部进行中的入场动画（新发牌/重置/销毁时调用）
+     * @description 清理全部进行中的入场动画（新发牌/重置/销毁时调用）。
+     *              按"目标按钮 + 类型标识"精确终止，避免持有池化 GTweener 引用后误杀其他模块的 tween
      * @private
      */
     private clearDealTweens(): void {
-        for (const t of this._dealTweens) {
-            t.kill();
+        for (const btn of this._numBtns) {
+            fgui.GTween.kill(btn, false, CompCtrl._DEAL_TWEEN_KEY);
         }
         this._dealTweens = [];
         this._dealAnimCount = 0;
