@@ -43,6 +43,7 @@ import {
     SprotoLeaveRoom,
     SprotoOwnerStartGame,
     SprotoVoteDisbandRoom,
+    SprotoChangeQuestion,
 } from "../../../../../../types/protocol/game10003/c2s";
 import { PopMessageView } from "@view/common/PopMessageView";
 import { TipsView } from "@view/common/TipsView";
@@ -51,7 +52,7 @@ import { CompPlayers } from "./CompPlayers";
 import { CompCtrl } from "./CompCtrl";
 import { CompPlayerHead } from "./CompPlayerHead";
 import { CompTimeLeft } from "./CompTimeLeft";
-import { FORWARD_MESSAGE_TYPE, GAME_PLAYER_INFO, PLAYER_STATUS, ROOM_END_FLAG, ROOM_TYPE } from "@game10003/data/InterfaceGameConfig";
+import { FORWARD_MESSAGE_TYPE, GAME_PLAYER_INFO, PLAYER_STATUS, ROOM_END_FLAG, ROOM_TYPE, ENUM_GAME_STEP } from "@game10003/data/InterfaceGameConfig";
 import { SoundManager } from "@frameworks/SoundManager";
 import FGUICompMedal from "@fgui/gameCommon/FGUICompMedal";
 import { UserStatus } from "@modules/UserStatus";
@@ -370,6 +371,8 @@ export class CompGameMain extends FGUICompGameMain {
      * @private
      */
     private refreshGameBtns(): void {
+        // 「换一题」仅单机可见，与房型无关，统一在按钮刷新入口收敛
+        this.refreshChangeBtn();
         if (GameData.instance.isPrivateRoom) {
             this.checkShowReadyBtn();
             this.checkShowStartGameBtn();
@@ -429,7 +432,7 @@ export class CompGameMain extends FGUICompGameMain {
     }
 
     /**
-     * @method showReadyBtn
+     * @method showContinueBtn
      * @description 显示或隐藏继续按钮
      * @param {boolean} bshow - 是否显示
      * @private
@@ -455,6 +458,38 @@ export class CompGameMain extends FGUICompGameMain {
      */
     private showReadyBtn(bshow: boolean): void {
         this.UI_BTN_READY.visible = bshow;
+    }
+
+    /**
+     * @method refreshChangeBtn
+     * @description 刷新「换一题」按钮显隐：仅单机模式、且本局已发牌（START/PLAYING 阶段）时显示，
+     *              对局结束后收起。单机由 LocalSvr 直接换题重发，非单机模式一律不显示（联网换题需服务端支持）
+     * @private
+     */
+    private refreshChangeBtn(): void {
+        const isLocal = GameData.instance.isLocalGame;
+        const step = GameData.instance.gameStep;
+        const inRound = step === ENUM_GAME_STEP.START || step === ENUM_GAME_STEP.PLAYING;
+        this.UI_BTN_CHANGE.visible = isLocal && inRound && this.UI_COMP_CTRL.visible;
+    }
+
+    /**
+     * @method onBtnChange
+     * @description 点击「换一题」：单机模式下请求服务端换题，牌面由服务端 dealCards 推送驱动重铺
+     * @public 由 FGUI 基类 onClick 绑定调用（UI_BTN_CHANGE）
+     */
+    onBtnChange(): void {
+        if (!GameData.instance.isLocalGame) {
+            return;
+        }
+        if (!GameData.instance.canChangeQuestion()) {
+            return;
+        }
+        GameSocketManager.instance.sendToServer(SprotoChangeQuestion, {}, (response: SprotoChangeQuestion.Response) => {
+            if (!response || response.code !== 1) {
+                TipsView.showView({ content: response?.msg || "换题失败" });
+            }
+        });
     }
 
     /**
@@ -686,6 +721,8 @@ export class CompGameMain extends FGUICompGameMain {
         for (let index = 0; index < GameData.instance.maxPlayer; index++) {
             this.showSignReady(index + 1, false);
         }
+
+        this.refreshChangeBtn();
     }
 
     /**
@@ -847,6 +884,9 @@ export class CompGameMain extends FGUICompGameMain {
             (this.UI_COMP_CTRL as CompCtrl)?.showFinishedResult();
             // 匹配房/私人房本局还有别的玩家在解题，提示等待其他玩家（单机房无需等待）
             this.showHint(!GameData.instance.isLocalGame);
+            // 单机答对后本局仍在本阶段（stepId 未变），按钮显隐不会自动刷新；重新评估一次，
+            // canChangeQuestion 允许答对后继续换题，故此处按钮保持显示
+            this.refreshChangeBtn();
             return;
         }
 
@@ -1205,6 +1245,8 @@ export class CompGameMain extends FGUICompGameMain {
      */
     onSvrStepId(data: SprotoStepId.Request) {
         GameData.instance.gameStep = data.step;
+        // 阶段变化驱动「换一题」按钮：START/PLAYING（本局有牌）显示，END 结束收起
+        this.refreshChangeBtn();
     }
 
     /**

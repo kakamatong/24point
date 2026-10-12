@@ -23,6 +23,7 @@ import {
     SprotoVoteDisbandResponse,
     SprotoForwardMessage,
     SprotoSubmitAnswer,
+    SprotoChangeQuestion,
 } from "../../types/protocol/game10003/c2s";
 import {
     SprotoRoomInfo,
@@ -119,6 +120,7 @@ export class LocalSvr {
 
         AddEventListener(SprotoClientReady.Name, this.onClientReady, this);
         AddEventListener(SprotoSubmitAnswer.Name, this.onSubmitAnswer, this);
+        AddEventListener(SprotoChangeQuestion.Name, this.onChangeQuestion, this);
         AddEventListener(SprotoGameReady.Name, this.onGameReady, this);
         AddEventListener(SprotoLeaveRoom.Name, this.onLeaveRoom, this);
         AddEventListener(SprotoOwnerStartGame.Name, this.onOwnerStartGame, this);
@@ -135,6 +137,7 @@ export class LocalSvr {
     destroy(): void {
         RemoveEventListener(SprotoClientReady.Name, this.onClientReady);
         RemoveEventListener(SprotoSubmitAnswer.Name, this.onSubmitAnswer);
+        RemoveEventListener(SprotoChangeQuestion.Name, this.onChangeQuestion);
         RemoveEventListener(SprotoGameReady.Name, this.onGameReady);
         RemoveEventListener(SprotoLeaveRoom.Name, this.onLeaveRoom);
         RemoveEventListener(SprotoOwnerStartGame.Name, this.onOwnerStartGame);
@@ -235,6 +238,43 @@ export class LocalSvr {
 
         // 响应在收尾推送之后返回（对齐 logic.lua 答对路径：广播→结束流程→return 响应）
         this.dispatchEventResp(SprotoSubmitAnswer.Name, { code: 1, msg: "回答正确", rank: 1 });
+    }
+
+    /**
+     * 换一题：单机专属（「换一题」按钮只在单机模式显示）。
+     * 不推进局号（_roundNum 保持本局，仅换题不算新的一局），只做两件事：
+     *   ① 重置本局答题进度（finished=false）——否则换题后提交会被"本局已答对，不能重复提交"挡掉；
+     *   ② 重新发牌，推送 dealCards{roundNum, numbers, timeLimit, startTime}。
+     * 答题阶段换题时额外重推 stepId{PLAYING}，确保客户端答题阶段标志与 UI 显隐重新收敛。
+     * 换题后本局以新牌重新计时（dealStartMs 重打点），旧牌上已完成的运算在客户端被重置丢弃。
+     * @param {any} _data - 无请求参数（占位，保持与服务端协议同形）
+     */
+    onChangeQuestion(_data: any): void {
+        const inRound = this._stepId !== GAME_STEP.NONE;
+        if (!inRound && this._dealNumbers.length === 0) {
+            // 尚未开过局：无牌可换，直接拒绝
+            this.dispatchEventResp(SprotoChangeQuestion.Name, { code: 0, msg: "当前没有进行中的题目" });
+            return;
+        }
+        // 换题视为"重开本局答题"：进度清零，避免换题后提交被判为重复提交
+        this._progress = LocalSvr.createProgress();
+
+        if (!inRound) {
+            // 本局已结束（END 收尾后 stepId 回 NONE）：完整重开一局
+            Logger.log("[LocalSvr] 换一题（本局已结束，重开一局）");
+            this._startRound();
+            this.dispatchEventResp(SprotoChangeQuestion.Name, { code: 1, msg: "success" });
+            return;
+        }
+
+        if (this._stepId === GAME_STEP.PLAYING) {
+            // 答题阶段换题：先重推阶段，再发新牌
+            this._startStep(GAME_STEP.PLAYING);
+        }
+        this._startStepStart();
+
+        Logger.log(`[LocalSvr] 换一题完成，第${this._roundNum}局新牌面 [${this._dealNumbers.join(",")}]`);
+        this.dispatchEventResp(SprotoChangeQuestion.Name, { code: 1, msg: "success" });
     }
 
     /**

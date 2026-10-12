@@ -98,6 +98,12 @@ export interface SubmitanswerResponse {
     rank: number;
 }
 
+/** 换一题（单机模式：由 LocalSvr 直接换题重新发牌；联网模式需服务端实现，当前客户端不发送） - 响应参数 */
+export interface ChangequestionResponse {
+    code: number;
+    msg: string;
+}
+
 export namespace SprotoCall {
     export const Name = "call";
     export type Request = CallRequest;
@@ -156,4 +162,10 @@ export namespace SprotoSubmitAnswer {
     export const Name = "submitAnswer";
     export type Request = SubmitanswerRequest;
     export type Response = SubmitanswerResponse;
+}
+
+export namespace SprotoChangeQuestion {
+    export const Name = "changeQuestion";
+    export type Request = undefined;  // changeQuestion 协议没有请求参数
+    export type Response = ChangequestionResponse;
 }

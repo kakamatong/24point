@@ -401,4 +401,17 @@ export class GameData {
     canOperateRace(): boolean {
         return this.isRaceMode() && !this._raceEnded && !this._raceSelfFinished && this._raceQuestionIndex > 0;
     }
+
+    /**
+     * @method canChangeQuestion
+     * @description 是否允许换一题：单机专属，且本局已发牌（START/PLAYING 阶段）。
+     *              与 canOperate 不同，答对后（自己已完成）仍允许换题，用于单机继续练习
+     * @returns {boolean} true 表示可请求换题
+     */
+    canChangeQuestion(): boolean {
+        if (!this._isLocalGame || !this._gameStart) {
+            return false;
+        }
+        return this._gameStep === ENUM_GAME_STEP.START || this._gameStep === ENUM_GAME_STEP.PLAYING;
+    }
 }

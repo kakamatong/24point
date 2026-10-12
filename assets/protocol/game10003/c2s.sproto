@@ -122,3 +122,13 @@ submitAnswer 21 {
         rank 2 : integer       # 排名（答对时为1）
     }
 }
+
+# 换一题（单机模式：由 LocalSvr 直接换题重新发牌；联网模式需服务端实现，当前客户端不发送）
+changeQuestion 22 {
+    request {
+    }
+    response {
+        code 0 : integer       # 1:换题成功, 0:失败（如当前没有进行中的题目）
+        msg 1 : string         # 错误信息
+    }
+}
