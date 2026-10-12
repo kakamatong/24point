@@ -19,30 +19,27 @@ export class UserData extends BaseModule {
     static get instance(): UserData {
         return this._getInstance<UserData>(UserData);
     }
+
     /**
      * @method req
-     * @description 请求用户数据，向服务器发送用户数据请求
+     * @description 请求用户数据：await 直接拿到响应，同时更新数据中心并派发事件
+     * @returns {Promise<SprotoUserData.Response>} 服务器返回的用户数据
      */
-    req() {
-        this.reqLobby(SprotoUserData, { userid: DataCenter.instance.userid }, this.resp.bind(this));
-    }
-
-    /**
-     * @method resp
-     * @description 处理用户数据响应，更新本地数据并发送事件通知
-     * @param {any} data - 服务器返回的用户数据
-     */
-    resp(data: SprotoUserData.Response) {
+    async req(): Promise<SprotoUserData.Response> {
+        const data = await this.callLobby<SprotoUserData.Response>(SprotoUserData, { userid: DataCenter.instance.userid });
         DataCenter.instance.userData = data;
         DispatchEvent(EVENT_NAMES.USER_DATA, data);
+        return data;
     }
 
     /**
+     * @method updateUserNameAndHeadurl
      * @description 更新用户昵称和头像
-     * @param nickname 用户昵称
-     * @param headurl 头像地址
+     * @param {string} nickname - 用户昵称
+     * @param {string} headurl - 头像地址
+     * @returns {Promise<SprotoUpdateUserNameAndHeadurl.Response>} 服务器返回的更新结果
      */
-    updateUserNameAndHeadurl(nickname: string, headurl: string) {
-        this.reqLobby(SprotoUpdateUserNameAndHeadurl, { nickname: nickname, headurl: headurl });
+    async updateUserNameAndHeadurl(nickname: string, headurl: string): Promise<SprotoUpdateUserNameAndHeadurl.Response> {
+        return this.callLobby<SprotoUpdateUserNameAndHeadurl.Response>(SprotoUpdateUserNameAndHeadurl, { nickname: nickname, headurl: headurl });
     }
 }

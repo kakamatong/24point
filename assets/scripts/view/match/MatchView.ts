@@ -77,15 +77,26 @@ export class MatchView extends FGUIMatchView {
                 callBack
             );
         } else {
-            const func = (b: boolean, data?: any) => {
-                if (b) {
-                    // 显示匹配view
-                    MatchView.hideView();
-                } else {
-                    PopMessageView.showView({ title: "温馨提示", content: "离开匹配失败！", type: ENUM_POP_MESSAGE_TYPE.NUM1SURE });
-                }
-            };
-            Match.instance.reqLeave(func);
+            void this.reqLeaveMatch();
+        }
+    }
+
+    /**
+     * @method reqLeaveMatch
+     * @description 请求退出匹配：成功直接关闭匹配界面，失败弹提示
+     * @private
+     */
+    private async reqLeaveMatch(): Promise<void> {
+        try {
+            const result = await Match.instance.reqLeave();
+            if (result && result.code == 1) {
+                MatchView.hideView();
+            } else {
+                PopMessageView.showView({ title: "温馨提示", content: "离开匹配失败！", type: ENUM_POP_MESSAGE_TYPE.NUM1SURE });
+            }
+        } catch (err) {
+            Logger.warn("退出匹配失败:", err);
+            PopMessageView.showView({ title: "温馨提示", content: "离开匹配失败！", type: ENUM_POP_MESSAGE_TYPE.NUM1SURE });
         }
     }
 
@@ -195,7 +206,7 @@ export class MatchView extends FGUIMatchView {
     onBtnClose(): void {
         if (this._beCheck) {
         } else {
-            Match.instance.reqLeave();
+            Match.instance.reqLeave().catch((err) => Logger.warn("退出匹配失败:", err));
         }
         MatchView.hideView();
     }

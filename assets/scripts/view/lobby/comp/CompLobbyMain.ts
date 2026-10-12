@@ -98,7 +98,7 @@ export class CompLobbyMain extends FGUICompLobbyMain {
      * @param res 热启动数据
      */
     onAppShow(res: any) {
-        this.checkPrivateRoomid(res);
+        void this.checkPrivateRoomid(res);
     }
 
     /**
@@ -171,21 +171,25 @@ export class CompLobbyMain extends FGUICompLobbyMain {
     onLoginSuccess() {
         Logger.log("onLoginSuccess");
         const options = MiniGameUtils.instance.getLaunchOptionsSync();
-        this.checkPrivateRoomid(options);
+        void this.checkPrivateRoomid(options);
         // 当前版本暂不开放签到，后续版本启用时恢复此自动弹窗调用。
         // this.autoShowSignIn();
-        this.reqAdInfo();
+        void this.reqAdInfo();
     }
 
     /**
-     * 请求广告奖励信息
+     * @method reqAdInfo
+     * @description 请求广告奖励信息（失败只记日志，不阻断大厅流程）
      */
-    reqAdInfo() {
-        AdReward.instance.reqGetAdInfo((success: boolean, data: any) => {
-            if (!success) {
+    async reqAdInfo(): Promise<void> {
+        try {
+            const res = await AdReward.instance.reqGetAdInfo();
+            if (!res) {
                 Logger.log(LogColors.red("获取广告奖励信息失败"));
             }
-        });
+        } catch (err) {
+            Logger.warn(LogColors.red("获取广告奖励信息失败"), err);
+        }
     }
 
     /**
@@ -204,17 +208,21 @@ export class CompLobbyMain extends FGUICompLobbyMain {
     }
 
     /**
-     * 检查私人房间，是否可以自动进入
-     * @param options 热启动参数
+     * @method checkPrivateRoomid
+     * @description 检查私人房间，是否可以自动进入（热启动参数带 roomid）
+     * @param {any} options - 热启动参数
      */
-    checkPrivateRoomid(options: any) {
+    async checkPrivateRoomid(options: any): Promise<void> {
         if (options.query && options.query.roomid) {
             const roomid = Number(options.query.roomid);
             if (DataCenter.instance.launchRoomid != roomid) {
                 DataCenter.instance.launchRoomid = roomid;
-                ConnectGameSvr.instance.joinPrivateRoom(roomid, (b: boolean) => {
-                    b && this.changeToGameScene();
-                });
+                try {
+                    const { success } = await ConnectGameSvr.instance.joinPrivateRoom(roomid);
+                    success && this.changeToGameScene();
+                } catch (err) {
+                    Logger.warn("加入私人房间失败:", err);
+                }
             }
         }
     }
@@ -269,32 +277,46 @@ export class CompLobbyMain extends FGUICompLobbyMain {
     }
 
     /**
-     * 点击匹配房间
+     * @method onBtnMatchRoom
+     * @description 点击匹配房间
      */
     onBtnMatchRoom(): void {
-        const func = (b: boolean, data?: any) => {
-            if (b) {
-                // 显示匹配view
+        void this.reqMatch();
+    }
+
+    /**
+     * @method reqMatch
+     * @description 请求匹配：成功进入匹配界面；返回房间数据时提示是否返回已有房间
+     * @private
+     */
+    private async reqMatch(): Promise<void> {
+        try {
+            const result = await Match.instance.req(0);
+            if (!result) {
+                return;
+            }
+            if (result.code == 1) {
+                // 匹配成功，显示匹配view
                 MatchView.showView();
-            } else {
-                if (data && data.gameid && data.roomid) {
-                    const func2 = () => {
-                        //返回房间
+                return;
+            }
+            if (result.gameid && result.roomid) {
+                PopMessageView.showView({
+                    title: "温馨提示",
+                    content: "您已经在房间中，是否返回？",
+                    type: ENUM_POP_MESSAGE_TYPE.NUM2,
+                    sureBack: () => {
+                        // 返回房间
                         Logger.log(LogColors.green("返回房间"));
-                        ConnectGameSvr.instance.connectGame(data, (b: boolean) => {
+                        ConnectGameSvr.instance.connectGame(result, (b: boolean) => {
                             b && this.changeToGameScene();
                         });
-                    };
-                    PopMessageView.showView({
-                        title: "温馨提示",
-                        content: "您已经在房间中，是否返回？",
-                        type: ENUM_POP_MESSAGE_TYPE.NUM2,
-                        sureBack: func2,
-                    });
-                }
+                    },
+                });
             }
-        };
-        Match.instance.req(0, func);
+        } catch (err) {
+            Logger.warn("匹配请求失败:", err);
+        }
     }
 
     onBtnLocalgame(): void {
@@ -334,19 +356,33 @@ export class CompLobbyMain extends FGUICompLobbyMain {
     }
 
     /**
-     * 点击排行榜
+     * @method onBtnRank
+     * @description 点击排行榜
      */
     onBtnRank(): void {
-        const func = (b: boolean, data: any) => {
+        LoadingView.showView({ content: "拉取数据中...", time: 12 });
+        void this.reqRank();
+    }
+
+    /**
+     * @method reqRank
+     * @description 请求排行榜数据并展示
+     * @private
+     */
+    private async reqRank(): Promise<void> {
+        try {
+            const data = await Rank.instance.req();
             LoadingView.hideView();
-            if (b) {
+            if (data) {
                 RankView.showView(data);
             } else {
                 TipsView.showView({ content: `拉取排行榜数据失败` });
             }
-        };
-        Rank.instance.req(func);
-        LoadingView.showView({ content: "拉取数据中...", time: 12 });
+        } catch (err) {
+            Logger.warn("拉取排行榜数据失败:", err);
+            LoadingView.hideView();
+            TipsView.showView({ content: `拉取排行榜数据失败` });
+        }
     }
 
     /**
@@ -425,7 +461,8 @@ export class CompLobbyMain extends FGUICompLobbyMain {
     }
 
     /**
-     * 播放广告并领取奖励
+     * @method playAdAndReceiveReward
+     * @description 播放广告并领取奖励
      */
     playAdAndReceiveReward() {
         LoadingView.showView({ content: "载入中...", time: 12 });
@@ -435,25 +472,38 @@ export class CompLobbyMain extends FGUICompLobbyMain {
             SoundManager.instance.adCloseMusicPlay();
             Logger.log(code);
             if (code == REWORD_VIDEOAD_CODE.SUCCESS) {
-                AdReward.instance.reqReceiveAdReward((success: boolean, data: any) => {
-                    if (!success) {
-                        TipsView.showView({ content: "领取奖励失败" });
-                        return;
-                    }
-                    UserRiches.instance.req();
-                    const newData = {
-                        ids: data.reward.richTypes,
-                        nums: data.reward.richNums,
-                        noticeid: data.noticeid,
-                    };
-                    AwardView.showView(newData);
-                });
+                void this.receiveAdReward();
             } else if (code == REWORD_VIDEOAD_CODE.NOT_OVER) {
                 TipsView.showView({ content: "看完视频才能获取奖励哦" });
             } else {
                 TipsView.showView({ content: "视频广告播放失败" });
             }
         });
+    }
+
+    /**
+     * @method receiveAdReward
+     * @description 领取看广告奖励并展示奖励弹窗
+     * @private
+     */
+    private async receiveAdReward(): Promise<void> {
+        try {
+            const data = await AdReward.instance.reqReceiveAdReward();
+            if (!data) {
+                TipsView.showView({ content: "领取奖励失败" });
+                return;
+            }
+            UserRiches.instance.req().catch((err) => Logger.warn("刷新用户财富失败:", err));
+            const newData = {
+                ids: data.reward.richTypes,
+                nums: data.reward.richNums,
+                noticeid: data.noticeid,
+            };
+            AwardView.showView(newData);
+        } catch (err) {
+            Logger.warn("领取广告奖励失败:", err);
+            TipsView.showView({ content: "领取奖励失败" });
+        }
     }
 }
 

@@ -9,6 +9,9 @@ import { LogColors } from "@frameworks/Framework";
 import { BaseModule } from "@frameworks/base/BaseModule";
 import { Logger } from "@frameworks/utils/Utils";
 
+/** 签到活动配置ID */
+const SIGN_IN_CFG_ID = 2;
+
 /**
  * @class SignIn
  * @description 签到管理类，负责请求签到数据、执行签到和补签操作
@@ -19,105 +22,57 @@ export class SignIn extends BaseModule {
         return this._getInstance<SignIn>(SignIn);
     }
 
-    // 签到数据回调
-    private _signDataCallBack: ((success: boolean, data: any) => void) | null = null;
-    // 签到回调
-    private _signInCallBack: ((success: boolean, data: any) => void) | null = null;
-    // 补签到回调
-    private _fillSignInCallBack: ((success: boolean, data: any) => void) | null = null;
-
     /**
-     * 请求签到数据
-     * @param callBack 签到数据回调
+     * @method reqSignData
+     * @description 请求签到数据
+     * @returns {Promise<any | null>} 成功返回签到业务数据（signInConfig/signStatus/signInIndex）；失败返回 null
      */
-    reqSignData(callBack: (success: boolean, data: any) => void) {
-        this._signDataCallBack = callBack;
-        this.reqLobby(
-            SprotoCallActivityFunc,
-            { moduleName: "daySignIn", funcName: "getSignInInfo", args: JSON.stringify({ cfgId: 2 }) },
-            this.respSignData.bind(this)
-        );
+    async reqSignData(): Promise<any | null> {
+        return this.callSignInFunc("getSignInInfo", {});
     }
 
     /**
-     * 签到数据回调
-     * @param result 签到数据
+     * @method reqSignIn
+     * @description 执行签到
+     * @param {number} mult - 是否翻倍（0=普通签到，1=多倍签到）
+     * @returns {Promise<any | null>} 成功返回签到结果（status/awards/noticeid）；失败返回 null
      */
-    respSignData(result: SprotoCallActivityFunc.Response): void {
-        if (result && result.code == 1) {
-            const res = JSON.parse(result.result);
-            if (res.error) {
-                Logger.log(LogColors.red(res.error));
-                this._signDataCallBack && this._signDataCallBack(false, res);
-            } else {
-                this._signDataCallBack && this._signDataCallBack(true, res);
-            }
-        } else {
-            this._signDataCallBack && this._signDataCallBack(false, null);
+    async reqSignIn(mult: number): Promise<any | null> {
+        return this.callSignInFunc("signIn", { mult: mult, cfgId: SIGN_IN_CFG_ID });
+    }
+
+    /**
+     * @method reqFillSignIn
+     * @description 补签
+     * @param {number} index - 补签天数
+     * @returns {Promise<any | null>} 成功返回补签结果（status/awards/noticeid）；失败返回 null
+     */
+    async reqFillSignIn(index: number): Promise<any | null> {
+        return this.callSignInFunc("fillSignIn", { index: index, cfgId: SIGN_IN_CFG_ID });
+    }
+
+    /**
+     * @method callSignInFunc
+     * @description 统一调用 daySignIn 活动接口并解析 result JSON（三个接口共用，替代原三套回调）
+     * @param {string} funcName - 活动函数名
+     * @param {any} args - 业务参数
+     * @returns {Promise<any | null>} 成功返回业务数据，服务端报错或业务失败返回 null
+     * @private
+     */
+    private async callSignInFunc(funcName: string, args: any): Promise<any | null> {
+        const result = await this.callLobby<SprotoCallActivityFunc.Response>(SprotoCallActivityFunc, {
+            moduleName: "daySignIn",
+            funcName: funcName,
+            args: JSON.stringify(args),
+        });
+        if (!result || result.code != 1) {
+            return null;
         }
-    }
-
-    /**
-     * 签到
-     * @param mult 是否翻倍
-     * @param callBack 签到回调
-     */
-    reqSignIn(mult: number, callBack: (success: boolean, data: any) => void): void {
-        this._signInCallBack = callBack;
-        this.reqLobby(
-            SprotoCallActivityFunc,
-            { moduleName: "daySignIn", funcName: "signIn", args: JSON.stringify({ mult, cfgId: 2 }) },
-            this.respSignIn.bind(this)
-        );
-    }
-
-    /**
-     * 签到回调
-     * @param result 签到结果
-     */
-    respSignIn(result: SprotoCallActivityFunc.Response): void {
-        if (result && result.code == 1) {
-            const res = JSON.parse(result.result);
-            if (res.error) {
-                Logger.log(LogColors.red(res.error));
-                this._signInCallBack && this._signInCallBack(false, res);
-            } else {
-                this._signInCallBack && this._signInCallBack(true, res);
-            }
-        } else {
-            this._signInCallBack && this._signInCallBack(false, null);
+        const res = JSON.parse(result.result);
+        if (res && res.error) {
+            Logger.log(LogColors.red(res.error));
+            return null;
         }
-    }
-
-    /**
-     * 补签
-     * @param callBack 签到回调
-     * @param index 补签天数
-     */
-    reqFillSignIn(index: number, callBack: (success: boolean, data: any) => void): void {
-        this._fillSignInCallBack = callBack;
-        this.reqLobby(
-            SprotoCallActivityFunc,
-            { moduleName: "daySignIn", funcName: "fillSignIn", args: JSON.stringify({ index, cfgId: 2 }) },
-            this.respFillSignIn.bind(this)
-        );
-    }
-
-    /**
-     * 补签回调
-     * @param result 签到结果
-     */
-    respFillSignIn(result: SprotoCallActivityFunc.Response): void {
-        if (result && result.code == 1) {
-            const res = JSON.parse(result.result);
-            if (res.error) {
-                Logger.log(LogColors.red(res.error));
-                this._fillSignInCallBack && this._fillSignInCallBack(false, res);
-            } else {
-                this._fillSignInCallBack && this._fillSignInCallBack(true, res);
-            }
-        } else {
-            this._fillSignInCallBack && this._fillSignInCallBack(false, null);
-        }
+        return res;
     }
 }

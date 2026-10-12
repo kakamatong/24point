@@ -21,79 +21,61 @@ export class AdReward extends BaseModule {
         return this._getInstance<AdReward>(AdReward);
     }
 
-    /** 获取广告信息的回调函数 */
-    private _getAdInfoCallBack: ((success: boolean, data: any) => void) | null = null;
-    /** 领取广告奖励的回调函数 */
-    private _receiveAdRewardCallBack: ((success: boolean, data: any) => void) | null = null;
-
     /**
-     * 请求每日看广告领奖信息
-     * @param callBack 回调函数
-     * @param cfgId 广告配置ID（2=大厅道具奖励，3=体力奖励）
+     * @method reqGetAdInfo
+     * @description 请求每日看广告领奖信息，成功时按响应回带的配置ID存入数据中心
+     * @param {number} [cfgId=2] - 广告配置ID（2=大厅道具奖励，3=体力奖励）
+     * @returns {Promise<any | null>} 成功返回广告信息；失败返回 null
      */
-    reqGetAdInfo(callBack: (success: boolean, data: any) => void, cfgId: number = 2) {
-        this._getAdInfoCallBack = callBack;
-        this.reqLobby(
-            SprotoCallActivityFunc,
-            { moduleName: "ad", funcName: "getAdInfo", args: JSON.stringify({ cfgId }) },
-            this.respGetAdInfo.bind(this)
-        );
-    }
-
-    /**
-     * @description 处理获取广告信息的响应回调，按响应回带的配置ID存储到数据中心
-     * @param result 服务器返回的广告信息
-     */
-    respGetAdInfo(result: SprotoCallActivityFunc.Response): void {
-        if (result && result.code == 1) {
-            const res = JSON.parse(result.result);
-            if (res.error) {
-                Logger.log(LogColors.red(res.error));
-                this._getAdInfoCallBack && this._getAdInfoCallBack(false, res);
-            } else {
-                DataCenter.instance.setAdRewardInfo(res.cfgId, res);
-                this._getAdInfoCallBack && this._getAdInfoCallBack(true, res);
-            }
-        } else {
-            this._getAdInfoCallBack && this._getAdInfoCallBack(false, null);
+    async reqGetAdInfo(cfgId: number = 2): Promise<any | null> {
+        const res = await this.callAdFunc("getAdInfo", cfgId);
+        if (res) {
+            DataCenter.instance.setAdRewardInfo(res.cfgId, res);
         }
+        return res;
     }
 
     /**
-     * 领取看广告奖励
-     * @param callBack 回调函数
-     * @param cfgId 广告配置ID（2=大厅道具奖励，3=体力奖励）
+     * @method reqReceiveAdReward
+     * @description 领取看广告奖励，成功时按响应回带的配置ID维护对应数据的次数
+     * @param {number} [cfgId=2] - 广告配置ID（2=大厅道具奖励，3=体力奖励）
+     * @returns {Promise<any | null>} 成功返回领取结果（reward/noticeid）；失败返回 null
      */
-    reqReceiveAdReward(callBack: (success: boolean, data: any) => void, cfgId: number = 2) {
-        this._receiveAdRewardCallBack = callBack;
-        this.reqLobby(
-            SprotoCallActivityFunc,
-            { moduleName: "ad", funcName: "getAdReward", args: JSON.stringify({ cfgId }) },
-            this.respReceiveAdReward.bind(this)
-        );
-    }
-
-    /**
-     * @description 处理领取广告奖励的响应回调，按响应回带的配置ID维护对应数据的次数
-     * @param result 服务器返回的领取结果
-     */
-    respReceiveAdReward(result: SprotoCallActivityFunc.Response): void {
-        if (result && result.code == 1) {
-            const res = JSON.parse(result.result);
-            if (res.error) {
-                Logger.log(LogColors.red(res.error));
-                this._receiveAdRewardCallBack && this._receiveAdRewardCallBack(false, res);
-            } else {
-                const rewardRes = res as AD_RECEIVE_REWARD_RESULT;
-                const adRewardInfo = DataCenter.instance.getAdRewardInfo(rewardRes.cfgId);
-                if (adRewardInfo) {
-                    adRewardInfo.currentRewardCount = rewardRes.currentRewardCount;
-                    adRewardInfo.canReward = rewardRes.currentRewardCount < rewardRes.maxDailyRewardCount;
-                }
-                this._receiveAdRewardCallBack && this._receiveAdRewardCallBack(true, res);
+    async reqReceiveAdReward(cfgId: number = 2): Promise<any | null> {
+        const res = await this.callAdFunc("getAdReward", cfgId);
+        if (res) {
+            const rewardRes = res as AD_RECEIVE_REWARD_RESULT;
+            const adRewardInfo = DataCenter.instance.getAdRewardInfo(rewardRes.cfgId);
+            if (adRewardInfo) {
+                adRewardInfo.currentRewardCount = rewardRes.currentRewardCount;
+                adRewardInfo.canReward = rewardRes.currentRewardCount < rewardRes.maxDailyRewardCount;
             }
-        } else {
-            this._receiveAdRewardCallBack && this._receiveAdRewardCallBack(false, null);
         }
+        return res;
+    }
+
+    /**
+     * @method callAdFunc
+     * @description 统一调用 ad 活动接口并解析 result JSON（两个接口共用，替代原两套回调）
+     * @param {string} funcName - 活动函数名
+     * @param {number} cfgId - 广告配置ID
+     * @returns {Promise<any | null>} 成功返回业务数据，服务端报错或业务失败返回 null
+     * @private
+     */
+    private async callAdFunc(funcName: string, cfgId: number): Promise<any | null> {
+        const result = await this.callLobby<SprotoCallActivityFunc.Response>(SprotoCallActivityFunc, {
+            moduleName: "ad",
+            funcName: funcName,
+            args: JSON.stringify({ cfgId: cfgId }),
+        });
+        if (!result || result.code != 1) {
+            return null;
+        }
+        const res = JSON.parse(result.result);
+        if (res && res.error) {
+            Logger.log(LogColors.red(res.error));
+            return null;
+        }
+        return res;
     }
 }

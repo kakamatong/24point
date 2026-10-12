@@ -11,6 +11,7 @@ import { ENUM_POP_MESSAGE_TYPE } from "@datacenter/InterfaceConfig";
 import { TipsView } from "../../common/TipsView";
 import { ConnectGameSvr } from "@modules/ConnectGameSvr";
 import { ViewClass } from "@frameworks/Framework";
+import { Logger } from "@frameworks/utils/Utils";
 
 /**
  * @class CompPrivateJoin
@@ -45,11 +46,23 @@ export class CompPrivateJoin extends FGUICompPrivateJoin {
             TipsView.showView({ content: "请输入房间号" });
             return;
         }
-        const roomid = Number(this.UI_TXT_ROOMID.text);
-        const func = (b: boolean, result: any) => {
-            if (b) {
+        void this.joinRoom(Number(this.UI_TXT_ROOMID.text));
+    }
+
+    /**
+     * @method joinRoom
+     * @description 请求加入私密房间：成功后进入游戏场景；已在房间中时提示是否返回
+     * @param {number} roomid - 短房间ID
+     * @private
+     */
+    private async joinRoom(roomid: number): Promise<void> {
+        try {
+            const { success, result } = await ConnectGameSvr.instance.joinPrivateRoom(roomid);
+            if (success) {
                 this._data && this._data.changeToGameScene && this._data.changeToGameScene();
-            } else if (!b && result && result.code == 0 && result.gameid > 0) {
+                return;
+            }
+            if (result && result.code == 0 && result.gameid > 0) {
                 PopMessageView.showView({
                     content: "您已在游戏中,是否返回",
                     type: ENUM_POP_MESSAGE_TYPE.NUM2,
@@ -61,13 +74,14 @@ export class CompPrivateJoin extends FGUICompPrivateJoin {
                         });
                     },
                 });
-            } else if (!b) {
-                const msg = result && result.msg ? result.msg : "未知错误";
-                TipsView.showView({ content: msg });
+                return;
             }
-        };
-
-        ConnectGameSvr.instance.joinPrivateRoom(roomid, func);
+            const msg = result && result.msg ? result.msg : "未知错误";
+            TipsView.showView({ content: msg });
+        } catch (err) {
+            Logger.warn("加入私密房间失败:", err);
+            TipsView.showView({ content: "加入房间失败" });
+        }
     }
 
     /**

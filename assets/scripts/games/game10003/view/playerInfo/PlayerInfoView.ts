@@ -4,7 +4,7 @@ import * as fgui from "fairygui-cc";
 import { GameData } from "../../data/GameData";
 import FGUICompHead from "@fgui/common/FGUICompHead";
 import { ViewClass } from "@frameworks/Framework";
-import { TruncateString } from "@frameworks/utils/Utils";
+import { TruncateString, Logger } from "@frameworks/utils/Utils";
 
 @ViewClass()
 export class PlayerInfoView extends FGUIPlayerInfoView {
@@ -41,23 +41,36 @@ export class PlayerInfoView extends FGUIPlayerInfoView {
             const rate = (player.win / (player.win + player.lose + player.draw)) * 100;
             this.UI_TXT_RATE.text = `${rate.toFixed(1)}%`;
         } else {
-            const func = (data: any) => {
+            void this.reqGameRecord();
+        }
+    }
+
+    /**
+     * @method reqGameRecord
+     * @description 请求该玩家的游戏战绩并刷新胜/负/平显示
+     * @private
+     */
+    private async reqGameRecord(): Promise<void> {
+        try {
+            const data = await UserGameRecord.instance.req(this._userid);
+            const player = GameData.instance.getPlayerByUserid(this._userid);
+            if (player) {
                 player.win = data.win;
                 player.lose = data.lose;
                 player.draw = data.draw;
-
-                this.UI_TXT_WIN.text = data.win;
-                this.UI_TXT_LOSE.text = data.lose;
-                this.UI_TXT_DRAW.text = data.draw;
-                const total = data.win + data.lose + data.draw;
-                if (total) {
-                    const rate = (data.win / total) * 100;
-                    this.UI_TXT_RATE.text = `${rate.toFixed(1)}%`;
-                } else {
-                    this.UI_TXT_RATE.text = `--`;
-                }
-            };
-            UserGameRecord.instance.req(this._userid, func);
+            }
+            this.UI_TXT_WIN.text = `${data.win}`;
+            this.UI_TXT_LOSE.text = `${data.lose}`;
+            this.UI_TXT_DRAW.text = `${data.draw}`;
+            const total = data.win + data.lose + data.draw;
+            if (total) {
+                const rate = (data.win / total) * 100;
+                this.UI_TXT_RATE.text = `${rate.toFixed(1)}%`;
+            } else {
+                this.UI_TXT_RATE.text = `--`;
+            }
+        } catch (err) {
+            Logger.warn("拉取玩家战绩失败:", err);
         }
     }
 

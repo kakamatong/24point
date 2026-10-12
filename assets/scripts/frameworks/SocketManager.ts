@@ -72,7 +72,7 @@ interface PENDING_RPC {
     /** 失败回调 */
     reject: (error: RpcError) => void;
     /** 超时定时器 */
-    timer: NodeJS.Timeout | null;
+    timer: ReturnType<typeof setTimeout> | null;
 }
 
 /**
@@ -131,10 +131,10 @@ export class SocketManager implements handleSocketMessage {
     private _session = 0;
 
     /**
-     * @property {NodeJS.Timeout | null} _timeid - 心跳定时器ID
+     * @property {ReturnType<typeof setInterval> | null} _timeid - 心跳定时器ID
      * @private
      */
-    private _timeid: NodeJS.Timeout | null = null;
+    private _timeid: ReturnType<typeof setInterval> | null = null;
 
     /**
      * @property {Map<number, (data: any) => void>} _callBacks - 回调函数表，按 session 索引存储

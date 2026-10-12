@@ -750,7 +750,7 @@ export class CompGameMain extends FGUICompGameMain {
             showResult();
         }
 
-        UserStatus.instance.req();
+        UserStatus.instance.req().catch((err) => Logger.warn("刷新用户状态失败:", err));
 
         // 本局结束即进入局间（已开过局，只应显示准备按钮）：统一刷新三个按钮
         this.refreshGameBtns();
@@ -891,29 +891,41 @@ export class CompGameMain extends FGUICompGameMain {
     private startMatch(): void {
         // 清空上一局的玩家列表，等待新房间的 playerEnter 重新填充，避免残留上一局头像
         (this.UI_COMP_PLAYERS as CompPlayers)?.clear();
+        void this.reqMatch();
+    }
 
-        const callBack = (b: boolean, data?: any) => {
-            if (b) {
+    /**
+     * @method reqMatch
+     * @description 请求匹配：成功进入匹配界面；返回房间数据时提示是否返回已有房间
+     * @private
+     */
+    private async reqMatch(): Promise<void> {
+        try {
+            const result = await Match.instance.req(0);
+            if (!result) {
+                return;
+            }
+            if (result.code == 1) {
                 MatchView.showView();
                 return;
             }
-            if (data && data.gameid && data.roomid) {
-                const backFunc = () => {
-                    ConnectGameSvr.instance.connectGame(data, (success: boolean) => {
-                        if (!success) {
-                            Logger.error("返回游戏房间失败");
-                        }
-                    });
-                };
+            if (result.gameid && result.roomid) {
                 PopMessageView.showView({
                     title: "温馨提示",
                     content: "您已经在房间中，是否返回？",
                     type: ENUM_POP_MESSAGE_TYPE.NUM2,
-                    sureBack: backFunc,
+                    sureBack: () => {
+                        ConnectGameSvr.instance.connectGame(result, (success: boolean) => {
+                            if (!success) {
+                                Logger.error("返回游戏房间失败");
+                            }
+                        });
+                    },
                 });
             }
-        };
-        Match.instance.req(0, callBack);
+        } catch (err) {
+            Logger.warn("匹配请求失败:", err);
+        }
     }
 
     /**

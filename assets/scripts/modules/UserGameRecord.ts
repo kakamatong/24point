@@ -19,26 +19,18 @@ export class UserGameRecord extends BaseModule {
         return this._getInstance<UserGameRecord>(UserGameRecord);
     }
 
-    /** 回调函数 */
-    private _callback: ((data: any) => void) | null = null;
     /**
      * @method req
-     * @description 请求用户数据，向服务器发送用户数据请求
+     * @description 请求用户游戏战绩：await 直接拿到战绩数据（胜/负/平），同时写入数据中心
+     * @param {number} [userid] - 目标用户ID，不传则查自己
+     * @returns {Promise<SprotoUserGameRecord.Response>} 服务器返回的战绩数据
      */
-    req(userid?: number, callback?: (data: any) => void) {
-        if (callback) {
-            this._callback = callback;
-        }
-        this.reqLobby(SprotoUserGameRecord, { userid: userid || DataCenter.instance.userid, gameid: MAIN_GAME_ID }, this.resp.bind(this));
-    }
-
-    /**
-     * @method resp
-     * @description 处理用户数据响应，更新本地数据并发送事件通知
-     * @param {SprotoUserGameRecord} data - 服务器返回的用户数据
-     */
-    resp(data: SprotoUserGameRecord.Response) {
+    async req(userid?: number): Promise<SprotoUserGameRecord.Response> {
+        const data = await this.callLobby<SprotoUserGameRecord.Response>(SprotoUserGameRecord, {
+            userid: userid || DataCenter.instance.userid,
+            gameid: MAIN_GAME_ID,
+        });
         DataCenter.instance.gameRecords = data;
-        this._callback && this._callback(data);
+        return data;
     }
 }

@@ -24,85 +24,64 @@ export class Match extends BaseModule {
         return this._getInstance<Match>(Match);
     }
 
-    private _callBack: ((b: boolean, data?: any) => void) | null = null;
-
     /**
      * @method req
-     * @description 请求游戏匹配，向服务器发送匹配请求
-     * @param {number} [type=0] - 匹配类型，默认为0
+     * @description 请求游戏匹配：未连接大厅时先自动登录，登录失败返回 null（等价于原回调 false 且无数据）
+     * @param {number} [type=0] - 匹配类型（预留参数，当前服务端按 queueid 区分）
+     * @returns {Promise<SprotoMatchJoin.Response | null>} 服务器返回的匹配结果；未发起请求时返回 null
      */
-    req(type = 0, callBack?: (b: boolean, data?: any) => void) {
-        if (callBack) {
-            this._callBack = callBack;
+    async req(type = 0): Promise<SprotoMatchJoin.Response | null> {
+        if (!LobbySocketManager.instance.isOpen()) {
+            const ok = await this.loginLobby();
+            if (!ok) {
+                Logger.warn("匹配失败：大厅连接不可用");
+                return null;
+            }
         }
 
-        if (LobbySocketManager.instance.isOpen()) {
-            this.reqLobby(SprotoMatchJoin, { gameid: MAIN_GAME_ID, queueid: 1 }, this.resp.bind(this));
+        const result = await this.callLobby<SprotoMatchJoin.Response>(SprotoMatchJoin, { gameid: MAIN_GAME_ID, queueid: 1 });
+        // 匹配会改变用户状态，无论成败都刷新一次
+        this.refreshUserStatus();
+
+        if (result && result.code == 1) {
+            Logger.log(LogColors.green(result.msg));
         } else {
-            this.loginLobby((b: boolean) => {
-                if (b) {
-                    this.reqLobby(SprotoMatchJoin, { gameid: MAIN_GAME_ID, queueid: 1 }, this.resp.bind(this));
-                } else {
-                    callBack && callBack(false);
-                }
-            });
+            result && Logger.log(LogColors.red(result.msg));
         }
+        return result;
+    }
+
+    /**
+     * @method reqLeave
+     * @description 请求退出匹配
+     * @returns {Promise<SprotoMatchLeave.Response>} 服务器返回的退出匹配结果（业务成败看 code）
+     */
+    async reqLeave(): Promise<SprotoMatchLeave.Response> {
+        const result = await this.callLobby<SprotoMatchLeave.Response>(SprotoMatchLeave, { gameid: MAIN_GAME_ID, queueid: 1 });
+        this.refreshUserStatus();
+        return result;
     }
 
     /**
      * @method loginLobby
-     * @description 登录游戏大厅
-     * @param {function} callback - 登录回调函数
+     * @description 登录游戏大厅（把 ConnectSvr 的回调式自动登录包装为 Promise）
+     * @returns {Promise<boolean>} 是否登录成功
+     * @protected
      */
-    protected loginLobby(callback?: (b: boolean) => void): void {
-        const func = (b: boolean) => {
-            if (!b) {
-            } else {
-                callback && callback(b);
-            }
-        };
-        ConnectSvr.instance.checkAutoLogin(func);
+    protected loginLobby(): Promise<boolean> {
+        return new Promise<boolean>((resolve) => {
+            ConnectSvr.instance.checkAutoLogin((b: boolean) => {
+                resolve(b);
+            });
+        });
     }
 
     /**
-     * @method resp
-     * @description 处理匹配响应，更新用户状态并处理匹配结果
-     * @param {any} result - 服务器返回的匹配结果
+     * @method refreshUserStatus
+     * @description 刷新用户状态（失败只告警，不阻断匹配主流程）
+     * @private
      */
-    resp(result: SprotoMatchJoin.Response) {
-        UserStatus.instance.req();
-        if (result && result.code == 1) {
-            Logger.log(LogColors.green(result.msg));
-            this._callBack && this._callBack(true);
-        } else {
-            result && Logger.log(LogColors.red(result.msg));
-            this._callBack && this._callBack(false, result);
-        }
-        this._callBack = null;
-    }
-
-    /**
-     * @description 请求退出匹配
-     * @param callBack 回调函数
-     */
-    reqLeave(callBack?: (b: boolean, data?: any) => void): void {
-        if (callBack) {
-            this._callBack = callBack;
-        }
-        this.reqLobby(SprotoMatchLeave, { gameid: MAIN_GAME_ID, queueid: 1 }, this.respLeave.bind(this));
-    }
-
-    /**
-     * @description 处理退出匹配的响应
-     * @param result 服务器返回的退出匹配结果
-     */
-    respLeave(result: SprotoMatchLeave.Response): void {
-        UserStatus.instance.req();
-        if (result && result.code == 1) {
-            this._callBack && this._callBack(true);
-        } else {
-            this._callBack && this._callBack(false, result);
-        }
-        this._callBack = null;
+    private refreshUserStatus(): void {
+        UserStatus.instance.req().catch((err) => Logger.warn("刷新用户状态失败:", err));
     }
 }

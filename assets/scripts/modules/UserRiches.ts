@@ -19,19 +19,14 @@ export class UserRiches extends BaseModule {
     static get instance(): UserRiches {
         return this._getInstance<UserRiches>(UserRiches);
     }
-    /**
-     * @description 请求用户财富数据
-     */
-    req() {
-        this.reqLobby(SprotoUserRiches, {}, this.resp.bind(this));
-    }
 
     /**
-     * @description 处理用户财富数据响应
-     * @param data 服务器返回的财富数据
+     * @method req
+     * @description 请求用户财富数据：await 直接拿到响应，同时更新数据中心并派发事件
+     * @returns {Promise<SprotoUserRiches.Response>} 服务器返回的财富数据
      */
-    resp(data: SprotoUserRiches.Response) {
-        //DataCenter.instance.userData = data;
+    async req(): Promise<SprotoUserRiches.Response> {
+        const data = await this.callLobby<SprotoUserRiches.Response>(SprotoUserRiches, {});
         if (data && data.richType && data.richNums && data.richType.length > 0 && data.richNums.length > 0) {
             const riches: Array<{ richType: number; richNums: number }> = [];
             for (let i = 0; i < data.richType.length; i++) {
@@ -44,5 +39,6 @@ export class UserRiches extends BaseModule {
             DataCenter.instance.userRiches = riches;
             DispatchEvent(EVENT_NAMES.USER_RICHES, data);
         }
+        return data;
     }
 }

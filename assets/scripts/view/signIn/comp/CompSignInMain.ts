@@ -59,15 +59,25 @@ export class CompSignInMain extends FGUICompSignInMain {
      * 初始化数据
      */
     initData(): void {
-        const funcSignData = (b: boolean, data: any) => {
-            if (!b) return;
+        void this.reqSignData();
+    }
+
+    /**
+     * @method reqSignData
+     * @description 请求签到数据并刷新界面
+     * @private
+     */
+    private async reqSignData(): Promise<void> {
+        try {
+            const data = await SignIn.instance.reqSignData();
+            if (!data) return;
             this._signInConfig = data.signInConfig;
             this._signInStatus = data.signStatus;
             this._nowIndex = data.signInIndex;
             this.initUI();
-        };
-
-        SignIn.instance.reqSignData(funcSignData);
+        } catch (err) {
+            Logger.warn("拉取签到数据失败:", err);
+        }
     }
 
     /**
@@ -177,21 +187,32 @@ export class CompSignInMain extends FGUICompSignInMain {
      * @param mult 签到倍数，0为普通签到，1为多倍签到
      */
     signIn(mult: number): void {
-        const func = (b: boolean, data: any) => {
-            Logger.log(b, data);
-            if (!b) {
+        void this.doSignIn(mult);
+    }
+
+    /**
+     * @method doSignIn
+     * @description 执行签到：成功后刷新签到状态、用户财富并展示奖励
+     * @param {number} mult - 签到倍数
+     * @private
+     */
+    private async doSignIn(mult: number): Promise<void> {
+        try {
+            const data = await SignIn.instance.reqSignIn(mult);
+            if (!data) {
                 TipsView.showView({ content: `签到失败` });
                 return;
             }
             Logger.log(LogColors.green("签到成功"));
-            // todo: 更新签到数据
             this._signInStatus = data.status;
             this.initUI();
             // 用户财富
-            UserRiches.instance.req();
+            UserRiches.instance.req().catch((err) => Logger.warn("刷新用户财富失败:", err));
             this.showAward({ awards: data.awards, noticeid: data.noticeid }, mult);
-        };
-        SignIn.instance.reqSignIn(mult, func);
+        } catch (err) {
+            Logger.warn("签到失败:", err);
+            TipsView.showView({ content: `签到失败` });
+        }
     }
 
     /**
@@ -199,21 +220,32 @@ export class CompSignInMain extends FGUICompSignInMain {
      * @param index 天数标识
      */
     fillSignIn(index: number): void {
-        const func = (b: boolean, data: any) => {
-            Logger.log(b, data);
-            if (!b) {
+        void this.doFillSignIn(index);
+    }
+
+    /**
+     * @method doFillSignIn
+     * @description 执行补签：成功后刷新签到状态、用户财富并展示奖励
+     * @param {number} index - 补签天数
+     * @private
+     */
+    private async doFillSignIn(index: number): Promise<void> {
+        try {
+            const data = await SignIn.instance.reqFillSignIn(index);
+            if (!data) {
                 TipsView.showView({ content: `签到失败` });
                 return;
             }
             Logger.log(LogColors.green("补签成功"));
-            // todo: 更新签到数据
             this._signInStatus = data.status;
             this.initUI();
             // 用户财富
-            UserRiches.instance.req();
+            UserRiches.instance.req().catch((err) => Logger.warn("刷新用户财富失败:", err));
             this.showAward({ awards: data.awards, noticeid: data.noticeid }, 0);
-        };
-        SignIn.instance.reqFillSignIn(index, func);
+        } catch (err) {
+            Logger.warn("补签失败:", err);
+            TipsView.showView({ content: `签到失败` });
+        }
     }
 
     /**

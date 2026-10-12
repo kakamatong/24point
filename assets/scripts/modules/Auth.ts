@@ -78,22 +78,27 @@ export class Auth extends BaseModule {
         if (success) {
             DataCenter.instance.addSubid();
             Logger.log(LogColors.green("认证成功"));
-            // 用户信息
-            UserData.instance.req();
-
-            // 用户财富
-            UserRiches.instance.req();
-
-            // 用户状态
-            UserStatus.instance.req();
-
-            // 奖励通知
-            AwardNotices.instance.req();
+            // 登录成功后并发拉取基础数据
+            this.loadBaseData();
 
             this._callBack && this._callBack(true);
         } else {
             Logger.log("auth fail");
             this._callBack && this._callBack(false);
         }
+    }
+
+    /**
+     * @method loadBaseData
+     * @description 并发拉取登录后的基础数据（用户信息/财富/状态/奖励通知），
+     *              单个失败只告警，不阻断登录流程
+     * @private
+     */
+    private loadBaseData(): void {
+        const onError = (name: string) => (err: any) => Logger.warn(`登录后拉取${name}失败:`, err);
+        UserData.instance.req().catch(onError("用户信息"));
+        UserRiches.instance.req().catch(onError("用户财富"));
+        UserStatus.instance.req().catch(onError("用户状态"));
+        AwardNotices.instance.req().catch(onError("奖励通知"));
     }
 }

@@ -19,19 +19,17 @@ export class UserStatus extends BaseModule {
     static get instance(): UserStatus {
         return this._getInstance<UserStatus>(UserStatus);
     }
-    /**
-     * @description 请求用户状态数据
-     */
-    req() {
-        this.reqLobby(SprotoUserStatus, { userid: DataCenter.instance.userid }, this.resp.bind(this));
-    }
 
     /**
-     * @description 处理用户状态数据响应
-     * @param data 服务器返回的用户状态数据
+     * @method req
+     * @description 请求用户状态数据：await 直接拿到响应，同时更新数据中心并派发事件；
+     *              调用方不关心结果时请用 `.catch()` 兜住传输层异常
+     * @returns {Promise<SprotoUserStatus.Response>} 服务器返回的用户状态数据
      */
-    resp(data: SprotoUserStatus.Response) {
+    async req(): Promise<SprotoUserStatus.Response> {
+        const data = await this.callLobby<SprotoUserStatus.Response>(SprotoUserStatus, { userid: DataCenter.instance.userid });
         DataCenter.instance.userStatus = data;
         DispatchEvent(EVENT_NAMES.USER_STATUS, data);
+        return data;
     }
 }

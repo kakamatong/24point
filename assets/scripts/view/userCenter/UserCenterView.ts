@@ -29,12 +29,31 @@ export class UserCenterView extends FGUIUserCenterView {
      * @param {any} data - 传递给界面的数据
      */
     show(data?: any): void {
-        // 请求用户游戏记录数据
-        const func = (data: any) => {
-            // 更新胜场、败场、平局和胜率显示
-            this.UI_TXT_WIN.text = data.win;
-            this.UI_TXT_LOSE.text = data.lose;
-            this.UI_TXT_DRAW.text = data.draw;
+        // 请求用户游戏记录数据（异步刷新战绩显示）
+        void this.reqGameRecord();
+
+        // 更新用户信息和声音设置
+        this.updateUserInfo();
+        this.createUserInfoBtn();
+        this.updateSound();
+
+        // 请求用户财富数据
+        UserRiches.instance.req().catch((err) => Logger.warn("拉取用户财富失败:", err));
+
+        AddEventListener(EVENT_NAMES.USER_RICHES, this.onUserRiches, this);
+    }
+
+    /**
+     * @method reqGameRecord
+     * @description 请求本人游戏战绩并刷新胜/负/平与胜率显示
+     * @private
+     */
+    private async reqGameRecord(): Promise<void> {
+        try {
+            const data = await UserGameRecord.instance.req(DataCenter.instance.userid);
+            this.UI_TXT_WIN.text = `${data.win}`;
+            this.UI_TXT_LOSE.text = `${data.lose}`;
+            this.UI_TXT_DRAW.text = `${data.draw}`;
             const total = data.win + data.lose + data.draw;
             if (total) {
                 const rate = (data.win / total) * 100;
@@ -42,17 +61,9 @@ export class UserCenterView extends FGUIUserCenterView {
             } else {
                 this.UI_TXT_RATE.text = `--`;
             }
-        };
-        UserGameRecord.instance.req(DataCenter.instance.userid, func);
-
-        // 更新用户信息和声音设置
-        this.updateUserInfo();
-        this.createUserInfoBtn();
-        this.updateSound();
-
-        UserRiches.instance.req(); // 请求用户财富数据
-
-        AddEventListener(EVENT_NAMES.USER_RICHES, this.onUserRiches, this);
+        } catch (err) {
+            Logger.warn("拉取用户战绩失败:", err);
+        }
     }
 
     onUserRiches(data: any): void {
@@ -153,8 +164,10 @@ export class UserCenterView extends FGUIUserCenterView {
                         DataCenter.instance.headurl = headUrl;
                         // 更新界面显示
                         this.updateUserInfo();
-                        // 向服务器更新用户信息
-                        UserData.instance.updateUserNameAndHeadurl(userInfo.nickName, headUrl);
+                        // 向服务器更新用户信息（失败只告警，本地显示已先行更新）
+                        UserData.instance
+                            .updateUserNameAndHeadurl(userInfo.nickName, headUrl)
+                            .catch((err) => Logger.warn("更新用户昵称头像失败:", err));
                         // 派发用户数据更新事件
                         DispatchEvent(EVENT_NAMES.USER_DATA, DataCenter.instance.userData);
                     }
@@ -180,45 +193,7 @@ export class UserCenterView extends FGUIUserCenterView {
     onBtnDelAcc(): void {
         // 确认注销操作的回调函数
         const func2 = () => {
-            // 发送注销请求的回调函数
-            const func3 = (data: any) => {
-                if (data.code === 1) {
-                    // 注销申请成功
-                    TipsView.showView({ content: "申请注销成功" });
-                } else if (data.code === 2) {
-                    // 已在注销流程中，询问是否取消
-                    const func4 = () => {
-                        // 取消注销申请的回调函数
-                        const func5 = (data: any) => {
-                            if (data.code === 1) {
-                                // 取消成功
-                                TipsView.showView({ content: "申请取消成功" });
-                            } else {
-                                // 取消失败
-                                TipsView.showView({ content: "申请取消失败" });
-                            }
-                        };
-                        // 发送取消注销请求
-                        RevokeAccount.instance.reqCancelRevokeAccount(func5);
-                    };
-                    // 显示确认取消注销的弹窗
-                    PopMessageView.showView({
-                        title: "温馨提示",
-                        content: "已经在注销流程中，是否申请取消",
-                        type: ENUM_POP_MESSAGE_TYPE.NUM2,
-                        sureBack: func4,
-                    });
-                } else if (data.code === 3) {
-                    // 注销成功，提示重新打开游戏
-                    TipsView.showView({ content: "注销成功, 请重新打开" });
-                    LobbySocketManager.instance.close();
-                } else {
-                    // 注销申请失败
-                    TipsView.showView({ content: "申请注销失败" });
-                }
-            };
-            // 发送注销请求
-            RevokeAccount.instance.reqRevokeAccount(func3);
+            void this.reqRevokeAccount();
         };
         // 显示确认注销的弹窗
         PopMessageView.showView({
@@ -227,6 +202,56 @@ export class UserCenterView extends FGUIUserCenterView {
             type: ENUM_POP_MESSAGE_TYPE.NUM2,
             sureBack: func2,
         });
+    }
+
+    /**
+     * @method reqRevokeAccount
+     * @description 申请注销账号并按服务端返回码分支处理
+     * @private
+     */
+    private async reqRevokeAccount(): Promise<void> {
+        try {
+            const data = await RevokeAccount.instance.reqRevokeAccount();
+            if (data.code === 1) {
+                // 注销申请成功
+                TipsView.showView({ content: "申请注销成功" });
+            } else if (data.code === 2) {
+                // 已在注销流程中，询问是否取消
+                PopMessageView.showView({
+                    title: "温馨提示",
+                    content: "已经在注销流程中，是否申请取消",
+                    type: ENUM_POP_MESSAGE_TYPE.NUM2,
+                    sureBack: () => {
+                        void this.reqCancelRevokeAccount();
+                    },
+                });
+            } else if (data.code === 3) {
+                // 注销成功，提示重新打开游戏
+                TipsView.showView({ content: "注销成功, 请重新打开" });
+                LobbySocketManager.instance.close();
+            } else {
+                // 注销申请失败
+                TipsView.showView({ content: "申请注销失败" });
+            }
+        } catch (err) {
+            Logger.warn("申请注销失败:", err);
+            TipsView.showView({ content: "申请注销失败" });
+        }
+    }
+
+    /**
+     * @method reqCancelRevokeAccount
+     * @description 申请取消账号注销
+     * @private
+     */
+    private async reqCancelRevokeAccount(): Promise<void> {
+        try {
+            const data = await RevokeAccount.instance.reqCancelRevokeAccount();
+            TipsView.showView({ content: data.code === 1 ? "申请取消成功" : "申请取消失败" });
+        } catch (err) {
+            Logger.warn("取消注销失败:", err);
+            TipsView.showView({ content: "申请取消失败" });
+        }
     }
 
     /**

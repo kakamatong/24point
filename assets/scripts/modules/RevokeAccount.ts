@@ -18,45 +18,23 @@ export class RevokeAccount extends BaseModule {
         return this._getInstance<RevokeAccount>(RevokeAccount);
     }
 
-    /** 回调函数 */
-    private _callback: ((data: any) => void) | null = null;
     /**
+     * @method reqRevokeAccount
      * @description 请求账号注销
-     * @param callback 回调函数
+     * @returns {Promise<SprotoRevokeAcc.Response>} 服务器返回的注销结果（code：1申请成功/2注销流程中/3注销完成/其它失败）
      */
-    reqRevokeAccount(callback?: (data: any) => void) {
-        if (callback) {
-            this._callback = callback;
-        }
+    async reqRevokeAccount(): Promise<SprotoRevokeAcc.Response> {
         const loginInfo = DataCenter.instance.getLoginInfo();
-        this.reqLobby(SprotoRevokeAcc, { loginType: loginInfo?.loginType }, this.respRevoke.bind(this));
+        return this.callLobby<SprotoRevokeAcc.Response>(SprotoRevokeAcc, { loginType: loginInfo?.loginType });
     }
 
     /**
+     * @method reqCancelRevokeAccount
      * @description 请求取消账号注销
-     * @param callback 回调函数
+     * @returns {Promise<SprotoCancelRevokeAcc.Response>} 服务器返回的取消注销结果（code：1成功）
      */
-    reqCancelRevokeAccount(callback?: (data: any) => void) {
-        if (callback) {
-            this._callback = callback;
-        }
+    async reqCancelRevokeAccount(): Promise<SprotoCancelRevokeAcc.Response> {
         const loginInfo = DataCenter.instance.getLoginInfo();
-        this.reqLobby(SprotoCancelRevokeAcc, { userid: loginInfo?.loginType }, this.respCancelRevoke.bind(this));
-    }
-
-    /**
-     * @description 处理账号注销响应
-     * @param data 服务器返回的注销结果
-     */
-    respRevoke(data: SprotoRevokeAcc.Response) {
-        this._callback && this._callback(data);
-    }
-
-    /**
-     * @description 处理取消账号注销响应
-     * @param data 服务器返回的取消注销结果
-     */
-    respCancelRevoke(data: SprotoCancelRevokeAcc.Response) {
-        this._callback && this._callback(data);
+        return this.callLobby<SprotoCancelRevokeAcc.Response>(SprotoCancelRevokeAcc, { userid: loginInfo?.loginType });
     }
 }

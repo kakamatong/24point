@@ -20,39 +20,25 @@ export class Rank extends BaseModule {
         return this._getInstance<Rank>(Rank);
     }
 
-    /** 回调函数 */
-    private _callBack: ((b: boolean, data: any) => void) | null = null;
-
     /**
-     * @description 请求排行榜数据
-     * @param callBack 回调函数
+     * @method req
+     * @description 请求排行榜数据：服务端 result 为 JSON 字符串，内部解析后返回
+     * @returns {Promise<any | null>} 成功返回排行榜业务数据；服务端报错或业务失败返回 null
      */
-    req(callBack?: (b: boolean, data: any) => void) {
-        if (callBack) {
-            this._callBack = callBack;
+    async req(): Promise<any | null> {
+        const result = await this.callLobby<SprotoCallActivityFunc.Response>(SprotoCallActivityFunc, {
+            moduleName: "gameRank",
+            funcName: "getRankList",
+            args: JSON.stringify({ gameid: MAIN_GAME_ID }),
+        });
+        if (!result || result.code != 1) {
+            return null;
         }
-        this.reqLobby(
-            SprotoCallActivityFunc,
-            { moduleName: "gameRank", funcName: "getRankList", args: JSON.stringify({ gameid: MAIN_GAME_ID }) },
-            this.resp.bind(this)
-        );
-    }
-
-    /**
-     * @description 处理排行榜数据响应
-     * @param result 服务器返回的排行榜数据
-     */
-    resp(result: SprotoCallActivityFunc.Response) {
-        if (result && result.code == 1) {
-            const res = JSON.parse(result.result);
-            if (res.error) {
-                Logger.log(LogColors.red(res.error));
-                this._callBack && this._callBack(false, res);
-            } else {
-                this._callBack && this._callBack(true, res);
-            }
-        } else {
-            this._callBack && this._callBack(false, null);
+        const res = JSON.parse(result.result);
+        if (res && res.error) {
+            Logger.log(LogColors.red(res.error));
+            return null;
         }
+        return res;
     }
 }

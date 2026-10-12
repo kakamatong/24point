@@ -18,27 +18,26 @@ export class AwardNotices extends BaseModule {
     static get instance(): AwardNotices {
         return this._getInstance<AwardNotices>(AwardNotices);
     }
-    /**
-     * @description 请求获取奖励通知
-     */
-    req() {
-        this.reqLobby(SprotoGetAwardNotice, { userid: DataCenter.instance.userid }, this.resp.bind(this));
-    }
 
     /**
-     * @description 处理奖励通知响应
-     * @param data 服务器返回的奖励通知数据
+     * @method req
+     * @description 请求获取奖励通知
+     * @returns {Promise<SprotoGetAwardNotice.Response>} 服务器返回的奖励通知数据
      */
-    resp(data: SprotoGetAwardNotice.Response) {
+    async req(): Promise<SprotoGetAwardNotice.Response> {
+        const data = await this.callLobby<SprotoGetAwardNotice.Response>(SprotoGetAwardNotice, { userid: DataCenter.instance.userid });
         // 这是未通知到的奖励，可以一个一个通知，或者合并通知
         data && data.list && Logger.log(data.list);
+        return data;
     }
 
     /**
+     * @method reqRead
      * @description 标记奖励通知为已读
-     * @param id 奖励通知ID
+     * @param {number} id - 奖励通知ID
      */
-    reqRead(id: number) {
+    reqRead(id: number): void {
+        // setAwardNoticeRead 协议无 response，await 会一直等到超时，保持回调式发送
         this.reqLobby(SprotoSetAwardNoticeRead, { id: id });
     }
 }
