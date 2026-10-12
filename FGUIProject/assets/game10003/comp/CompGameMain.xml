@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <component size="776,1688">
-  <controller name="ctrl_roomtype" pages="0,,1,,2," selected="0">
+  <controller name="ctrl_roomtype" pages="0,,1,,2," selected="2">
     <remark page="0" value="普通房"/>
     <remark page="1" value="私人房"/>
     <remark page="2" value="单机房"/>
   </controller>
-  <controller name="ctrl_playmode" pages="0,,1," selected="1">
+  <controller name="ctrl_playmode" pages="0,,1," selected="0">
     <remark page="0" value="普通模式"/>
     <remark page="1" value="竞速模式"/>
   </controller>
@@ -17,19 +17,23 @@
     <component id="n10_h3uk" name="UI_COMP_CTRL" src="h3uk1r" fileName="comp/CompCtrl.xml" xy="38,418" visible="false">
       <relation target="" sidePair="center-center,middle-middle"/>
     </component>
-    <component id="n11_ifzr" name="UI_BTN_INVITE" src="is91n" fileName="comp/CompBtnCommon.xml" pkg="gj0r6g5i" xy="387,1373" size="230,98" group="n13_ifzr" visible="false" controller="ctrl_color,2">
+    <component id="n11_ifzr" name="UI_BTN_INVITE" src="is91n" fileName="comp/CompBtnCommon.xml" pkg="gj0r6g5i" xy="272,1345" size="230,98" group="n13_ifzr" visible="false" controller="ctrl_color,2">
       <Button title="邀请好友" icon="ui://gj0r6g5ijorf1h"/>
     </component>
-    <component id="n12_ifzr" name="UI_BTN_START_GAME" src="is91n" fileName="comp/CompBtnCommon.xml" pkg="gj0r6g5i" xy="387,1375" size="230,98" group="n13_ifzr" visible="false" controller="ctrl_color,3">
+    <component id="n12_ifzr" name="UI_BTN_START_GAME" src="is91n" fileName="comp/CompBtnCommon.xml" pkg="gj0r6g5i" xy="272,1347" size="230,98" group="n13_ifzr" visible="false" controller="ctrl_color,3">
       <Button title="开始游戏" icon="ui://gj0r6g5ijorf1g"/>
     </component>
-    <component id="n19_x6u8" name="UI_BTN_READY" src="is91n" fileName="comp/CompBtnCommon.xml" pkg="gj0r6g5i" xy="399,1375" size="230,98" group="n13_ifzr" visible="false" controller="ctrl_color,3">
+    <component id="n19_x6u8" name="UI_BTN_READY" src="is91n" fileName="comp/CompBtnCommon.xml" pkg="gj0r6g5i" xy="284,1347" size="230,98" group="n13_ifzr" visible="false" controller="ctrl_color,3">
       <Button title="准备" icon="ui://gj0r6g5ijorf1g"/>
     </component>
-    <component id="n33_rzp5" name="UI_BTN_CONTINUE" src="is91n" fileName="comp/CompBtnCommon.xml" pkg="gj0r6g5i" xy="736,1375" size="230,98" group="n13_ifzr" visible="false" controller="ctrl_color,3">
+    <component id="n33_rzp5" name="UI_BTN_CONTINUE" src="is91n" fileName="comp/CompBtnCommon.xml" pkg="gj0r6g5i" xy="621,1347" size="230,98" group="n13_ifzr" visible="false" controller="ctrl_color,3">
       <Button title="继续游戏" icon="ui://gj0r6g5ijorf1g"/>
     </component>
-    <group id="n13_ifzr" name="n13" xy="387,1373" size="0,0" advanced="true" layout="hz" colGap="119" excludeInvisibles="true">
+    <component id="n34_detv" name="UI_BTN_CHANGE" src="is91n" fileName="comp/CompBtnCommon.xml" pkg="gj0r6g5i" xy="272,1486" size="230,98" group="n13_ifzr" controller="ctrl_color,2">
+      <gearDisplay controller="ctrl_roomtype" pages="2"/>
+      <Button title="换一题" icon="ui://gj0r6g5ijorf1h"/>
+    </component>
+    <group id="n13_ifzr" name="n13" xy="272,1486" size="230,98" advanced="true" layout="hz" colGap="119" excludeInvisibles="true">
       <relation target="" sidePair="center-center,middle-middle"/>
     </group>
     <component id="n14_ifzr" name="UI_COMP_PRIVITE_INFO" src="ifzr1s" fileName="comp/CompPirvateInfo.xml" xy="180,720">
@@ -70,7 +74,7 @@
       <relation target="" sidePair="center-center,middle-middle"/>
     </component>
     <group id="n29_p2bl" name="n29" xy="23,961" size="735,125"/>
-    <text id="n30_p2bl" name="UI_TXT_HINT" xy="236,346" pivot="0.5,0.5" size="304,66" visible="false" fontSize="50" color="#ffffff" text="等待其他玩家">
+    <text id="n30_p2bl" name="UI_TXT_HINT" xy="236,459" pivot="0.5,0.5" size="304,66" visible="false" fontSize="50" color="#ffffff" text="等待其他玩家">
       <gearXY controller="ctrl_playmode" pages="1" values="236,346" default="236,459"/>
       <relation target="" sidePair="center-center,middle-middle"/>
     </text>

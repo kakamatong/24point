@@ -21,6 +21,7 @@ export default class FGUICompGameMain extends fgui.GComponent {
 	public UI_BTN_START_GAME:fgui.GButton;
 	public UI_BTN_READY:fgui.GButton;
 	public UI_BTN_CONTINUE:fgui.GButton;
+	public UI_BTN_CHANGE:fgui.GButton;
 	public UI_COMP_PRIVITE_INFO:FGUICompPirvateInfo;
 	public UI_COMP_PLAYERS:FGUICompPlayers;
 	public UI_COMP_SELFPLAYER:FGUICompPlayerHead;
@@ -121,17 +122,19 @@ export default class FGUICompGameMain extends fgui.GComponent {
 		this.UI_BTN_READY.onClick(this.onBtnReady, this);
 		this.UI_BTN_CONTINUE = <fgui.GButton>(this.getChildAt(5));
 		this.UI_BTN_CONTINUE.onClick(this.onBtnContinue, this);
-		this.UI_COMP_PRIVITE_INFO = <FGUICompPirvateInfo>(this.getChildAt(7));
-		this.UI_COMP_PLAYERS = <FGUICompPlayers>(this.getChildAt(8));
-		this.UI_COMP_SELFPLAYER = <FGUICompPlayerHead>(this.getChildAt(9));
-		this.UI_COMP_SELF_MEDAL = <fgui.GComponent>(this.getChildAt(10));
-		this.UI_TXT_PROGRESS = <fgui.GTextField>(this.getChildAt(12));
-		this.UI_BTN_BACK = <fgui.GButton>(this.getChildAt(14));
+		this.UI_BTN_CHANGE = <fgui.GButton>(this.getChildAt(6));
+		this.UI_BTN_CHANGE.onClick(this.onBtnChange, this);
+		this.UI_COMP_PRIVITE_INFO = <FGUICompPirvateInfo>(this.getChildAt(8));
+		this.UI_COMP_PLAYERS = <FGUICompPlayers>(this.getChildAt(9));
+		this.UI_COMP_SELFPLAYER = <FGUICompPlayerHead>(this.getChildAt(10));
+		this.UI_COMP_SELF_MEDAL = <fgui.GComponent>(this.getChildAt(11));
+		this.UI_TXT_PROGRESS = <fgui.GTextField>(this.getChildAt(13));
+		this.UI_BTN_BACK = <fgui.GButton>(this.getChildAt(15));
 		this.UI_BTN_BACK.onClick(this.onBtnBack, this);
-		this.UI_COMP_CLOCK = <FGUICompTimeLeft>(this.getChildAt(15));
-		this.UI_COMP_LHT_LEFT = <fgui.GComponent>(this.getChildAt(16));
-		this.UI_COMP_LHT_RIGHT = <fgui.GComponent>(this.getChildAt(17));
-		this.UI_TXT_HINT = <fgui.GTextField>(this.getChildAt(18));
+		this.UI_COMP_CLOCK = <FGUICompTimeLeft>(this.getChildAt(16));
+		this.UI_COMP_LHT_LEFT = <fgui.GComponent>(this.getChildAt(17));
+		this.UI_COMP_LHT_RIGHT = <fgui.GComponent>(this.getChildAt(18));
+		this.UI_TXT_HINT = <fgui.GTextField>(this.getChildAt(19));
 		if (this.enableAnimation) this.enterAnimation();
 	}
 	scheduleOnce(callback: () => void, delay: number):void{};
@@ -143,6 +146,7 @@ export default class FGUICompGameMain extends fgui.GComponent {
 	onBtnStartGame():void{};
 	onBtnReady():void{};
 	onBtnContinue():void{};
+	onBtnChange():void{};
 	onBtnBack():void{};
 }
 fgui.UIObjectFactory.setExtension(FGUICompGameMain.URL, FGUICompGameMain);
