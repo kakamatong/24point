@@ -45,6 +45,7 @@
     <image id="ffwu2n" name="f6.png" path="/imgs/"/>
     <component id="ffwu2o" name="CompF7.xml" path="/comp/"/>
     <image id="ffwu2p" name="f7.png" path="/imgs/"/>
+    <component id="detv2q" name="BtnSymbol2.xml" path="/comp/"/>
   </resources>
   <publish name="" genCode="true"/>
 </packageDescription>
