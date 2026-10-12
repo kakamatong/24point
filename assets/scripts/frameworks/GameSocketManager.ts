@@ -1,5 +1,5 @@
 import { AddEventListener, DispatchEvent, LogColors, RemoveEventListener } from "./Framework";
-import { SocketManager } from "./SocketManager";
+import { RpcError, SocketManager } from "./SocketManager";
 import { FW_EVENT_NAMES } from "./config/Config";
 
 export class GameSocketManager extends SocketManager {
@@ -80,5 +80,19 @@ export class GameSocketManager extends SocketManager {
 
     isLocalGame(): boolean {
         return this._isLocalGame;
+    }
+
+    /**
+     * @description 发送前可用性检查：本地单机模式没有 socket 连接与协议表，
+     *              收发完全由 LocalSvr 走事件总线接管，因此恒可发送（callToServer 依赖此重写）
+     * @param {string} protoName - 协议名
+     * @returns {RpcError | null} 本地模式返回 null 表示可发送
+     * @protected
+     */
+    protected checkSendable(protoName: string): RpcError | null {
+        if (this._isLocalGame) {
+            return null;
+        }
+        return super.checkSendable(protoName);
     }
 }

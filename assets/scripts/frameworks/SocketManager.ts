@@ -13,12 +13,81 @@ import { Sproto } from "./sproto/sproto";
 import { Logger } from "./utils/Utils";
 
 /**
+ * @enum ENUM_RPC_ERROR
+ * @description RPC 传输层错误码（区别于服务端返回的业务 code）
+ * @category 核心框架
+ */
+export enum ENUM_RPC_ERROR {
+    /** 连接未就绪 */
+    NOT_CONNECTED = 1,
+    /** 协议表未加载完成 */
+    PROTOCOL_NOT_LOADED = 2,
+    /** 等待响应超时 */
+    TIMEOUT = 3,
+    /** 等待响应期间连接断开 */
+    DISCONNECTED = 4,
+}
+
+/**
+ * @class RpcError
+ * @description RPC 传输层错误：只表示「没拿到服务端响应」；业务失败仍以响应体的 code/msg 正常返回
+ * @category 核心框架
+ * @extends Error
+ */
+export class RpcError extends Error {
+    /**
+     * @property {ENUM_RPC_ERROR} code - 传输层错误码
+     */
+    public code: ENUM_RPC_ERROR;
+
+    /**
+     * @property {string} protoName - 出错的协议名
+     */
+    public protoName: string;
+
+    /**
+     * @constructor
+     * @description 构造 RPC 传输层错误
+     * @param {ENUM_RPC_ERROR} code - 传输层错误码
+     * @param {string} protoName - 出错的协议名
+     * @param {string} message - 错误描述
+     */
+    constructor(code: ENUM_RPC_ERROR, protoName: string, message: string) {
+        super(message);
+        this.name = "RpcError";
+        this.code = code;
+        this.protoName = protoName;
+    }
+}
+
+/**
+ * @interface PENDING_RPC
+ * @description 等待服务端响应的 RPC 请求（callToServer 内部使用）
+ */
+interface PENDING_RPC {
+    /** 协议名（用于日志与错误描述） */
+    protoName: string;
+    /** 成功回调 */
+    resolve: (data: any) => void;
+    /** 失败回调 */
+    reject: (error: RpcError) => void;
+    /** 超时定时器 */
+    timer: NodeJS.Timeout | null;
+}
+
+/**
  * @class SocketManager
  * @implements {handleSocketMessage}
  * @description Socket管理器基类，负责Socket的初始化、协议加载、消息处理等功能
  * @category 核心框架
  */
 export class SocketManager implements handleSocketMessage {
+    /**
+     * @property {number} RPC_TIMEOUT_MS - callToServer 默认超时时间（毫秒）
+     * @readonly
+     */
+    public static readonly RPC_TIMEOUT_MS: number = 10000;
+
     /**
      * @property {string} _name - 管理器名称
      * @protected
@@ -68,10 +137,18 @@ export class SocketManager implements handleSocketMessage {
     private _timeid: NodeJS.Timeout | null = null;
 
     /**
-     * @property {Array<(data: any) => void>} _callBacks - 回调函数数组，按session索引存储
+     * @property {Map<number, (data: any) => void>} _callBacks - 回调函数表，按 session 索引存储
+     * @description 使用 Map 而非稀疏数组：响应到达即删除，避免长期持有回调造成内存增长；
+     *              重连时清空，避免 session 号复用命中上一次连接的旧回调（串包）
      * @private
      */
-    private _callBacks: Array<(data: any) => void> = [];
+    private _callBacks: Map<number, (data: any) => void> = new Map();
+
+    /**
+     * @property {Set<PENDING_RPC>} _pendingRpcs - 等待服务端响应的 RPC 请求集合（callToServer 专用）
+     * @private
+     */
+    private _pendingRpcs: Set<PENDING_RPC> = new Set();
 
     /**
      * @property {((result: boolean) => void) | null} _callBackLink - 连接状态回调函数
@@ -132,6 +209,8 @@ export class SocketManager implements handleSocketMessage {
     initSocket(url: string, header?: string | string[]) {
         this._session = 0;
         this._isopen = false;
+        // 重连：清空上一次连接遗留的回调，避免 session 号复用串包
+        this._callBacks.clear();
         const _socket = new Socket();
         _socket.init(url, header);
         _socket.setHandleMessage(this);
@@ -193,7 +272,7 @@ export class SocketManager implements handleSocketMessage {
         const xyname = xy.Name;
         this._session++;
         if (callBack) {
-            this._callBacks[this._session] = callBack;
+            this._callBacks.set(this._session, callBack);
         }
         const logMsg = `[${xyname}][${this._session}]`;
         Logger.log(LogColors.blue(this._name + " sendToServer "), logMsg, data);
@@ -208,13 +287,102 @@ export class SocketManager implements handleSocketMessage {
         }
     }
 
+    /**
+     * @method callToServer
+     * @description RPC 方式请求服务器：返回 Promise，可直接 await 拿到响应体。
+     *              内部复用 sendToServer 收发链路，因此子类（如 GameSocketManager 的本地单机模式）
+     *              重写 sendToServer 后同样适用。
+     *              注意：仅适用于「带 response」的协议；无响应协议（如 clientReady/send）请继续用 sendToServer，
+     *              否则会一直等到超时
+     * @param {{ Name: string }} proto - 协议命名空间（只取 Name，如 SprotoSubmitAnswer）
+     * @param {any} [data] - 请求参数
+     * @param {number} [timeoutMs] - 超时时间(毫秒)，默认 SocketManager.RPC_TIMEOUT_MS；传 0 表示不超时
+     * @returns {Promise<T>} 服务器响应体；业务失败以响应体 code/msg 正常返回，不走 reject
+     */
+    public callToServer<T = any>(proto: { Name: string }, data?: any, timeoutMs: number = SocketManager.RPC_TIMEOUT_MS): Promise<T> {
+        const protoName = proto.Name;
+
+        // 发送前检查：未连接/协议未加载立即失败，避免调用方白等一个超时周期
+        const checkError = this.checkSendable(protoName);
+        if (checkError) {
+            return Promise.reject(checkError);
+        }
+
+        return new Promise<T>((resolve, reject) => {
+            const rpc: PENDING_RPC = {
+                protoName: protoName,
+                resolve: resolve,
+                reject: reject,
+                timer: null,
+            };
+
+            if (timeoutMs > 0) {
+                rpc.timer = setTimeout(() => {
+                    // 超时：先从等待表移除再 reject，迟到的响应会被安全丢弃
+                    if (this._pendingRpcs.delete(rpc)) {
+                        reject(new RpcError(ENUM_RPC_ERROR.TIMEOUT, protoName, `请求超时(${timeoutMs}ms)：${protoName}`));
+                    }
+                }, timeoutMs);
+            }
+
+            this._pendingRpcs.add(rpc);
+
+            this.sendToServer(proto, data, (response: any) => {
+                if (!this._pendingRpcs.delete(rpc)) {
+                    // 已超时或已断线：丢弃迟到响应
+                    return;
+                }
+                rpc.timer && clearTimeout(rpc.timer);
+                resolve(response as T);
+            });
+        });
+    }
+
+    /**
+     * @method checkSendable
+     * @description 发送前可用性检查；本地单机模式由子类重写为恒可发送
+     * @param {string} protoName - 协议名（用于错误描述）
+     * @returns {RpcError | null} 可发送返回 null，否则返回应拒绝的错误
+     * @protected
+     */
+    protected checkSendable(protoName: string): RpcError | null {
+        if (!this._request) {
+            return new RpcError(ENUM_RPC_ERROR.PROTOCOL_NOT_LOADED, protoName, `协议未加载，无法请求：${protoName}`);
+        }
+        if (!this._isopen) {
+            return new RpcError(ENUM_RPC_ERROR.NOT_CONNECTED, protoName, `连接未就绪，无法请求：${protoName}`);
+        }
+        return null;
+    }
+
+    /**
+     * @method rejectAllPendingRpcs
+     * @description 拒绝所有等待中的 RPC 请求（连接关闭时调用），避免调用方干等超时
+     * @private
+     */
+    private rejectAllPendingRpcs() {
+        if (this._pendingRpcs.size === 0) {
+            return;
+        }
+        this._pendingRpcs.forEach((rpc) => {
+            rpc.timer && clearTimeout(rpc.timer);
+            rpc.reject(new RpcError(ENUM_RPC_ERROR.DISCONNECTED, rpc.protoName, `连接已断开：${rpc.protoName}`));
+        });
+        this._pendingRpcs.clear();
+    }
+
     // type
     // _session
     // result
     dispatchMessage(data: any) {
         if (data.type == "RESPONSE") {
             const result = data.response;
-            this._callBacks && this._callBacks[data.session] && this._callBacks[data.session](result);
+            const callBack = this._callBacks.get(data.session);
+            if (callBack) {
+                // 响应即消费：先删除再回调，避免重连后 session 号复用误触发旧回调
+                this._callBacks.delete(data.session);
+                callBack(result);
+            }
         } else if (data.type == "REQUEST") {
             if (data.name == "agentReady") {
                 this.agentReady(data.request);
@@ -273,6 +441,8 @@ export class SocketManager implements handleSocketMessage {
     onClose(event: any) {
         Logger.warn(this._name + " onClose", event);
         this._isopen = false;
+        // 断线：一次性拒绝所有等待中的 RPC 请求，避免调用方干等超时
+        this.rejectAllPendingRpcs();
         this._callBackLink && this._callBackLink(false);
         this._callBackLink = null;
     }
