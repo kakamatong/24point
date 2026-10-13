@@ -4,14 +4,7 @@ import * as fgui from "fairygui-cc";
 import { DataCenter } from "@datacenter/Datacenter";
 import { ConnectSvr } from "@modules/ConnectSvr";
 import { PopMessageView } from "../../common/PopMessageView";
-import {
-    ENUM_POP_MESSAGE_TYPE,
-    ENUM_USER_STATUS,
-    LOBBY_SHARE_PIC_URL,
-    LOCAL_KEY,
-    MAIN_GAME_ID,
-    RICH_TYPE,
-} from "@datacenter/InterfaceConfig";
+import { ENUM_POP_MESSAGE_TYPE, ENUM_USER_STATUS, LOBBY_SHARE_PIC_URL, LOCAL_KEY, MAIN_GAME_ID } from "@datacenter/InterfaceConfig";
 import { EVENT_NAMES } from "@datacenter/CommonConfig";
 import { FW_EVENT_NAMES } from "@frameworks/config/Config";
 import { TipsView } from "../../common/TipsView";
