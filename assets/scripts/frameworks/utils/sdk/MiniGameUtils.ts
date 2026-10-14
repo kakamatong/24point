@@ -260,15 +260,283 @@ export class MiniGameUtils {
         }
     }
 
-    shareAppMessage(data: { title: string; imageUrl: string; query: string }): void {
+    /**
+     * @method shareAppMessage
+     * @description 主动拉起转发（进入选择通讯录界面）；定向分享给指定好友请走开放数据域 wx.shareMessageToFriend
+     * @param {object} data 转发参数
+     * @param {string} data.title 转发标题
+     * @param {string} data.imageUrl 转发图片（本地图片路径；网络图片需先用 downloadFile 下载到本地）
+     * @param {string} data.query 启动参数，格式 key1=val1&key2=val2
+     * @param {string} [data.imageUrlId] 审核通过的转发图片编号（仅在自定义分享图被封禁时使用）
+     * @param {boolean} [data.toCurrentGroup] 是否转发到当前群（仅从群工具栏打开的场景有效）
+     */
+    shareAppMessage(data: { title: string; imageUrl: string; query: string; imageUrlId?: string; toCurrentGroup?: boolean }): void {
         if (this.isWeChatGame()) {
             wx &&
                 wx.shareAppMessage({
                     title: data.title,
                     imageUrl: data.imageUrl,
                     query: data.query,
+                    imageUrlId: data.imageUrlId,
+                    toCurrentGroup: data.toCurrentGroup,
                 });
         }
+    }
+
+    /**
+     * @method getOpenDataContext
+     * @description 获取开放数据域（子域）上下文，是主域与子域通信的唯一入口
+     * @returns {any | null} 开放数据域上下文；非微信小游戏环境返回 null
+     */
+    getOpenDataContext(): any | null {
+        if (this.isWeChatGame()) {
+            return wx && wx.getOpenDataContext();
+        }
+        return null;
+    }
+
+    /**
+     * @method postMessageToOpenData
+     * @description 向开放数据域（子域）发送消息
+     * @param {any} message 消息体，约定包含 type 字段用于子域分发（如 type: "engine" 为引擎视口消息）
+     */
+    postMessageToOpenData(message: any): void {
+        const openDataContext = this.getOpenDataContext();
+        openDataContext && openDataContext.postMessage(message);
+    }
+
+    /**
+     * @method setUserCloudStorage
+     * @description 上报当前用户的托管数据（主域、子域均可调用），是好友排行榜的数据来源
+     * @param {Array<{key: string; value: string}>} kvDataList 键值列表；每项 key+value 不超过 1KB，key 不超过 128 字节，单用户最多 128 项
+     * @param {(success: boolean) => void} [callBack] 完成回调，true 表示上报成功
+     */
+    setUserCloudStorage(kvDataList: Array<{ key: string; value: string }>, callBack?: (success: boolean) => void): void {
+        if (this.isWeChatGame()) {
+            wx &&
+                wx.setUserCloudStorage({
+                    KVDataList: kvDataList,
+                    success: () => {
+                        callBack && callBack(true);
+                    },
+                    fail: (res: any) => {
+                        Logger.error("托管数据上报失败", res);
+                        callBack && callBack(false);
+                    },
+                });
+        } else {
+            callBack && callBack(true);
+        }
+    }
+
+    /**
+     * @method removeUserCloudStorage
+     * @description 删除当前用户托管数据中指定字段的数据（主域、子域均可调用）
+     * @param {string[]} keyList 需要删除的 key 列表
+     * @param {(success: boolean) => void} [callBack] 完成回调
+     */
+    removeUserCloudStorage(keyList: string[], callBack?: (success: boolean) => void): void {
+        if (this.isWeChatGame()) {
+            wx &&
+                wx.removeUserCloudStorage({
+                    keyList: keyList,
+                    success: () => {
+                        callBack && callBack(true);
+                    },
+                    fail: (res: any) => {
+                        Logger.error("托管数据删除失败", res);
+                        callBack && callBack(false);
+                    },
+                });
+        } else {
+            callBack && callBack(true);
+        }
+    }
+
+    /**
+     * @method setMessageToFriendQuery
+     * @description 设置子域定向分享（wx.shareMessageToFriend）卡片携带的 query，必须在游戏域调用
+     * @param {number} scene 代表场景的数字，取值 0 - 50（接收方通过 shareMessageToFriendScene 读取）
+     * @param {string} query 需要传递的字符串，长度不超过 128 字节；含 ? 与 & 等特殊符号需自行 encodeURIComponent
+     * @returns {boolean} 是否设置成功
+     */
+    setMessageToFriendQuery(scene: number, query: string): boolean {
+        if (this.isWeChatGame()) {
+            return !!(wx && wx.setMessageToFriendQuery({ shareMessageToFriendScene: scene, query: query }));
+        }
+        return false;
+    }
+
+    /**
+     * @method getShareEnterQuery
+     * @description 解析「定向分享卡片」进入游戏的参数（冷启动与热启动均适用）
+     * @returns {{scene: number; query: string} | null} 非定向分享进入时返回 null
+     */
+    getShareEnterQuery(): { scene: number; query: string } | null {
+        const options = this.getEnterOptionsSync();
+        const query = options && options.query;
+        if (query && query.shareMessageToFriendScene !== undefined && query.query !== undefined) {
+            return { scene: Number(query.shareMessageToFriendScene), query: String(query.query) };
+        }
+        return null;
+    }
+
+    /**
+     * @method getEnterOptionsSync
+     * @description 获取本次启动参数（含定向分享进入时的 shareMessageToFriendScene 与 query）
+     * @returns {any} 启动参数对象
+     */
+    getEnterOptionsSync(): any {
+        if (this.isWeChatGame()) {
+            return (wx && wx.getEnterOptionsSync && wx.getEnterOptionsSync()) || (wx && wx.getLaunchOptionsSync && wx.getLaunchOptionsSync()) || {};
+        }
+        return {};
+    }
+
+    /**
+     * @method downloadFile
+     * @description 下载远程文件到本地（如分享图：定向分享的 imageUrl 不支持网络图片，需先下载再传本地路径给子域）
+     * @param {string} url 远程文件地址
+     * @returns {Promise<string>} 本地临时文件路径
+     */
+    downloadFile(url: string): Promise<string> {
+        return new Promise((resolve, reject) => {
+            if (!this.isWeChatGame()) {
+                resolve(url);
+                return;
+            }
+
+            wx &&
+                wx.downloadFile({
+                    url: url,
+                    success: (res: any) => {
+                        if (res && res.statusCode === 200 && res.tempFilePath) {
+                            resolve(res.tempFilePath);
+                        } else {
+                            reject(res);
+                        }
+                    },
+                    fail: (res: any) => {
+                        reject(res);
+                    },
+                });
+        });
+    }
+
+    /**
+     * @method showShareMenu
+     * @description 显示转发菜单（需要群标识时需开启 shareTicket）
+     * @param {boolean} [withShareTicket] 是否开启 shareTicket，默认 true
+     */
+    showShareMenu(withShareTicket: boolean = true): void {
+        if (this.isWeChatGame()) {
+            wx && wx.showShareMenu && wx.showShareMenu({ withShareTicket: withShareTicket });
+        }
+    }
+
+    /**
+     * @method checkSDKVersion
+     * @description 判断当前基础库版本是否不低于指定版本
+     * @param {string} minVersion 最低版本号，形如 "2.9.0"
+     * @returns {boolean} true 表示满足
+     */
+    checkSDKVersion(minVersion: string): boolean {
+        if (!this.isWeChatGame()) {
+            return false;
+        }
+
+        const info = this.getSystemInfoSync();
+        const current = (info && info.SDKVersion) || "0.0.0";
+        const currentParts = String(current).split(".");
+        const minParts = String(minVersion).split(".");
+        const count = Math.max(currentParts.length, minParts.length);
+        for (let i = 0; i < count; i++) {
+            const a = Number(currentParts[i] || 0);
+            const b = Number(minParts[i] || 0);
+            if (a > b) {
+                return true;
+            }
+            if (a < b) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * @method isOpenDataSupported
+     * @description 开放数据域能力（好友排行榜、定向邀请）是否可用；要求微信小游戏且基础库不低于 2.9.0
+     * @returns {boolean} true 表示可用
+     */
+    isOpenDataSupported(): boolean {
+        return this.isWeChatGame() && this.checkSDKVersion("2.9.0");
+    }
+
+    /**
+     * @method authorizeScope
+     * @description 请求用户授权指定 scope（如关系链 scope.WxFriendInteraction）
+     * @param {string} scope 授权 scope
+     * @returns {Promise<boolean>} 是否授权成功
+     */
+    authorizeScope(scope: string): Promise<boolean> {
+        return new Promise((resolve) => {
+            if (!this.isWeChatGame()) {
+                resolve(false);
+                return;
+            }
+
+            wx &&
+                wx.authorize({
+                    scope: scope,
+                    success: () => {
+                        resolve(true);
+                    },
+                    fail: (res: any) => {
+                        Logger.error("授权失败", scope, res);
+                        resolve(false);
+                    },
+                });
+        });
+    }
+
+    /**
+     * @method getSettingScopes
+     * @description 查询用户已授权/拒绝的 scope 列表（配合授权引导使用）
+     * @param {string[]} scopes 需要查询的 scope 列表
+     * @returns {Promise<any>} 微信返回的授权状态对象
+     */
+    getSettingScopes(scopes: string[]): Promise<any> {
+        return new Promise((resolve) => {
+            if (!this.isWeChatGame()) {
+                resolve({});
+                return;
+            }
+
+            wx &&
+                wx.getSetting({
+                    withSubscriptions: true,
+                    success: (res: any) => {
+                        resolve(res);
+                    },
+                    fail: () => {
+                        resolve({});
+                    },
+                });
+        });
+    }
+
+    /**
+     * 开放数据域（子域）专用接口备忘（不可在主域调用，需在 build-templates/openDataContext 内使用）：
+     * - wx.getUserCloudStorage：读取自己的托管数据
+     * - wx.getFriendCloudStorage：读取同玩好友的托管数据
+     * - wx.getGroupCloudStorage：读取同群成员数据（需 shareTicket）
+     * - wx.getPotentialFriendList：读取对游戏感兴趣但未玩的好友（基础库 2.9.0）
+     * - wx.shareMessageToFriend：给指定好友（openId）定向分享（基础库 2.9.0）
+     * - wx.modifyFriendInteractiveStorage：修改好友互动型托管数据（基础库 2.7.7）
+     */
+    getOpenDataOnlyApiHint(): string {
+        return "openDataContext-only";
     }
 
     getLaunchOptionsSync(): any {
