@@ -1,2 +1,3 @@
 *.meta
 FGUIProject/assets/*
+tools/package-private-keys/*
