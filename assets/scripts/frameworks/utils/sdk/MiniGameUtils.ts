@@ -567,9 +567,12 @@ export class MiniGameUtils {
 
     /**
      * @method ensureFriendAuth
-     * @description 进入开放数据域（好友榜/好友列表）前的授权检查：
-     *              已授权直接通过；未决定则发起一次授权；已拒绝则打开设置页让用户手动开启
-     * @returns {Promise<boolean>} 是否已获得关系链授权
+     * @description 进入开放数据域（好友榜/好友列表）前的授权检查。
+     *              注意：关系链 scope（scope.WxFriendInteraction）**不能用 wx.authorize 主动申请**
+     *              （wx.authorize 只接受 address/camera/record/userInfo 等有限 scope）；
+     *              未决定时由子域首次调用 wx.getFriendCloudStorage 触发微信原生授权弹窗；
+     *              已拒绝时引导用户到授权设置页手动开启。
+     * @returns {Promise<boolean>} 当前是否可以继续进入开放数据域
      */
     async ensureFriendAuth(): Promise<boolean> {
         if (!this.isWeChatGame()) {
@@ -578,16 +581,14 @@ export class MiniGameUtils {
 
         const authSetting = await this.getAuthSetting();
         const state = authSetting[MiniGameUtils.SCOPE_FRIEND_INTERACTION];
-        if (state === true) {
-            return true;
-        }
 
         if (state === false) {
-            /* 之前拒绝过：authorize 不会再弹窗，只能引导用户去设置页开启 */
+            /* 之前拒绝过：authorize 不再弹窗，只能引导用户去设置页手动开启 */
             return await this.openSetting();
         }
 
-        return await this.authorizeScope(MiniGameUtils.SCOPE_FRIEND_INTERACTION);
+        /* true=已授权；undefined=未决定 → 由子域首次拉取好友数据时触发微信授权弹窗 */
+        return true;
     }
 
     /**

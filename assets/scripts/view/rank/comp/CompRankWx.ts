@@ -49,7 +49,7 @@ export class CompRankWx extends FGUICompRankWx {
         const authorized = await MiniGameUtils.instance.ensureFriendAuth();
         if (!authorized) {
             /* 未授权：提示用户授权，不挂载画布（好友数据不可用） */
-            TipsView.showView({ content: "需要授权「微信朋友信息」后才能查看好友排行榜" });
+            TipsView.showView({ content: "需要授权「微信朋友信息」才能查看好友排行榜，请在授权设置中开启" });
             return;
         }
 
