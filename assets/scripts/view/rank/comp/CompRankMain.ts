@@ -1,19 +1,18 @@
 /**
  * @file CompRankMain.ts
- * @description 排行榜主面板：标题、关闭按钮、每日/微信页签切换与数据分发
+ * @description 排行榜主面板：标题、关闭按钮、每日/好友页签切换与数据分发
  * @category 排行榜视图
  */
 
 import * as fgui from "fairygui-cc";
 import FGUICompRankMain from "@fgui/rank/FGUICompRankMain";
 import { ViewClass } from "@frameworks/Framework";
-import { Logger } from "@frameworks/utils/Utils";
 import { RankView } from "../RankView";
 import { RANK_DAY_DATA } from "../data/RankData";
 
 /**
  * @enum ENUM_RANK_TAB
- * @description ctrl_day 控制器的页签下标
+ * @description 页签控制器的页签下标
  */
 enum ENUM_RANK_TAB {
     /** 每日排行榜 */
@@ -31,12 +30,13 @@ enum ENUM_RANK_TAB {
 export class CompRankMain extends FGUICompRankMain {
     /**
      * @method onConstruct
-     * @description 构建完成：监听页签切换
+     * @description 构建完成：监听页签切换（面板显示/隐藏由 FGUI 控制器负责）
      * @protected
      */
     protected onConstruct(): void {
         super.onConstruct();
-        this.ctrl_day.onChanged(this.onTabChanged, this);
+        const ctrl = this.getTabController();
+        ctrl && ctrl.onChanged(this.onTabChanged, this);
     }
 
     /**
@@ -45,8 +45,11 @@ export class CompRankMain extends FGUICompRankMain {
      * @param {RANK_DAY_DATA} data - 服务端排行榜数据
      */
     show(data?: RANK_DAY_DATA): void {
-        this.ctrl_day.selectedIndex = ENUM_RANK_TAB.DAY;
+        const ctrl = this.getTabController();
+        ctrl && (ctrl.selectedIndex = ENUM_RANK_TAB.DAY);
         this.UI_COMP_DAY.show(data);
+        /* 释放可能存在的开放数据域视图，避免后台持续上传纹理 */
+        this.UI_COMP_WX.hidePanel();
     }
 
     /**
@@ -59,23 +62,38 @@ export class CompRankMain extends FGUICompRankMain {
 
     /**
      * @method onTabChanged
-     * @description 页签切换回调：微信好友榜待接入开放数据域后在此展示
+     * @description 页签切换回调：切到好友榜时挂载开放数据域画布，切回时释放
      * @private
      */
     private onTabChanged(): void {
-        if (this.ctrl_day.selectedIndex == ENUM_RANK_TAB.WX) {
-            // TODO 好友榜：CompRankWx 面板实现后在此展示（见 doc/开放数据域-好友排行榜技术方案.md）
-            Logger.debug("切换到微信好友榜，好友榜面板待接入开放数据域");
+        const ctrl = this.getTabController();
+        const isWxTab = ctrl ? ctrl.selectedIndex == ENUM_RANK_TAB.WX : false;
+        if (isWxTab) {
+            this.UI_COMP_WX.show();
+        } else {
+            this.UI_COMP_WX.hidePanel();
         }
     }
 
     /**
+     * @method getTabController
+     * @description 获取页签控制器（控制器名以 FGUI 为准：ctrl_type，兼容旧名 ctrl_day）
+     * @returns {fgui.Controller | null} 页签控制器
+     * @private
+     */
+    private getTabController(): fgui.Controller | null {
+        return (this.getController("ctrl_type") || this.getController("ctrl_day") || null) as fgui.Controller | null;
+    }
+
+    /**
      * @method onDestroy
-     * @description 销毁时移除页签监听
+     * @description 销毁时移除页签监听并释放开放数据域视图
      * @protected
      */
     protected onDestroy(): void {
-        this.ctrl_day.offChanged(this.onTabChanged, this);
+        const ctrl = this.getTabController();
+        ctrl && ctrl.offChanged(this.onTabChanged, this);
+        this.UI_COMP_WX.hidePanel();
         super.onDestroy();
     }
 }

@@ -8,7 +8,9 @@ import { SprotoUserRiches } from "../../types/protocol/lobby/c2s";
 import { DataCenter } from "@datacenter/Datacenter";
 import { DispatchEvent } from "@frameworks/Framework";
 import { EVENT_NAMES } from "@datacenter/CommonConfig";
+import { RICH_TYPE } from "@datacenter/InterfaceConfig";
 import { BaseModule } from "@frameworks/base/BaseModule";
+import { OpenData } from "./OpenData";
 
 /**
  * @class UserRiches
@@ -38,6 +40,10 @@ export class UserRiches extends BaseModule {
             }
             DataCenter.instance.userRiches = riches;
             DispatchEvent(EVENT_NAMES.USER_RICHES, data);
+
+            /* 同步匹配模式总积分到微信托管数据（好友榜数据源），变大变小都更新 */
+            const combatPower = DataCenter.instance.getRichByType(RICH_TYPE.COMBAT_POWER);
+            OpenData.instance.setScore(combatPower?.richNums ?? 0);
         }
         return data;
     }
