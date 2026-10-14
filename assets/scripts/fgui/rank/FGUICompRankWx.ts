@@ -86,7 +86,7 @@ export default class FGUICompRankWx extends fgui.GComponent {
 	}
 
 	protected onConstruct():void {
-		this.UI_LOADER_WX = <fgui.GLoader>(this.getChildAt(0));
+		this.UI_LOADER_WX = <fgui.GLoader>(this.getChildAt(1));
 		if (this.enableAnimation) this.enterAnimation();
 	}
 	scheduleOnce(callback: () => void, delay: number):void{};

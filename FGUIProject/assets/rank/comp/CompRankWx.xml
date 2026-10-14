@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <component size="587,504">
   <displayList>
+    <image id="n1_lcf0" name="n1" src="jin6a" fileName="imgs/mask.png" pkg="gj0r6g5i" xy="0,0" size="587,504" alpha="0.5"/>
     <loader id="n0_lcf0" name="UI_LOADER_WX" xy="293,252" pivot="0.5,0.5" anchor="true" size="587,504"/>
   </displayList>
 </component>
