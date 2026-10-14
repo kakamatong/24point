@@ -119,11 +119,8 @@ function updateMaxScroll() {
 function draw() {
     sharedCanvas.width = state.width;
     sharedCanvas.height = state.height;
+    /* 清空画布并保持透明底：不铺白色背景，直接透出主域 FGUI 面板底色 */
     ctx.clearRect(0, 0, state.width, state.height);
-
-    /* 背景 */
-    ctx.fillStyle = '#ffffff';
-    ctx.fillRect(0, 0, state.width, state.height);
 
     if (state.loading) {
         drawCenterText('加载中…');
@@ -156,9 +153,11 @@ function drawItems() {
         var item = state.items[i];
         var top = HEADER_H + i * ITEM_H - state.scrollTop;
 
-        /* 交替底色 */
-        ctx.fillStyle = i % 2 === 0 ? '#F7F7F7' : '#FFFFFF';
-        ctx.fillRect(0, top, state.width, ITEM_H);
+        /* 交替底纹：半透明，避免遮挡主域面板底色（0 号无底纹） */
+        if (i % 2 === 1) {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.04)';
+            ctx.fillRect(0, top, state.width, ITEM_H);
+        }
 
         /* 左：头像 */
         var avatar = getAvatar(item.avatarUrl);
@@ -186,8 +185,8 @@ function drawItems() {
         var nameMaxWidth = state.width * 0.42;
         ctx.fillText(ellipsis(item.nickname, nameMaxWidth), nameX, top + ITEM_H / 2);
 
-        /* 中：积分 */
-        ctx.fillStyle = '#452E27';
+        /* 中：积分（白色） */
+        ctx.fillStyle = '#FFFFFF';
         ctx.font = 'bold 28px sans-serif';
         ctx.textAlign = 'center';
         ctx.fillText(String(item.score), state.width * 0.68, top + ITEM_H / 2);
