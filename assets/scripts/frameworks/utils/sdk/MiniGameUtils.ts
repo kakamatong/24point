@@ -566,13 +566,40 @@ export class MiniGameUtils {
     }
 
     /**
+     * @method requestFriendInteractionAuth
+     * @description 触发「微信朋友信息」授权（主域可用的授权接口）。
+     *              关系链 scope 不能用 wx.authorize 申请；wx.getSetting 只会返回"已请求过"的权限，
+     *              因此首次需要调用主域内同样属于该 scope 的 wx.getUserInteractiveStorage 来触发授权弹窗。
+     * @returns {Promise<boolean>} 是否授权通过
+     */
+    requestFriendInteractionAuth(): Promise<boolean> {
+        return new Promise((resolve) => {
+            if (!this.isWeChatGame() || !wx.getUserInteractiveStorage) {
+                resolve(false);
+                return;
+            }
+
+            wx.getUserInteractiveStorage({
+                keyList: ["1"],
+                success: () => {
+                    resolve(true);
+                },
+                fail: (res: any) => {
+                    Logger.warn("微信朋友信息授权未通过", res);
+                    resolve(false);
+                },
+            });
+        });
+    }
+
+    /**
      * @method ensureFriendAuth
-     * @description 进入开放数据域（好友榜/好友列表）前的授权检查。
-     *              注意：关系链 scope（scope.WxFriendInteraction）**不能用 wx.authorize 主动申请**
-     *              （wx.authorize 只接受 address/camera/record/userInfo 等有限 scope）；
-     *              未决定时由子域首次调用 wx.getFriendCloudStorage 触发微信原生授权弹窗；
-     *              已拒绝时引导用户到授权设置页手动开启。
-     * @returns {Promise<boolean>} 当前是否可以继续进入开放数据域
+     * @description 进入开放数据域（好友榜/好友列表）前的授权检查（**先拿授权结果，再决定是否打开子域**）：
+     *              1) wx.getSetting 查 authSetting["scope.WxFriendInteraction"]
+     *                 - true  → 已授权，放行
+     *                 - false → 已拒绝，wx.openSetting 引导用户手动开启
+     *                 - 缺失  → 从未请求过，调用 wx.getUserInteractiveStorage 触发授权弹窗并取结果
+     * @returns {Promise<boolean>} 是否已获得「微信朋友信息」授权
      */
     async ensureFriendAuth(): Promise<boolean> {
         if (!this.isWeChatGame()) {
@@ -582,13 +609,17 @@ export class MiniGameUtils {
         const authSetting = await this.getAuthSetting();
         const state = authSetting[MiniGameUtils.SCOPE_FRIEND_INTERACTION];
 
+        if (state === true) {
+            return true;
+        }
+
         if (state === false) {
-            /* 之前拒绝过：authorize 不再弹窗，只能引导用户去设置页手动开启 */
+            /* 已拒绝过：authorize 不再弹窗，只能引导用户去设置页手动开启 */
             return await this.openSetting();
         }
 
-        /* true=已授权；undefined=未决定 → 由子域首次拉取好友数据时触发微信授权弹窗 */
-        return true;
+        /* 从未请求过（getSetting 只返回请求过的权限）：主动触发一次授权 */
+        return await this.requestFriendInteractionAuth();
     }
 
     /**
