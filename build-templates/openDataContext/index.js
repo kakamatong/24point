@@ -15,6 +15,7 @@
 var env = (typeof wx !== 'undefined' && wx) || (typeof tt !== 'undefined' && tt) || (typeof swan !== 'undefined' && swan);
 var sharedCanvas = env.getSharedCanvas();
 var ctx = sharedCanvas.getContext('2d');
+var dataApi = require('./render/data');
 
 var ITEM_H = 96;        /* 条目高度 */
 var AVATAR_SIZE = 60;   /* 头像尺寸 */
@@ -81,38 +82,16 @@ function getAvatar(url) {
 
 /* ---------------- 数据 ---------------- */
 
+/**
+ * 拉取好友数据（数据层见 render/data.js，便于复用与单独维护）
+ * @param {(list: Array, tips: string) => void} callback 回调：好友列表与提示文案
+ */
 function fetchFriendData(callback) {
-    if (!env || !env.getFriendCloudStorage) {
-        callback([], '当前环境不支持关系链数据');
-        return;
-    }
-    env.getFriendCloudStorage({
-        keyList: ['score'],
-        success: function (res) {
-            var list = (res && res.data) || [];
-            var mapped = [];
-            for (var i = 0; i < list.length; i++) {
-                var item = list[i];
-                var score = 0;
-                if (item.data && item.data.score !== undefined) {
-                    score = Number(item.data.score) || 0;
-                }
-                mapped.push({
-                    openId: item.openId || '',
-                    avatarUrl: item.avatarUrl || '',
-                    nickname: item.nickName || item.nickname || '好友',
-                    score: score,
-                });
-            }
-            mapped.sort(function (a, b) {
-                return b.score - a.score;
-            });
-            callback(mapped, '');
-        },
-        fail: function (err) {
-            log('getFriendCloudStorage fail', err);
-            callback([], '关系链数据获取失败（可能未授权）');
-        },
+    dataApi.fetchFriendList(['score'], function (list, tips) {
+        if (tips) {
+            log('getFriendCloudStorage fail:', tips);
+        }
+        callback(list, tips);
     });
 }
 
