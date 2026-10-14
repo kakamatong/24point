@@ -3,6 +3,9 @@
   <resources>
     <component id="is910" name="RankView.xml" path="/" exported="true"/>
     <component id="is911" name="CompRankInfo.xml" path="/comp/"/>
+    <component id="lcf02" name="CompRankMain.xml" path="/comp/"/>
+    <component id="lcf03" name="CompRankDay.xml" path="/comp/"/>
+    <component id="lcf04" name="CompRankWx.xml" path="/comp/"/>
   </resources>
   <publish name="" genCode="true"/>
 </packageDescription>

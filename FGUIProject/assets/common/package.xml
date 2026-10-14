@@ -55,6 +55,9 @@
     <image id="gt9r26" name="char_miao.png" path="/font/"/>
     <image id="gt9r24" name="char_shi.png" path="/font/"/>
     <image id="gt9r25" name="char_yong.png" path="/font/"/>
+    <image id="lcf027" name="btnB2.png" path="/imgs/" exported="true"/>
+    <image id="lcf028" name="btnG2.png" path="/imgs/" exported="true"/>
+    <image id="lcf029" name="btnY2.png" path="/imgs/" exported="true"/>
   </resources>
   <publish name="" genCode="true"/>
 </packageDescription>

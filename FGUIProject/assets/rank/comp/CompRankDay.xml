@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component size="595,525">
+  <displayList>
+    <image id="n0_lcf0" name="n0" src="jin6a" fileName="imgs/mask.png" pkg="gj0r6g5i" xy="0,0" size="595,428" alpha="0.5"/>
+    <list id="n1_lcf0" name="UI_LV_RANK" xy="0,0" size="595,426" overflow="scroll" defaultItem="ui://2a32uf5yis911" align="center" autoClearItems="true">
+      <item/>
+      <item/>
+      <item/>
+      <item/>
+    </list>
+    <text id="n2_lcf0" name="n2" xy="7,433" size="254,66" fontSize="50" color="#ffffff" strokeColor="#000000" strokeSize="2" text="您的排名："/>
+    <text id="n3_lcf0" name="UI_TXT_SELF_RANK" xy="259,434" size="178,66" fontSize="50" color="#ff0000" singleLine="true" text="000000"/>
+    <text id="n4_lcf0" name="n4" xy="23,505" size="317,20" alpha="0.7" fontSize="13" color="#333333" text="匹配模式按排名进行得分，未完成不加分，每日0点清0"/>
+  </displayList>
+</component>

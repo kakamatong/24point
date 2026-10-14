@@ -2,16 +2,17 @@
 
 import { assetManager, AssetManager } from "cc";
 import * as fgui from "fairygui-cc";
+import FGUICompRankDay from "./FGUICompRankDay";
 
 import { PackageManager } from "@frameworks/PackageManager";
 import { Logger } from "@frameworks/utils/Utils";
 
-export default class FGUIRankView extends fgui.GComponent {
+export default class FGUICompRankMain extends fgui.GComponent {
 
-	public UI_LV_RANK:fgui.GList;
+	public ctrl_day:fgui.Controller;
 	public UI_BTN_CLOSE:fgui.GButton;
-	public UI_TXT_SELF_RANK:fgui.GTextField;
-	public static URL:string = "ui://2a32uf5yis910";
+	public UI_COMP_DAY:FGUICompRankDay;
+	public static URL:string = "ui://2a32uf5ylcf02";
 
 	public static packageName:string = "rank";
 
@@ -20,16 +21,16 @@ export default class FGUIRankView extends fgui.GComponent {
 	public enableAnimation: boolean = false;
 
 	public static showView(params?: any, callBack?: (b: boolean) => void): void {
-		if (FGUIRankView.instance) {
+		if (FGUICompRankMain.instance) {
 			console.log("allready show");
 			callBack && callBack(false);
 			return;
 		}
 		const createView = () => {
-			const view = fgui.UIPackage.createObject("rank", "RankView") as FGUIRankView;
+			const view = fgui.UIPackage.createObject("rank", "CompRankMain") as FGUICompRankMain;
 
 			view.makeFullScreen();
-			FGUIRankView.instance = view;
+			FGUICompRankMain.instance = view;
 			fgui.GRoot.inst.addChild(view);
 			view.show && view.show(params);
 			callBack && callBack(true);
@@ -54,10 +55,10 @@ export default class FGUIRankView extends fgui.GComponent {
 
 	protected onDestroy():void {
 		super.onDestroy();
-		FGUIRankView.instance = null;
+		FGUICompRankMain.instance = null;
 	}
 	public static hideView():void {
-		FGUIRankView.instance && FGUIRankView.instance.dispose();
+		FGUICompRankMain.instance && FGUICompRankMain.instance.dispose();
 	}
 
 	show(data?:any):void{};
@@ -83,15 +84,15 @@ export default class FGUIRankView extends fgui.GComponent {
 		    });
 	}
 
-	public static createInstance():FGUIRankView {
-		return <FGUIRankView>(fgui.UIPackage.createObject("rank", "RankView"));
+	public static createInstance():FGUICompRankMain {
+		return <FGUICompRankMain>(fgui.UIPackage.createObject("rank", "CompRankMain"));
 	}
 
 	protected onConstruct():void {
-		this.UI_LV_RANK = <fgui.GList>(this.getChildAt(3));
-		this.UI_BTN_CLOSE = <fgui.GButton>(this.getChildAt(4));
+		this.ctrl_day = this.getControllerAt(0);
+		this.UI_BTN_CLOSE = <fgui.GButton>(this.getChildAt(1));
 		this.UI_BTN_CLOSE.onClick(this.onBtnClose, this);
-		this.UI_TXT_SELF_RANK = <fgui.GTextField>(this.getChildAt(6));
+		this.UI_COMP_DAY = <FGUICompRankDay>(this.getChildAt(5));
 		if (this.enableAnimation) this.enterAnimation();
 	}
 	scheduleOnce(callback: () => void, delay: number):void{};
@@ -100,4 +101,4 @@ export default class FGUIRankView extends fgui.GComponent {
 	schedule(callback: () => void, interval: number):void{};
 	onBtnClose():void{};
 }
-fgui.UIObjectFactory.setExtension(FGUIRankView.URL, FGUIRankView);
+fgui.UIObjectFactory.setExtension(FGUICompRankMain.URL, FGUICompRankMain);
