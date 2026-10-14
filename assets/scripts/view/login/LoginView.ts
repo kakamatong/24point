@@ -9,7 +9,6 @@ import { LOCAL_KEY } from "@datacenter/InterfaceConfig";
 import FGUILoginView from "@fgui/login/FGUILoginView";
 import * as fgui from "fairygui-cc";
 import { LobbyView } from "../lobby/LobbyView";
-import { PrivacyView } from "../privacy/PrivacyView";
 import { MiniGameUtils } from "@frameworks/utils/sdk/MiniGameUtils";
 import { PackageLoad, ViewClass } from "@frameworks/Framework";
 import { FGUI_PACKAGE } from "@datacenter/PackageConfig";
@@ -50,18 +49,13 @@ export class LoginView extends FGUILoginView {
             sys.localStorage.setItem(LOCAL_KEY.AGREE_PRIVACY, 1);
             this.showLobby();
         }
-        //显示隐私弹窗
-        MiniGameUtils.instance.requirePrivacyAuthorize(
-            (b: boolean) => {
-                if (b) {
-                    sys.localStorage.setItem(LOCAL_KEY.AGREE_PRIVACY, 1);
-                    this.showLobby();
-                }
-            },
-            (resolve) => {
-                PrivacyView.showView({ resolvefunc: resolve });
+        //隐私弹窗由全局常驻监听统一处理（启动时注册，见 LobbyScreen），这里只等授权结果
+        void MiniGameUtils.instance.ensurePrivacyAuthorize().then((b: boolean) => {
+            if (b) {
+                sys.localStorage.setItem(LOCAL_KEY.AGREE_PRIVACY, 1);
+                this.showLobby();
             }
-        );
+        });
     }
 
     /**

@@ -46,6 +46,13 @@ export class CompRankWx extends FGUICompRankWx {
      * @private
      */
     private async enterWithAuth(): Promise<void> {
+        /* 顺序：隐私协议授权 → 微信朋友信息授权 → 打开子域 */
+        const privacyAllowed = await MiniGameUtils.instance.ensurePrivacyAuthorize();
+        if (!privacyAllowed) {
+            TipsView.showView({ content: "需要先同意《用户隐私保护指引》才能查看好友排行榜" });
+            return;
+        }
+
         const authorized = await MiniGameUtils.instance.ensureFriendAuth();
         if (!authorized) {
             /* 未授权：提示用户授权，不挂载画布（好友数据不可用） */

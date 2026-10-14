@@ -36,6 +36,18 @@ export class MiniGameUtils {
      * @private
      */
     private _canvasContext: CanvasRenderingContext2D | null = null;
+
+    /**
+     * @property {Function | null} _privacyHandler - 隐私授权弹窗处理器（视图侧注册）：收到平台隐私授权事件时弹出自定义弹窗
+     * @private
+     */
+    private _privacyHandler: ((resolve: Function) => void) | null = null;
+
+    /**
+     * @property {boolean} _privacyListenerRegistered - 是否已注册全局隐私授权监听；微信为覆盖式注册，整个启动周期只注册一次
+     * @private
+     */
+    private _privacyListenerRegistered: boolean = false;
     /**
      * @property {MiniGameUtils} _instance - 单例实例
      * @private
@@ -140,24 +152,58 @@ export class MiniGameUtils {
         }
     }
 
-    requirePrivacyAuthorize(callBack1: (success: boolean) => void, callBack2: (resolve: Function) => void) {
-        if (this.isWeChatGame()) {
-            wx &&
-                wx.onNeedPrivacyAuthorization((resolve: any, eventInfo: any) => {
-                    Logger.log("触发本次事件的接口是：" + eventInfo.referrer);
-                    callBack2 && callBack2(resolve);
-                });
+    /**
+     * @method setPrivacyHandler
+     * @description 注册隐私授权弹窗处理器（**全局常驻**：应用启动时注册一次，勿绑页面生命周期）。
+     *              微信注册 wx.onNeedPrivacyAuthorization 后会切换为自定义隐私弹窗模式，
+     *              处理器必须弹出自定义弹窗，并在用户同意/拒绝后调用 resolve，否则触发该事件的隐私接口会一直 pending。
+     * @param {(resolve: Function) => void} handler 弹窗处理器：收到 resolve 后弹出自定义隐私弹窗
+     */
+    setPrivacyHandler(handler: (resolve: Function) => void): void {
+        this._privacyHandler = handler;
+        this.registerPrivacyListener();
+    }
 
-            wx &&
-                wx.requirePrivacyAuthorize({
-                    success: () => {
-                        callBack1 && callBack1(true);
-                    },
-                    fail: () => {
-                        callBack1 && callBack1(false);
-                    },
-                });
+    /**
+     * @method registerPrivacyListener
+     * @description 注册全局隐私授权监听 wx.onNeedPrivacyAuthorization（覆盖式注册，整个启动周期只注册一次；无处理器不注册）
+     */
+    registerPrivacyListener(): void {
+        if (!this.isWeChatGame() || this._privacyListenerRegistered || !this._privacyHandler || !wx.onNeedPrivacyAuthorization) {
+            return;
         }
+
+        this._privacyListenerRegistered = true;
+        wx.onNeedPrivacyAuthorization((resolve: any, eventInfo: any) => {
+            Logger.log("触发隐私授权的接口是：" + ((eventInfo && eventInfo.referrer) || ""));
+            /* 由处理器弹出自定义隐私弹窗，用户选择后 resolve 原隐私接口才会继续执行 */
+            this._privacyHandler && this._privacyHandler(resolve);
+        });
+    }
+
+    /**
+     * @method ensurePrivacyAuthorize
+     * @description 调用隐私接口前的隐私协议授权前置：已同意时立即返回 true；
+     *              未同意时触发 wx.requirePrivacyAuthorize —— 已注册全局监听则弹自定义隐私弹窗，否则由平台统一弹窗兜底。
+     * @returns {Promise<boolean>} 是否已获得隐私协议授权
+     */
+    ensurePrivacyAuthorize(): Promise<boolean> {
+        return new Promise((resolve) => {
+            if (!this.isWeChatGame() || !wx.requirePrivacyAuthorize) {
+                resolve(true);
+                return;
+            }
+
+            wx.requirePrivacyAuthorize({
+                success: () => {
+                    resolve(true);
+                },
+                fail: (res: any) => {
+                    Logger.warn("用户未同意隐私协议", res);
+                    resolve(false);
+                },
+            });
+        });
     }
 
     openPrivacyContract(data?: any) {

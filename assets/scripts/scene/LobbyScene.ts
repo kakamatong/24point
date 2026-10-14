@@ -9,6 +9,8 @@ import { Logger } from "@frameworks/utils/Utils";
 import { PackageManager } from "@frameworks/PackageManager";
 import { GmView } from "@view/gm/GmView";
 import { FGUI_PACKAGE } from "@datacenter/PackageConfig";
+import { MiniGameUtils } from "@frameworks/utils/sdk/MiniGameUtils";
+import { PrivacyView } from "@view/privacy/PrivacyView";
 const { ccclass } = _decorator;
 // 开启动态合批，减少drawcall，但是内存占用会增加
 macro.CLEANUP_IMAGE_CACHE = false;
@@ -36,6 +38,10 @@ export class LobbyScreen extends Component {
 
     initView() {
         fgui.GRoot.create();
+        // 隐私授权监听全局常驻：启动时注册一次（勿绑页面生命周期），回调统一弹 PrivacyView
+        MiniGameUtils.instance.setPrivacyHandler((resolve: Function) => {
+            PrivacyView.showView({ resolvefunc: resolve });
+        });
         // 加载common包
         const agree = sys.localStorage.getItem(LOCAL_KEY.AGREE_PRIVACY) ?? 0;
         if (agree) {
