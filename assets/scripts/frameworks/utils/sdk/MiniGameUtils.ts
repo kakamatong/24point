@@ -5,6 +5,13 @@ import { FW_EVENT_NAMES } from "../../config/Config";
 import { Logger } from "../Utils";
 
 export class MiniGameUtils {
+    /**
+     * @property {string} SCOPE_FRIEND_INTERACTION
+     * @description 关系链（好友数据）授权 scope，开放数据域好友榜/好友列表需要
+     * @static
+     */
+    public static readonly SCOPE_FRIEND_INTERACTION = "scope.WxFriendInteraction";
+
     private _userInfoBtn: any | null = null;
 
     private _canvas: HTMLCanvasElement | null = null;
@@ -501,12 +508,11 @@ export class MiniGameUtils {
     }
 
     /**
-     * @method getSettingScopes
-     * @description 查询用户已授权/拒绝的 scope 列表（配合授权引导使用）
-     * @param {string[]} scopes 需要查询的 scope 列表
-     * @returns {Promise<any>} 微信返回的授权状态对象
+     * @method getAuthSetting
+     * @description 查询用户授权状态表（authSetting：true 已授权、false 已拒绝、undefined 未决定）
+     * @returns {Promise<Record<string, boolean | undefined>>} 授权状态表，失败返回空对象
      */
-    getSettingScopes(scopes: string[]): Promise<any> {
+    getAuthSetting(): Promise<Record<string, boolean | undefined>> {
         return new Promise((resolve) => {
             if (!this.isWeChatGame()) {
                 resolve({});
@@ -515,15 +521,73 @@ export class MiniGameUtils {
 
             wx &&
                 wx.getSetting({
-                    withSubscriptions: true,
                     success: (res: any) => {
-                        resolve(res);
+                        resolve((res && res.authSetting) || {});
                     },
                     fail: () => {
                         resolve({});
                     },
                 });
         });
+    }
+
+    /**
+     * @method getSettingScopes
+     * @description 查询用户已授权/拒绝的 scope 列表（保留旧接口，内部走 getAuthSetting）
+     * @returns {Promise<Record<string, boolean | undefined>>} 授权状态表
+     */
+    getSettingScopes(): Promise<Record<string, boolean | undefined>> {
+        return this.getAuthSetting();
+    }
+
+    /**
+     * @method openSetting
+     * @description 打开小程序/小游戏的授权设置页（需在用户点击后调用）
+     * @returns {Promise<boolean>} 用户在设置页中是否已授权关系链 scope
+     */
+    openSetting(): Promise<boolean> {
+        return new Promise((resolve) => {
+            if (!this.isWeChatGame() || !wx.openSetting) {
+                resolve(false);
+                return;
+            }
+
+            wx.openSetting({
+                success: (res: any) => {
+                    const authSetting = (res && res.authSetting) || {};
+                    resolve(authSetting[MiniGameUtils.SCOPE_FRIEND_INTERACTION] === true);
+                },
+                fail: (res: any) => {
+                    Logger.warn("打开授权设置页失败", res);
+                    resolve(false);
+                },
+            });
+        });
+    }
+
+    /**
+     * @method ensureFriendAuth
+     * @description 进入开放数据域（好友榜/好友列表）前的授权检查：
+     *              已授权直接通过；未决定则发起一次授权；已拒绝则打开设置页让用户手动开启
+     * @returns {Promise<boolean>} 是否已获得关系链授权
+     */
+    async ensureFriendAuth(): Promise<boolean> {
+        if (!this.isWeChatGame()) {
+            return false;
+        }
+
+        const authSetting = await this.getAuthSetting();
+        const state = authSetting[MiniGameUtils.SCOPE_FRIEND_INTERACTION];
+        if (state === true) {
+            return true;
+        }
+
+        if (state === false) {
+            /* 之前拒绝过：authorize 不会再弹窗，只能引导用户去设置页开启 */
+            return await this.openSetting();
+        }
+
+        return await this.authorizeScope(MiniGameUtils.SCOPE_FRIEND_INTERACTION);
     }
 
     /**

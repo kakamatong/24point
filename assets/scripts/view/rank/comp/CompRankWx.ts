@@ -11,6 +11,7 @@ import { ViewClass } from "@frameworks/Framework";
 import { MiniGameUtils } from "@frameworks/utils/sdk/MiniGameUtils";
 import { OpenDataView } from "@frameworks/utils/sdk/OpenDataView";
 import { Logger } from "@frameworks/utils/Utils";
+import { TipsView } from "@view/common/TipsView";
 
 /**
  * @class CompRankWx
@@ -33,6 +34,22 @@ export class CompRankWx extends FGUICompRankWx {
     public show(data?: any): void {
         if (!MiniGameUtils.instance.isOpenDataSupported()) {
             Logger.warn("当前环境不支持开放数据域（需微信小游戏且基础库不低于 2.9.0）");
+            return;
+        }
+
+        void this.enterWithAuth();
+    }
+
+    /**
+     * @method enterWithAuth
+     * @description 进入开放数据域前先检查微信关系链授权，通过后再挂载画布并请求好友榜数据
+     * @private
+     */
+    private async enterWithAuth(): Promise<void> {
+        const authorized = await MiniGameUtils.instance.ensureFriendAuth();
+        if (!authorized) {
+            /* 未授权：提示用户授权，不挂载画布（好友数据不可用） */
+            TipsView.showView({ content: "需要授权「微信朋友信息」后才能查看好友排行榜" });
             return;
         }
 
