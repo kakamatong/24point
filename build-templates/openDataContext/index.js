@@ -20,7 +20,7 @@ var dataApi = require('./render/data');
 var ITEM_H = 96;        /* 条目高度 */
 var AVATAR_SIZE = 60;   /* 头像尺寸 */
 var PADDING_X = 24;     /* 左右内边距 */
-var HEADER_H = 0;       /* 顶部预留（列表从 0 开始，标题由 FGUI 提供） */
+var HEADER_H = 72;      /* 顶部表头高度（昵称 / 分数 / 排名），列表从表头下方开始 */
 var CLICK_MOVE_LIMIT = 12;
 var CLICK_TIME_LIMIT = 400;
 
@@ -132,7 +132,16 @@ function draw() {
         return;
     }
 
+    /* 列表内容裁剪在表头下方，避免滚动时条目盖住表头 */
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(0, HEADER_H, state.width, state.height - HEADER_H);
+    ctx.clip();
     drawItems();
+    ctx.restore();
+
+    /* 表头最后画，保证始终在最上层 */
+    drawHeader();
 }
 
 function drawCenterText(text) {
@@ -141,6 +150,31 @@ function drawCenterText(text) {
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText(text, state.width / 2, state.height / 2);
+}
+
+/** 排名列右边界（邀请模式下要给右侧「邀请」按钮让位） */
+function rankRightX() {
+    return state.mode === 'invite' ? state.width - 156 : state.width - PADDING_X;
+}
+
+/** 绘制表头：昵称 / 分数 / 排名（与下方各列对齐） */
+function drawHeader() {
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.06)';
+    ctx.fillRect(0, 0, state.width, HEADER_H);
+
+    var centerY = HEADER_H / 2;
+    ctx.font = '26px sans-serif';
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
+    ctx.textBaseline = 'middle';
+
+    ctx.textAlign = 'left';
+    ctx.fillText('昵称', PADDING_X + AVATAR_SIZE + 16, centerY);
+
+    ctx.textAlign = 'center';
+    ctx.fillText('分数', state.width * 0.68, centerY);
+
+    ctx.textAlign = 'right';
+    ctx.fillText('排名', rankRightX(), centerY);
 }
 
 function drawItems() {
@@ -195,7 +229,7 @@ function drawItems() {
         ctx.fillStyle = i < 3 ? '#E23B2E' : '#888888';
         ctx.font = 'bold 30px sans-serif';
         ctx.textAlign = 'right';
-        ctx.fillText(String(i + 1), state.width - PADDING_X, top + ITEM_H / 2);
+        ctx.fillText(String(i + 1), rankRightX(), top + ITEM_H / 2);
 
         /* 邀请模式：右侧加一个「邀请」提示 */
         if (state.mode === 'invite') {
