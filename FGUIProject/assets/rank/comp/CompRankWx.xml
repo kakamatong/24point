@@ -1,2 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<component size="800,600"/>
+<component size="587,504">
+  <displayList>
+    <loader id="n0_lcf0" name="UI_LOADER_WX" xy="0,0" size="587,504"/>
+  </displayList>
+</component>

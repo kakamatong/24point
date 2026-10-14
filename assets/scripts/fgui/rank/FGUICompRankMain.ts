@@ -3,6 +3,7 @@
 import { assetManager, AssetManager } from "cc";
 import * as fgui from "fairygui-cc";
 import FGUICompRankDay from "./FGUICompRankDay";
+import FGUICompRankWx from "./FGUICompRankWx";
 
 import { PackageManager } from "@frameworks/PackageManager";
 import { Logger } from "@frameworks/utils/Utils";
@@ -12,6 +13,7 @@ export default class FGUICompRankMain extends fgui.GComponent {
 	public ctrl_day:fgui.Controller;
 	public UI_BTN_CLOSE:fgui.GButton;
 	public UI_COMP_DAY:FGUICompRankDay;
+	public UI_COMP_WX:FGUICompRankWx;
 	public static URL:string = "ui://2a32uf5ylcf02";
 
 	public static packageName:string = "rank";
@@ -93,6 +95,7 @@ export default class FGUICompRankMain extends fgui.GComponent {
 		this.UI_BTN_CLOSE = <fgui.GButton>(this.getChildAt(1));
 		this.UI_BTN_CLOSE.onClick(this.onBtnClose, this);
 		this.UI_COMP_DAY = <FGUICompRankDay>(this.getChildAt(5));
+		this.UI_COMP_WX = <FGUICompRankWx>(this.getChildAt(6));
 		if (this.enableAnimation) this.enterAnimation();
 	}
 	scheduleOnce(callback: () => void, delay: number):void{};
