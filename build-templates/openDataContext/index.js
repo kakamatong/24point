@@ -19,6 +19,7 @@ var dataApi = require('./render/data');
 
 var ITEM_H = 96;        /* 条目高度 */
 var AVATAR_SIZE = 60;   /* 头像尺寸 */
+var AVATAR_RADIUS = 14; /* 头像圆角半径（圆角正方形） */
 var PADDING_X = 24;     /* 左右内边距 */
 var HEADER_H = 72;      /* 顶部表头高度（昵称 / 分数 / 排名），列表从表头下方开始 */
 var CLICK_MOVE_LIMIT = 12;
@@ -56,6 +57,25 @@ function log() {
 
 function clamp(value, min, max) {
     return Math.max(min, Math.min(max, value));
+}
+
+/**
+ * 构造圆角矩形路径（头像用圆角正方形，不用圆形）
+ * @param {number} x 左上角 x
+ * @param {number} y 左上角 y
+ * @param {number} width 宽
+ * @param {number} height 高
+ * @param {number} radius 圆角半径（超过一半时自动收敛）
+ */
+function roundRectPath(x, y, width, height, radius) {
+    var r = Math.min(radius, width / 2, height / 2);
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + width, y, x + width, y + height, r);
+    ctx.arcTo(x + width, y + height, x, y + height, r);
+    ctx.arcTo(x, y + height, x, y, r);
+    ctx.arcTo(x, y, x + width, y, r);
+    ctx.closePath();
 }
 
 function getAvatar(url) {
@@ -199,15 +219,14 @@ function drawItems() {
         var avatarY = top + (ITEM_H - AVATAR_SIZE) / 2;
         if (avatar) {
             ctx.save();
-            ctx.beginPath();
-            ctx.arc(avatarX + AVATAR_SIZE / 2, avatarY + AVATAR_SIZE / 2, AVATAR_SIZE / 2, 0, Math.PI * 2);
+            roundRectPath(avatarX, avatarY, AVATAR_SIZE, AVATAR_SIZE, AVATAR_RADIUS);
             ctx.clip();
             ctx.drawImage(avatar, avatarX, avatarY, AVATAR_SIZE, AVATAR_SIZE);
             ctx.restore();
         } else {
+            /* 头像未加载完成时的占位：同样用圆角正方形 */
             ctx.fillStyle = '#E0E0E0';
-            ctx.beginPath();
-            ctx.arc(avatarX + AVATAR_SIZE / 2, avatarY + AVATAR_SIZE / 2, AVATAR_SIZE / 2, 0, Math.PI * 2);
+            roundRectPath(avatarX, avatarY, AVATAR_SIZE, AVATAR_SIZE, AVATAR_RADIUS);
             ctx.fill();
         }
 
