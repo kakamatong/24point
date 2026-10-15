@@ -52,7 +52,14 @@ import { CompPlayers } from "./CompPlayers";
 import { CompCtrl } from "./CompCtrl";
 import { CompPlayerHead } from "./CompPlayerHead";
 import { CompTimeLeft } from "./CompTimeLeft";
-import { FORWARD_MESSAGE_TYPE, GAME_PLAYER_INFO, PLAYER_STATUS, ROOM_END_FLAG, ROOM_TYPE, ENUM_GAME_STEP } from "@game10003/data/InterfaceGameConfig";
+import {
+    FORWARD_MESSAGE_TYPE,
+    GAME_PLAYER_INFO,
+    PLAYER_STATUS,
+    ROOM_END_FLAG,
+    ROOM_TYPE,
+    ENUM_GAME_STEP,
+} from "@game10003/data/InterfaceGameConfig";
 import { SoundManager } from "@frameworks/SoundManager";
 import FGUICompMedal from "@fgui/gameCommon/FGUICompMedal";
 import { UserStatus } from "@modules/UserStatus";
@@ -1134,6 +1141,10 @@ export class CompGameMain extends FGUICompGameMain {
      * @param data 总结果数据
      */
     onSvrTotalResult(data: SprotoTotalResult.Request) {
+        // 竞速模式不弹总结果，有独立弹总结果的触发点
+        if (GameData.instance.isRaceMode()) {
+            return;
+        }
         const time = 0.2;
         this.scheduleOnce(() => {
             TotalResultView.showView(data);
