@@ -1,24 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <component size="660,790">
-  <controller name="ctrl_day" pages="0,,1," selected="1">
+  <controller name="ctrl_day" pages="0,,1," selected="0">
     <remark page="0" value="每日"/>
     <remark page="1" value="微信"/>
   </controller>
   <displayList>
     <component id="n0_lcf0" name="n0" src="axf11l" fileName="comp/CompPopBg.xml" pkg="gj0r6g5i" xy="0,0"/>
     <component id="n3_lcf0" name="UI_BTN_CLOSE" src="muz3h" fileName="comp/CompBtnClose.xml" pkg="gj0r6g5i" xy="568,13"/>
-    <text id="n6_lcf0" name="n6" xy="179,37" size="304,79" fontSize="60" color="#ffffff" strokeColor="#3d4b61" strokeSize="4" text="好友排行榜">
+    <text id="n6_lcf0" name="n6" xy="179,37" size="304,79" fontSize="60" color="#ffffff" strokeColor="#3d4b61" strokeSize="4" text="每日排行榜">
       <gearText controller="ctrl_day" pages="1" values="好友排行榜" default="每日排行榜"/>
     </text>
     <component id="n9_lcf0" name="n9" src="nomuz" fileName="comp/CompBtnSingleCheck.xml" pkg="gj0r6g5i" xy="31,141" size="130,75" controller="ctrl_color,1">
-      <Button title="每日" icon="ui://gj0r6g5ilcf027" controller="ctrl_day" page="0"/>
+      <Button checked="true" title="每日" icon="ui://gj0r6g5ilcf027" controller="ctrl_day" page="0"/>
     </component>
     <component id="n10_lcf0" name="n10" src="nomuz" fileName="comp/CompBtnSingleCheck.xml" pkg="gj0r6g5i" xy="176,141" size="130,75" controller="ctrl_color,3">
-      <Button checked="true" title="好友" icon="ui://gj0r6g5ilcf028" controller="ctrl_day" page="1"/>
+      <Button title="好友" icon="ui://gj0r6g5ilcf028" controller="ctrl_day" page="1"/>
     </component>
     <component id="n11_lcf0" name="UI_COMP_DAY" src="lcf03" fileName="comp/CompRankDay.xml" xy="33,223">
       <gearDisplay controller="ctrl_day" pages="0"/>
     </component>
-    <component id="n13_lcf0" name="UI_COMP_WX" src="lcf04" fileName="comp/CompRankWx.xml" xy="37,221"/>
+    <component id="n13_lcf0" name="UI_COMP_WX" src="lcf04" fileName="comp/CompRankWx.xml" xy="37,221">
+      <gearDisplay controller="ctrl_day" pages="1"/>
+    </component>
   </displayList>
 </component>
