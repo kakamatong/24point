@@ -5,7 +5,6 @@
  * @category 游戏 10003
  */
 
-import { sys } from "cc";
 import { MiniGameUtils } from "@frameworks/utils/sdk/MiniGameUtils";
 import { HttpGet, Logger } from "@frameworks/utils/Utils";
 
@@ -23,11 +22,8 @@ export const QUESTION_DIFFICULTIES = [1, 2, 3, 4, 5];
  * 递增该值即可让客户端按新目录重新下载；无需做文件 MD5。
  */
 const CACHE_VERSION = "v1";
-/** 微信本地缓存目录（位于 USER_DATA_PATH 下） */
+/** 本地缓存目录（微信位于 USER_DATA_PATH 下，浏览器映射到 localStorage） */
 const CACHE_DIR = "game10003/question";
-/** 浏览器/localStorage 缓存 key 前缀 */
-const STORAGE_KEY_PREFIX = "game10003_question";
-
 /**
  * @interface QuestionItem
  * @description 单道题库数据，字段与 OSS 上的 1.json ~ 5.json 保持一致
@@ -48,7 +44,7 @@ export interface QuestionItem {
 /**
  * @class QuestionBank
  * @description 单机题库加载器（单例）：
- *              1. 内存缓存 -> 本地文件/localStorage -> OSS 下载；
+ *              1. 内存缓存 -> 文件系统缓存（微信原生 / 浏览器虚拟） -> OSS 下载；
  *              2. 本地 JSON 解析失败会删除本地缓存并重新下载；
  *              3. 下载成功后先校验结构再落盘，避免把坏文件缓存下来。
  * @category 游戏 10003
@@ -141,16 +137,12 @@ export class QuestionBank {
         this._cache.delete(id);
         this._loading.delete(id);
 
-        if (this.isWeChat()) {
-            this.removeFile(this.localPath(id));
-        } else {
-            sys.localStorage.removeItem(this.storageKey(id));
-        }
+        this.removeFile(this.localPath(id));
     }
 
     /**
      * @method getLocalPath
-     * @description 获取某难度在微信本地文件系统中的缓存路径（排查/清理用）
+     * @description 获取某难度在本地文件系统中的缓存路径（排查/清理用）
      * @param {number} difficulty 难度 id
      * @returns {string} 本地缓存路径
      */
@@ -158,16 +150,13 @@ export class QuestionBank {
         return this.localPath(this.normalizeDifficulty(difficulty));
     }
 
-    /** 按平台读取本地或下载 */
+    /** 读取本地文件，不存在或解析失败时下载 */
     private loadInternal(id: number): Promise<QuestionItem[]> {
-        if (this.isWeChat()) {
-            return this.loadFromWeChat(id);
-        }
-        return this.loadFromStorage(id);
+        return this.loadFromFileSystem(id);
     }
 
-    /** 微信小游戏：本地文件 -> 下载 */
-    private loadFromWeChat(id: number): Promise<QuestionItem[]> {
+    /** 本地文件 -> 下载 */
+    private loadFromFileSystem(id: number): Promise<QuestionItem[]> {
         const path = this.localPath(id);
         const local = this.readLocalFile(path);
         if (local) {
@@ -203,32 +192,28 @@ export class QuestionBank {
         }
     }
 
-    /** 微信小游戏：下载到临时文件，校验后写入本地缓存 */
+    /** 下载并校验，成功后写入本地缓存 */
     private downloadToLocal(id: number, path: string): Promise<QuestionItem[]> {
         const url = this.url(id);
         Logger.log("[题库] 开始下载 difficulty=" + id + " url=" + url);
 
-        return MiniGameUtils.instance
-            .downloadFile(url)
-            .then((tempPath) => {
-                const fs = MiniGameUtils.instance.getFileSystemManager();
-                if (!fs) {
-                    throw new Error("文件系统不可用");
-                }
-
-                const text = fs.readFileSync(tempPath, "utf8") as string;
+        return this.fetchRemoteText(url)
+            .then((text) => {
                 const data = JSON.parse(text);
                 if (!this.isValidList(data)) {
                     throw new Error("下载的题库结构不合法");
                 }
 
-                this.ensureDir(path);
-                try {
-                    fs.writeFileSync(path, text, "utf8");
-                    Logger.log("[题库] 下载完成并已缓存 difficulty=" + id + " path=" + path);
-                } catch (err) {
-                    // 写缓存失败不影响本次使用，下次会重新下载
-                    Logger.warn("[题库] 写入本地缓存失败 path=" + path, err);
+                const fs = MiniGameUtils.instance.getFileSystemManager();
+                if (fs) {
+                    this.ensureDir(path);
+                    try {
+                        fs.writeFileSync(path, text, "utf8");
+                        Logger.log("[题库] 下载完成并已缓存 difficulty=" + id + " path=" + path);
+                    } catch (err) {
+                        // 写缓存失败不影响本次使用，下次会重新下载
+                        Logger.warn("[题库] 写入本地缓存失败 path=" + path, err);
+                    }
                 }
                 return data as QuestionItem[];
             })
@@ -240,40 +225,19 @@ export class QuestionBank {
             });
     }
 
-    /** 浏览器/编辑器预览：localStorage -> HTTP GET */
-    private loadFromStorage(id: number): Promise<QuestionItem[]> {
-        const key = this.storageKey(id);
-        const raw = sys.localStorage.getItem(key);
-        if (raw) {
-            try {
-                const data = JSON.parse(raw);
-                if (this.isValidList(data)) {
-                    Logger.log("[题库] 命中本地存储 difficulty=" + id);
-                    return Promise.resolve(data as QuestionItem[]);
-                }
-                throw new Error("题库结构不合法");
-            } catch (err) {
-                Logger.warn("[题库] 本地存储解析失败，删除后重新下载 difficulty=" + id, err);
-                sys.localStorage.removeItem(key);
-            }
+    /** 获取远程 JSON 文本：微信走 downloadFile，浏览器走 HttpGet */
+    private fetchRemoteText(url: string): Promise<string> {
+        if (!this.isWeChat()) {
+            return HttpGet(url).then((data) => (typeof data === "string" ? data : JSON.stringify(data)));
         }
 
-        const url = this.url(id);
-        Logger.log("[题库] 开始下载 difficulty=" + id + " url=" + url);
-        return HttpGet(url)
-            .then((data) => {
-                if (!this.isValidList(data)) {
-                    throw new Error("下载的题库结构不合法");
-                }
-                sys.localStorage.setItem(key, JSON.stringify(data));
-                Logger.log("[题库] 下载完成并已写入本地存储 difficulty=" + id);
-                return data as QuestionItem[];
-            })
-            .catch((err) => {
-                sys.localStorage.removeItem(key);
-                Logger.error("[题库] 下载或解析失败 difficulty=" + id, err);
-                throw err;
-            });
+        return MiniGameUtils.instance.downloadFile(url).then((tempPath) => {
+            const fs = MiniGameUtils.instance.getFileSystemManager();
+            if (!fs) {
+                throw new Error("文件系统不可用");
+            }
+            return fs.readFileSync(tempPath, "utf8") as string;
+        });
     }
 
     /** 校验题库数组结构，防止把坏 JSON 当成可用题库 */
@@ -318,12 +282,8 @@ export class QuestionBank {
 
     private localPath(id: number): string {
         const env = typeof wx !== "undefined" ? wx.env : null;
-        const root = (env && env.USER_DATA_PATH) || "wxfile://usr";
+        const root = (env && env.USER_DATA_PATH) || "browser://user";
         return root + "/" + CACHE_DIR + "/" + CACHE_VERSION + "/" + id + ".json";
-    }
-
-    private storageKey(id: number): string {
-        return STORAGE_KEY_PREFIX + "_" + CACHE_VERSION + "_" + id;
     }
 
     private fileExists(path: string): boolean {

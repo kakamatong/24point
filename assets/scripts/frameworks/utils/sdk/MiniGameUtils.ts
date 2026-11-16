@@ -27,6 +27,11 @@ export class MiniGameUtils {
     private _interstitialAdList: Record<string, any> = {};
 
     /**
+     * 浏览器预览用的虚拟文件系统（localStorage 模拟），避免测试时走平台分支
+     */
+    private _browserFileSystem: any | null = null;
+
+    /**
      * 视频广告回调函数
      */
     private _rewardedVideoAdCallBack: ((code: number) => void) | null = null;
@@ -478,19 +483,68 @@ export class MiniGameUtils {
 
     /**
      * @method getFileSystemManager
-     * @description 获取微信文件系统管理器；非微信小游戏环境返回 null
-     * @returns {any} FileSystemManager 或 null
+     * @description 获取文件系统管理器：微信小游戏返回原生 FileSystemManager；
+     *              浏览器/编辑器预览返回 localStorage 模拟的虚拟文件系统，便于测试同一套缓存逻辑。
+     * @returns {any} FileSystemManager 或虚拟文件系统
      */
     getFileSystemManager(): any {
-        if (!this.isWeChatGame()) {
-            return null;
+        if (this.isWeChatGame()) {
+            try {
+                return wx.getFileSystemManager();
+            } catch (err) {
+                Logger.error("获取文件系统失败", err);
+                return null;
+            }
         }
-        try {
-            return wx.getFileSystemManager();
-        } catch (err) {
-            Logger.error("获取文件系统失败", err);
-            return null;
+
+        if (!this._browserFileSystem) {
+            this._browserFileSystem = this.createBrowserFileSystem();
         }
+        return this._browserFileSystem;
+    }
+
+    /**
+     * @method createBrowserFileSystem
+     * @description 创建 localStorage 模拟的虚拟文件系统，只实现当前项目用到的同步 API
+     * @returns {any} 兼容 FileSystemManager 子集的虚拟文件系统
+     * @private
+     */
+    private createBrowserFileSystem(): any {
+        const PREFIX = "__oc_fs__:";
+        const fileKey = (path: string): string => PREFIX + "file:" + path;
+        const dirKey = (path: string): string => PREFIX + "dir:" + path;
+        const missing = (path: string): any => {
+            const err: any = new Error("file not found: " + path);
+            err.code = "ENOENT";
+            return err;
+        };
+
+        return {
+            accessSync(path: string): void {
+                if (sys.localStorage.getItem(fileKey(path)) === null && sys.localStorage.getItem(dirKey(path)) === null) {
+                    throw missing(path);
+                }
+            },
+            readFileSync(path: string, _encoding?: string): string {
+                const text = sys.localStorage.getItem(fileKey(path));
+                if (text === null) {
+                    throw missing(path);
+                }
+                return text;
+            },
+            writeFileSync(path: string, data: any, _encoding?: string): void {
+                sys.localStorage.setItem(fileKey(path), typeof data === "string" ? data : String(data));
+            },
+            unlinkSync(path: string): void {
+                if (sys.localStorage.getItem(fileKey(path)) === null) {
+                    throw missing(path);
+                }
+                sys.localStorage.removeItem(fileKey(path));
+            },
+            mkdirSync(path: string, _recursive?: boolean): void {
+                sys.localStorage.setItem(dirKey(path), "1");
+            },
+        };
     }
 
     /**
