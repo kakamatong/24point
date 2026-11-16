@@ -66,6 +66,7 @@ import { UserStatus } from "@modules/UserStatus";
 import { Match } from "@modules/Match";
 import { ConnectGameSvr } from "@modules/ConnectGameSvr";
 import { TALK_LIST } from "@game10003/view/talk/TalkConfig";
+import { TalkView } from "@game10003/view/talk/TalkView";
 import { ResultView } from "@game10003/view/result/ResultView";
 import { TotalResultView } from "@game10003/view/result/TotalResultView";
 import "@game10003/view/game/comp/CompDisband";
@@ -1602,6 +1603,13 @@ export class CompGameMain extends FGUICompGameMain {
             .catch((err: any) => {
                 Logger.log(err);
             });
+    }
+
+    /**
+     * 聊天
+     */
+    onBtnTalk(): void {
+        TalkView.showView();
     }
 }
 fgui.UIObjectFactory.setExtension(CompGameMain.URL, CompGameMain);
