@@ -477,6 +477,23 @@ export class MiniGameUtils {
     }
 
     /**
+     * @method getFileSystemManager
+     * @description 获取微信文件系统管理器；非微信小游戏环境返回 null
+     * @returns {any} FileSystemManager 或 null
+     */
+    getFileSystemManager(): any {
+        if (!this.isWeChatGame()) {
+            return null;
+        }
+        try {
+            return wx.getFileSystemManager();
+        } catch (err) {
+            Logger.error("获取文件系统失败", err);
+            return null;
+        }
+    }
+
+    /**
      * @method showShareMenu
      * @description 显示转发菜单（需要群标识时需开启 shareTicket）
      * @param {boolean} [withShareTicket] 是否开启 shareTicket，默认 true

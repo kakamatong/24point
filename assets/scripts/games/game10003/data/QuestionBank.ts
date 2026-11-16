@@ -182,7 +182,7 @@ export class QuestionBank {
      * 解析失败/结构非法时删除该文件后返回 null，由调用方重新下载。
      */
     private readLocalFile(path: string): QuestionItem[] | null {
-        const fs = this.getFileSystem();
+        const fs = MiniGameUtils.instance.getFileSystemManager();
         if (!fs) {
             return null;
         }
@@ -211,7 +211,7 @@ export class QuestionBank {
         return MiniGameUtils.instance
             .downloadFile(url)
             .then((tempPath) => {
-                const fs = this.getFileSystem();
+                const fs = MiniGameUtils.instance.getFileSystemManager();
                 if (!fs) {
                     throw new Error("文件系统不可用");
                 }
@@ -326,20 +326,8 @@ export class QuestionBank {
         return STORAGE_KEY_PREFIX + "_" + CACHE_VERSION + "_" + id;
     }
 
-    private getFileSystem(): any {
-        if (!this.isWeChat()) {
-            return null;
-        }
-        try {
-            return wx.getFileSystemManager();
-        } catch (err) {
-            Logger.error("[题库] 获取文件系统失败", err);
-            return null;
-        }
-    }
-
     private fileExists(path: string): boolean {
-        const fs = this.getFileSystem();
+        const fs = MiniGameUtils.instance.getFileSystemManager();
         if (!fs) {
             return false;
         }
@@ -353,7 +341,7 @@ export class QuestionBank {
 
     /** 创建缓存文件所在目录 */
     private ensureDir(filePath: string): void {
-        const fs = this.getFileSystem();
+        const fs = MiniGameUtils.instance.getFileSystemManager();
         if (!fs) {
             return;
         }
@@ -377,7 +365,7 @@ export class QuestionBank {
 
     /** 删除本地缓存文件，失败只记录 */
     private removeFile(path: string): void {
-        const fs = this.getFileSystem();
+        const fs = MiniGameUtils.instance.getFileSystemManager();
         if (!fs) {
             return;
         }
