@@ -13,8 +13,9 @@ export class CompTalk extends FGUICompTalk {
         this.unscheduleAllCallbacks();
         this.scheduleOnce(() => {
             // 使用父类的 UI_TXT_0 文本节点
-            if (this.UI_TXT_0) {
-                this.UI_TXT_0.text = value;
+            const txtNode = this.ctrl_self.selectedIndex === 0 ? this.UI_TXT_0 : this.UI_TXT_SELF;
+            if (txtNode) {
+                txtNode.text = value;
             }
         }, 0);
 

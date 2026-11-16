@@ -44,7 +44,7 @@
       <gearDisplay controller="ctrl_roomtype" pages="0,1"/>
       <relation target="" sidePair="width-width,top-top"/>
     </component>
-    <component id="n16_ifzr" name="UI_COMP_SELFPLAYER" src="ifzr1u" fileName="comp/CompPlayerHead.xml" xy="23,1499" group="n18_ifzr">
+    <component id="n16_ifzr" name="UI_COMP_SELFPLAYER" src="ifzr1u" fileName="comp/CompPlayerHead.xml" xy="23,1499" group="n18_ifzr" controller="ctrl_self,1">
       <gearDisplay controller="ctrl_roomtype" pages="0,1"/>
       <relation target="" sidePair="left-left,bottom-bottom"/>
     </component>

@@ -20,8 +20,11 @@ export enum FORWARD_MESSAGE_TYPE {
 export const TALK_LIST = [
     { id: 1, msg: "准备！准备！" },
     { id: 2, msg: "加油！" },
-    { id: 3, msg: "真慢~~" },
-    { id: 4, msg: "真墨迹！" },
-    { id: 5, msg: "我闭着眼睛都比你快。" },
-    { id: 6, msg: "这把让你了。" },
+    { id: 3, msg: "这题太简单了" },
+    { id: 4, msg: "怎么还没做完" },
+    { id: 5, msg: "你数学是体育老师教的吧" },
+    { id: 6, msg: "真墨迹！" },
+    { id: 7, msg: "我闭着眼睛都比你快。" },
+    { id: 8, msg: "这把让你了。" },
+    { id: 9, msg: "再来一把！" },
 ];

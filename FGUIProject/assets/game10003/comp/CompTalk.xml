@@ -1,10 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <component size="67,83">
+  <controller name="ctrl_self" exported="true" pages="0,,1," selected="1">
+    <remark page="0" value="其他玩家"/>
+    <remark page="1" value="自己"/>
+  </controller>
   <displayList>
-    <image id="n13_vg62" name="UI_BG_0" src="vg621z" fileName="imgs/talkbg.png" xy="0,0" size="67,83" flip="hz">
+    <image id="n13_vg62" name="UI_BG_0" src="vg621z" fileName="imgs/talkbg.png" xy="0,0" size="67,83">
+      <gearDisplay controller="ctrl_self" pages="0"/>
       <relation target="" sidePair="center-center,middle-middle"/>
-      <relation target="n12_pxa5" sidePair="leftext-right"/>
+      <relation target="n12_pxa5" sidePair="leftext-left"/>
     </image>
-    <text id="n12_pxa5" name="UI_TXT_0" xy="6,12" size="56,36" fontSize="26" vAlign="middle" text="你好"/>
+    <text id="n12_pxa5" name="UI_TXT_0" xy="6,12" pivot="1,0" size="56,36" fontSize="26" align="right" vAlign="middle" text="你好">
+      <gearDisplay controller="ctrl_self" pages="0"/>
+    </text>
+    <image id="n14_mdws" name="UI_BG_SELF" src="vg621z" fileName="imgs/talkbg.png" xy="0,9" size="67,83" flip="hz">
+      <gearDisplay controller="ctrl_self" pages="1"/>
+      <relation target="" sidePair="center-center,middle-middle"/>
+      <relation target="n15_mdws" sidePair="rightext-right"/>
+    </image>
+    <text id="n15_mdws" name="UI_TXT_SELF" xy="5,21" size="56,36" fontSize="26" vAlign="middle" text="你好">
+      <gearDisplay controller="ctrl_self" pages="1"/>
+    </text>
   </displayList>
 </component>

@@ -11,6 +11,7 @@ import { Logger } from "@frameworks/utils/Utils";
 export default class FGUICompPlayerHead extends fgui.GComponent {
 
 	public ctrl_roomtype:fgui.Controller;
+	public ctrl_self:fgui.Controller;
 	public UI_COMP_HEAD:fgui.GComponent;
 	public UI_COMP_TALK:FGUICompTalk;
 	public UI_COMP_OFFLINE:FGUICompOffline;
@@ -94,6 +95,7 @@ export default class FGUICompPlayerHead extends fgui.GComponent {
 
 	protected onConstruct():void {
 		this.ctrl_roomtype = this.getControllerAt(0);
+		this.ctrl_self = this.getControllerAt(1);
 		this.UI_COMP_HEAD = <fgui.GComponent>(this.getChildAt(0));
 		this.UI_COMP_TALK = <FGUICompTalk>(this.getChildAt(1));
 		this.UI_COMP_OFFLINE = <FGUICompOffline>(this.getChildAt(2));

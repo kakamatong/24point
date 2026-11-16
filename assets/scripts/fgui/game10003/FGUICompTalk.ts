@@ -8,8 +8,11 @@ import { Logger } from "@frameworks/utils/Utils";
 
 export default class FGUICompTalk extends fgui.GComponent {
 
+	public ctrl_self:fgui.Controller;
 	public UI_BG_0:fgui.GImage;
 	public UI_TXT_0:fgui.GTextField;
+	public UI_BG_SELF:fgui.GImage;
+	public UI_TXT_SELF:fgui.GTextField;
 	public static URL:string = "ui://2zsfe53xvg621y";
 
 	public static packageName:string = "game10003";
@@ -87,8 +90,11 @@ export default class FGUICompTalk extends fgui.GComponent {
 	}
 
 	protected onConstruct():void {
+		this.ctrl_self = this.getControllerAt(0);
 		this.UI_BG_0 = <fgui.GImage>(this.getChildAt(0));
 		this.UI_TXT_0 = <fgui.GTextField>(this.getChildAt(1));
+		this.UI_BG_SELF = <fgui.GImage>(this.getChildAt(2));
+		this.UI_TXT_SELF = <fgui.GTextField>(this.getChildAt(3));
 		if (this.enableAnimation) this.enterAnimation();
 	}
 	scheduleOnce(callback: () => void, delay: number):void{};

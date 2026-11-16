@@ -4,11 +4,19 @@
     <remark page="0" value="普通房"/>
     <remark page="1" value="私人房"/>
   </controller>
+  <controller name="ctrl_self" exported="true" pages="0,,1," selected="1">
+    <remark page="0" value="其他玩家"/>
+    <remark page="1" value="自己"/>
+    <action type="change_page" fromPage="" toPage="1" objectId="n12_vg62" controller="ctrl_self" targetPage="1"/>
+    <action type="change_page" fromPage="" toPage="0" objectId="n12_vg62" controller="ctrl_self" targetPage="0"/>
+  </controller>
   <displayList>
     <component id="n1_gk14" name="UI_COMP_HEAD" src="cvev9" fileName="comp/CompHead.xml" pkg="gj0r6g5i" xy="0,1">
       <property target="UI_LOADER_HEAD" propertyId="1" value=""/>
     </component>
-    <component id="n12_vg62" name="UI_COMP_TALK" src="vg621y" fileName="comp/CompTalk.xml" xy="-4,-78" visible="false" touchable="false"/>
+    <component id="n12_vg62" name="UI_COMP_TALK" src="vg621y" fileName="comp/CompTalk.xml" xy="-3,-68" visible="false" touchable="false">
+      <gearXY controller="ctrl_self" pages="1" values="-3,-68" default="88,-66"/>
+    </component>
     <component id="n14_x6u8" name="UI_COMP_OFFLINE" src="vg6221" fileName="comp/CompOffline.xml" xy="95,10" visible="false"/>
     <image id="n0_gk14" name="n0" src="jin6a" fileName="imgs/mask.png" pkg="gj0r6g5i" xy="1,114" size="158,47" group="n10_pgw3"/>
     <text id="n3_gk14" name="UI_TXT_NICKNAME" xy="1,117" pivot="1,0" size="159,42" group="n10_pgw3" fontSize="26" color="#ffffff" align="center" vAlign="middle" autoSize="ellipsis" singleLine="true" text="迪迦奥特曼"/>
