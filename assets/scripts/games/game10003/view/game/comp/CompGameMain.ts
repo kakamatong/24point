@@ -1597,7 +1597,7 @@ export class CompGameMain extends FGUICompGameMain {
                 MiniGameUtils.instance.shareAppMessage({
                     title: `房间号：${DataCenter.instance.shortRoomid} 点击加入 速来战`,
                     imageUrl: res,
-                    query: `gameid=${10002}&roomid=${DataCenter.instance.shortRoomid}`,
+                    query: `gameid=${10003}&roomid=${DataCenter.instance.shortRoomid}`,
                 });
             })
             .catch((err: any) => {
