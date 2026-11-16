@@ -32,6 +32,7 @@ export default class FGUICompGameMain extends fgui.GComponent {
 	public UI_COMP_LHT_LEFT:fgui.GComponent;
 	public UI_COMP_LHT_RIGHT:fgui.GComponent;
 	public UI_TXT_HINT:fgui.GTextField;
+	public UI_BTN_TALK:fgui.GButton;
 	public static URL:string = "ui://2zsfe53xh3uk1d";
 
 	public static packageName:string = "game10003";
@@ -135,6 +136,8 @@ export default class FGUICompGameMain extends fgui.GComponent {
 		this.UI_COMP_LHT_LEFT = <fgui.GComponent>(this.getChildAt(17));
 		this.UI_COMP_LHT_RIGHT = <fgui.GComponent>(this.getChildAt(18));
 		this.UI_TXT_HINT = <fgui.GTextField>(this.getChildAt(19));
+		this.UI_BTN_TALK = <fgui.GButton>(this.getChildAt(21));
+		this.UI_BTN_TALK.onClick(this.onBtnTalk, this);
 		if (this.enableAnimation) this.enterAnimation();
 	}
 	scheduleOnce(callback: () => void, delay: number):void{};
@@ -148,5 +151,6 @@ export default class FGUICompGameMain extends fgui.GComponent {
 	onBtnContinue():void{};
 	onBtnChange():void{};
 	onBtnBack():void{};
+	onBtnTalk():void{};
 }
 fgui.UIObjectFactory.setExtension(FGUICompGameMain.URL, FGUICompGameMain);
